@@ -402,7 +402,7 @@
     </div>
     <div class="meta-field">
       <span class="meta-label">Lifecycle Phase</span>
-      <span class="meta-text">Prototype</span>
+      <span class="meta-text">Preliminary</span>
     </div>
     <div class="meta-field">
       <span class="meta-label">Has BOM</span>
@@ -442,9 +442,7 @@
     <div class="tab active" onclick="switchTab(this,'details')">Details</div>
     <div class="tab" onclick="switchTab(this,'changes')">Changes</div>
     <div class="tab" onclick="switchTab(this,'manufacturers')">Manufacturers</div>
-    <div class="tab" onclick="switchTab(this,'quality')">Quality</div>
-    <div class="tab" onclick="switchTab(this,'relationships')">Relationships</div>
-    <div class="tab" onclick="switchTab(this,'whereUsed')">Where Used</div>
+    <div class="tab" onclick="switchTab(this,'whereUsed')">Where Used Parts</div>
     <div class="tab" onclick="switchTab(this,'attachments')">Attachments</div>
     <div class="tab" onclick="switchTab(this,'history')">History</div>
   </div>
@@ -495,6 +493,10 @@
 
   <!-- DETAILS TAB -->
   <div id="panel-details" class="tab-panel active">
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-bottom:12px;">
+      <button class="btn btn-blue-outline" id="btn-edit-details" onclick="editDetails()">&#9998; Edit</button>
+      <button class="btn btn-primary" id="btn-save-details" onclick="saveDetails()">&#10003; Save</button>
+    </div>
     <div class="details-wrap">
 
       <!-- FLAT TOP CARD -->
@@ -522,14 +524,14 @@
         <!-- Row 2: Description Latest Rev | Product Line(s) -->
         <div class="detail-pair-row">
           <div class="field-pair">
-            <div class="detail-label">Description <span title="Pulled from latest revision" style="color:var(--accent);cursor:help;font-size:12px">ⓘ</span></div>
+            <div class="detail-label">Description <span title="Pulled from latest revision" style="color:var(--accent);cursor:help;font-size:12px"></span></div>
             <div class="detail-value">
               <textarea id="detail-desc" maxlength="150" placeholder="Enter description…" oninput="document.getElementById('desc-counter').textContent = this.value.length + '/150'"></textarea>
               <div class="char-counter"><span id="desc-counter">0/150</span></div>
             </div>
           </div>
           <div class="field-pair">
-            <div class="detail-label">Product Line(s) <span title="Product lines this item belongs to" style="color:var(--accent);cursor:help;font-size:12px">ⓘ</span></div>
+            <div class="detail-label">Product Line(s) <span title="Product lines this item belongs to" style="color:var(--accent);cursor:help;font-size:12px"></span></div>
             <div class="detail-value">
               <input type="text" id="detail-product-line" maxlength="30" placeholder="Enter product line…" />
             </div>
@@ -538,7 +540,7 @@
         <!-- Row 3: Make/Buy | Part Subcategory -->
         <div class="detail-pair-row">
           <div class="field-pair">
-            <div class="detail-label">Make/Buy <span title="Whether this part is made or purchased" style="color:var(--accent);cursor:help;font-size:12px">ⓘ</span></div>
+            <div class="detail-label">Make/Buy <span title="Whether this part is made or purchased" style="color:var(--accent);cursor:help;font-size:12px"></span></div>
             <div class="detail-value">
               <select id="detail-buy-status">
                 <option value="Buy" selected>Buy</option>
@@ -561,15 +563,7 @@
             <div class="detail-label">Functional Teams</div>
             <div class="detail-value"><input type="text" id="detail-func-teams" placeholder="Enter functional teams…" /></div>
           </div>
-          <div class="field-pair">
-            <div class="detail-label">Whitelisted AML Check</div>
-            <div class="detail-value">
-              <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px">
-                <input type="checkbox" id="detail-aml-check" style="width:16px;height:16px;cursor:pointer" />
-                <span id="aml-check-label" style="color:var(--text-muted)">No</span>
-              </label>
-            </div>
-          </div>
+      
         </div>
       </div>
 
@@ -603,17 +597,7 @@
                 </select>
               </div>
             </div>
-            <div class="field-pair">
-              <div class="detail-label">Temperature Grade</div>
-              <div class="detail-value">
-                <select id="detail-temp-grade">
-                  <option value="Commercial (0C/+70C)">Commercial (0C/+70C)</option>
-                  <option value="Industrial (-40C/+85C)">Industrial (-40C/+85C)</option>
-                  <option value="Extended (-40C/+125C)" selected>Extended (-40C/+125C)</option>
-                  <option value="Military (-55C/+125C)">Military (-55C/+125C)</option>
-                </select>
-              </div>
-            </div>
+            
           </div>
           <div class="detail-pair-row">
             <div class="field-pair">
@@ -706,7 +690,7 @@
           <div class="detail-pair-row">
             <div class="field-pair">
               <div class="detail-label">Sourcing Strategy (non-editable)</div>
-              <div class="detail-value"><input type="text" id="detail-sourcing-strategy" readonly style="background:#f8fafc;cursor:default;" value="Arista Controlled Non-Consigned" /></div>
+              <div class="detail-value"><input type="text" id="detail-sourcing-strategy" readonly style="background:#f8fafc;cursor:default;" value="Client Controlled" /></div>
             </div>
             <div class="field-pair">
               <div class="detail-label">Item NPI Cost</div>
@@ -736,32 +720,7 @@
         </div>
       </div>
 
-      <!-- LIBRARY SYMBOLS / SI MODELS -->
-      <div class="detail-section">
-        <div class="section-header" onclick="toggleSection(this)"><span class="section-chevron">▼</span> Library Symbols / SI Models</div>
-        <div class="section-body">
-          <div class="detail-pair-row">
-            <div class="field-pair">
-              <div class="detail-label">Symbol</div>
-              <div class="detail-value"><input type="text" id="detail-symbol" value="IND_3Pin" /></div>
-            </div>
-            <div class="field-pair">
-              <div class="detail-label">PCB Footprint</div>
-              <div class="detail-value"><input type="text" id="detail-pcb-footprint" value="LC291X299S_3PIN" /></div>
-            </div>
-          </div>
-          <div class="detail-pair-row">
-            <div class="field-pair">
-              <div class="detail-label">Signal Model</div>
-              <div class="detail-value"><input type="text" id="detail-signal-model" placeholder="Enter signal model…" /></div>
-            </div>
-            <div class="field-pair">
-              <div class="detail-label">ASI Model</div>
-              <div class="detail-value"><input type="text" id="detail-asi-model" placeholder="Enter ASI model…" /></div>
-            </div>
-          </div>
-        </div>
-      </div>
+    
 
       <!-- PART DETAILS -->
       <div class="detail-section">
@@ -851,10 +810,10 @@
               <div class="detail-value"><input type="text" id="detail-revision" value="01" /></div>
             </div>
             <div class="field-pair">
-              <div class="detail-label">Description</div>
+              <div class="detail-label">Extended Description</div>
               <div class="detail-value">
-                <textarea id="detail-ext-desc" maxlength="250" placeholder="Enter description…" oninput="document.getElementById('ext-desc-counter').textContent=this.value.length+'/250'">IND, PWR, 0.82uH, 20%, 21.0A Isat, 0.0023 OHM DCR, 19A Irms, 100kHz, SHLD, 125C, 3-LD</textarea>
-                <div class="char-counter"><span id="ext-desc-counter">89/250</span></div>
+                <textarea id="detail-ext-desc" maxlength="250" placeholder="Enter description…" oninput="document.getElementById('ext-desc-counter').textContent=this.value.length+'/250'"></textarea>
+                <div class="char-counter"><span id="ext-desc-counter">0/250</span></div>
               </div>
             </div>
           </div>
@@ -879,10 +838,7 @@
           </div>
           <!-- Row 3: Sourcing Strategy | Category Control -->
           <div class="detail-pair-row">
-            <div class="field-pair">
-              <div class="detail-label">Sourcing Strategy <span title="How this item is sourced" style="color:var(--accent);cursor:help;font-size:12px">ⓘ</span></div>
-              <div class="detail-value"><input type="text" id="detail-sourcing-strategy-rev" value="Arista Controlled Non-Consigned" /></div>
-            </div>
+  
             <div class="field-pair">
               <div class="detail-label">Category Control</div>
               <div class="detail-value"><input type="text" id="detail-category-control" value="Inductor" readonly style="background:#f8fafc;cursor:default;" /></div>
@@ -896,7 +852,7 @@
             </div>
             <div class="field-pair">
               <div class="detail-label">Created By</div>
-              <div class="detail-value"><input type="text" id="detail-created-by" value="Joanne Lee" style="color:var(--accent);" /></div>
+              <div class="detail-value"><input type="text" id="detail-created-by" value="Karkuvel V" style="color:var(--accent);" /></div>
             </div>
           </div>
           <!-- Row 5: Created Date | Has Item Attachments -->
@@ -994,7 +950,7 @@
             <th><div class="th-inner">New Value</div></th>
           </tr>
         </thead>
-        <tbody>
+        <tbody id="history-tbody">
           <tr>
             <td>5/6/2026, 11:35 AM PDT</td>
             <td>Karkuvel V</td>
@@ -1032,10 +988,6 @@
   document.getElementById('item-number-display').textContent = itemNum;
   document.getElementById('changes-item-rev').textContent    = itemNum + ':01';
   document.getElementById('detail-item-num-gi').textContent  = itemNum;
-  document.getElementById('detail-aml-check').addEventListener('change', function() {
-    document.getElementById('aml-check-label').textContent = this.checked ? 'Yes' : 'No';
-    document.getElementById('aml-check-label').style.color = this.checked ? 'var(--green)' : 'var(--text-muted)';
-  });
   document.getElementById('detail-has-attachments').addEventListener('change', function() {
     document.getElementById('attach-check-label').textContent = this.checked ? 'Yes' : 'No';
     document.getElementById('attach-check-label').style.color = this.checked ? 'var(--green)' : 'var(--text-muted)';
@@ -1084,15 +1036,17 @@
     subEl.onchange = function() { renderPartDetails(this.value); };
   }
 
-  // Pre-populate editable fields from URL params
-  const catEl = document.getElementById('detail-category');
-  if (category !== '—') { catEl.value = category; }
-  onCategoryChange(subCategory);
-
   const descEl = document.getElementById('detail-desc');
   if (descVal) {
     descEl.value = descVal;
     document.getElementById('desc-counter').textContent = descVal.length + '/150';
+  }
+
+  const extDescVal = desc.trim().slice(0, 250);
+  const extDescEl = document.getElementById('detail-ext-desc');
+  if (extDescEl && extDescVal) {
+    extDescEl.value = extDescVal;
+    document.getElementById('ext-desc-counter').textContent = extDescVal.length + '/250';
   }
 
   // Save to localStorage
@@ -1184,7 +1138,34 @@
     body.innerHTML = html;
   }
 
-  renderPartDetails(subCategory);
+  // Pre-populate category/subcategory from URL params (must be after partFieldsMap)
+  const catEl = document.getElementById('detail-category');
+  if (category !== '—') { catEl.value = category; }
+  onCategoryChange(subCategory);
+
+  function editDetails() {
+    document.querySelectorAll('#panel-details input:not([readonly]):not([disabled]), #panel-details select:not([disabled]), #panel-details textarea')
+      .forEach(function(el) { el.style.outline = '2px solid var(--accent)'; });
+  }
+
+  function saveDetails() {
+    document.querySelectorAll('#panel-details input:not([readonly]):not([disabled]), #panel-details select:not([disabled]), #panel-details textarea')
+      .forEach(function(el) { el.style.outline = ''; });
+
+    // Add history record
+    var user = document.getElementById('detail-created-by') ? document.getElementById('detail-created-by').value || 'Unknown' : 'Unknown';
+    var dateStr = new Date().toLocaleString('en-US', { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true });
+    var tbody = document.getElementById('history-tbody');
+    var tr = document.createElement('tr');
+    tr.innerHTML = '<td>' + dateStr + '</td><td>' + user + '</td><td>Updated</td><td>Details</td><td>—</td><td>Details saved</td>';
+    tbody.insertBefore(tr, tbody.firstChild);
+
+    var t = document.createElement('div');
+    t.textContent = '✓ Details saved successfully.';
+    t.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#16a34a;color:#fff;padding:10px 18px;border-radius:8px;font-size:13px;font-weight:600;z-index:9999;box-shadow:0 2px 8px rgba(0,0,0,0.15)';
+    document.body.appendChild(t);
+    setTimeout(function() { t.remove(); }, 2500);
+  }
 
   // ── SECTION TOGGLE ──
   function toggleSection(header) {

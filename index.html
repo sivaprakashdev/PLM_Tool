@@ -969,7 +969,7 @@
       </div>
       <div class="field-group">
         <label class="field-label">Description</label>
-        <textarea class="field-textarea" placeholder="Detailed notes about this change order…" id="newDesc" required></textarea>
+        <textarea class="field-textarea" placeholder="Detailed notes about this change order…" id="ecoDesc" required></textarea>
       </div>
     </div>
     <div class="modal-footer">
@@ -1053,7 +1053,7 @@
       
       <div class="field-group">
         <label class="field-label">Description <span style="color:#dc2626">*</span></label>
-        <textarea class="field-textarea" placeholder="Describe the item… (required)" id="itemDesc"></textarea>
+        <textarea class="field-textarea" placeholder="Describe the item… (required)" id="newDesc"></textarea>
       </div>
       <div class="field-group">
         <label class="field-label">Attachment</label>
@@ -1527,7 +1527,7 @@
     if (type === 'create') {
       document.getElementById('newChangeNum').value = 'ECO-' + (26220 + rows.length);
       document.getElementById('newTitle').value = '';
-      document.getElementById('newDesc').value = '';
+      document.getElementById('ecoDesc').value = '';
       document.getElementById('newCategory').selectedIndex = 0;
       document.getElementById('createModal').classList.add('open');
     }
@@ -1765,7 +1765,7 @@
     const sc = document.getElementById('itemSubCategory');
     sc.innerHTML = '<option value="">Select sub category…</option>';
     sc.disabled = true;
-    document.getElementById('itemDesc').value = '';
+    document.getElementById('newDesc').value = '';
     document.getElementById('itemAttachment').value = '';
     // Auto-generate a fresh 7-digit item number each time the modal opens
     document.getElementById('itemNumber').value = 'IND-' + Math.floor(1000000 + Math.random() * 9000000);
@@ -1776,7 +1776,7 @@
     const category    = document.getElementById('itemCategory').value;
     const subCategory = document.getElementById('itemSubCategory').value;
     const itemNumber  = document.getElementById('itemNumber').value;
-    const desc        = document.getElementById('itemDesc').value.trim();
+    const desc        = document.getElementById('newDesc').value.trim();
     if (!category) { showToast('⚠ Please select a Category'); return; }
     if (!subCategory) { showToast('⚠ Please select a Sub Category'); return; }
     if (!desc) { showToast('⚠ Description is required'); return; }
