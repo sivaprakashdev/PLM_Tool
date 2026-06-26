@@ -104,8 +104,8 @@
 
   /* ══ BREADCRUMB ══ */
   .breadcrumb {
-    background: #f3f2f2; border-bottom: 1px solid var(--border);
-    padding: 7px 20px; font-size: 12px; color: var(--text-secondary);
+    background: var(--white); border-bottom: 1px solid var(--border);
+    padding: 10px 24px; font-size: 12px; color: var(--text-secondary);
     display: flex; align-items: center; gap: 5px;
   }
   .breadcrumb a { color: var(--accent); text-decoration:none; }
@@ -137,7 +137,7 @@
   }
 
   .item-number {
-    font-size: 20px; font-weight: 800; color: var(--text-primary);
+    font-size: 18px; font-weight: 800; color: var(--text-primary);
     letter-spacing: -0.2px;
   }
 
@@ -222,6 +222,15 @@
     font-size: 13px; color: var(--text-primary); min-height:18px;
     display: flex; align-items: center; gap: 6px;
   }
+  .field-cell select, .field-cell input[type="text"] {
+    font-size: 13px; color: var(--text-primary);
+    border: 1px solid var(--border); border-radius: 4px;
+    padding: 4px 8px; background: var(--white);
+    width: 100%; outline: none; font-family: inherit;
+  }
+  .field-cell select { cursor: pointer; }
+  .field-cell select:focus, .field-cell input[type="text"]:focus { border-color: var(--accent); }
+  .field-cell input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; accent-color: var(--accent); }
   .field-value.link { color:var(--accent); font-weight:500; cursor:pointer; }
   .field-value.link:hover { text-decoration:underline; }
   .field-value.empty { color:var(--text-muted); font-style:italic; }
@@ -276,8 +285,10 @@
 
 <!-- BREADCRUMB -->
 <div class="breadcrumb">
-  <a href="./index.html">Home</a> ›
-  <a href="#">Manufacturer Parts</a> ›
+  <a href="./index.html">Home</a>
+  <span>›</span>
+  <a href="#">Manufacturer Parts</a>
+  <span>›</span>
   <span id="breadcrumb-mpn">—</span>
 </div>
 
@@ -313,6 +324,11 @@
   <!-- ── DETAILS TAB ── -->
   <div id="panel-details" class="tab-panel active">
 
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-bottom:12px;">
+      <button class="btn btn-outline-blue" id="btn-edit-details" onclick="mfrEditDetails()">✎ Edit</button>
+      <button class="btn btn-primary" id="btn-save-details" onclick="mfrSaveDetails()">✓ Save</button>
+    </div>
+
     <!-- Information Section -->
     <div class="section-card">
       <div class="section-head" onclick="toggleSection(this)">
@@ -324,18 +340,19 @@
 
           <div class="field-cell">
             <span class="field-label">Manufacturer</span>
-            <div class="field-value link" id="info-manufacturer">—</div>
+            <div class="field-value"><input type="text" id="info-manufacturer" readonly style="width:100%;font-size:13px;font-family:inherit;border:1px solid var(--border);border-radius:4px;padding:4px 8px;color:var(--text-primary);background:#f3f2f2;cursor:default;outline:none;" /></div>
           </div>
 
           <div class="field-cell">
             <span class="field-label">Mfr. Part Number</span>
-            <div class="field-value" id="info-mpn">—</div>
+            <div class="field-value"><input type="text" id="info-mpn" readonly style="width:100%;font-size:13px;font-family:inherit;border:1px solid var(--border);border-radius:4px;padding:4px 8px;color:var(--text-primary);background:#f3f2f2;cursor:default;outline:none;" /></div>
           </div>
 
           <div class="field-cell">
             <span class="field-label">Description</span>
-            <div class="field-value empty" id="info-desc">—
-              <span class="edit-pencil" onclick="showToast('Edit Description')">✏</span>
+            <div class="field-value">
+              <textarea id="info-desc" maxlength="150" placeholder="Enter description…" rows="3" style="width:100%;font-size:13px;font-family:inherit;border:1px solid var(--border);border-radius:4px;padding:5px 8px;resize:none;color:var(--text-primary);outline:none;" oninput="document.getElementById('info-desc-counter').textContent=this.value.length+'/150'"></textarea>
+              <div style="text-align:right;font-size:11px;color:var(--text-muted);margin-top:3px;"><span id="info-desc-counter">0/150</span></div>
             </div>
           </div>
 
@@ -343,41 +360,66 @@
             <span class="field-label">
               Lifecycle <span class="info-icon" title="Manufacturer part lifecycle status">ⓘ</span>
             </span>
-            <div class="field-value" id="info-lifecycle">—</div>
+            <select id="info-lifecycle">
+              <option value="Active" selected>Active</option>
+              <option value="Active-NRND">Active-NRND</option>
+              <option value="LTB">LTB</option>
+              <option value="Obsolete">Obsolete</option>
+            </select>
           </div>
 
           <div class="field-cell">
             <span class="field-label">Has Attachments</span>
-            <div class="field-value"><span class="check-val">✓</span></div>
+            <div class="field-value"><input type="checkbox" id="info-has-attachments" checked /></div>
           </div>
 
           <div class="field-cell">
             <span class="field-label">Released to Item?</span>
-            <div class="field-value"><span class="uncheck-val"></span></div>
+            <div class="field-value"><input type="checkbox" id="info-released-to-item" /></div>
           </div>
 
           <div class="field-cell">
             <span class="field-label">Accessible By</span>
-            <div class="field-value empty">—
-              <span class="edit-pencil" onclick="showToast('Edit Accessible By')">✏</span>
-            </div>
+            <div class="field-value"><input type="text" id="info-accessible-by" placeholder="Enter accessible by…" /></div>
           </div>
 
           <div class="field-cell">
             <span class="field-label">Parent Manufacturer Industry</span>
-            <div class="field-value empty">—</div>
+            <div class="field-value"><input type="text" id="info-parent-mfr-industry" placeholder="Enter industry…" /></div>
           </div>
 
           <div class="field-cell">
             <span class="field-label">MPN_Sharing_Update</span>
-            <div class="field-value empty">—
-              <span class="edit-pencil" onclick="showToast('Edit MPN_Sharing_Update')">✏</span>
+            <div class="field-value"><input type="text" id="info-mpn-sharing-update" placeholder="Enter value…" /></div>
+          </div>
+
+          <div class="field-cell">
+            <span class="field-label">RoHS</span>
+            <div class="field-value">
+              <select id="info-rohs">
+                <option value="">— Select —</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
             </div>
           </div>
 
           <div class="field-cell">
-            <span class="field-label">&nbsp;</span>
-            <div class="field-value">&nbsp;</div>
+            <span class="field-label">Created By</span>
+            <div class="field-value"><input type="text" id="info-created-by" placeholder="Enter name…" /></div>
+          </div>
+
+          <div class="field-cell">
+            <span class="field-label">Created Date</span>
+            <div class="field-value"><input type="date" id="info-created-date" style="font-size:13px;font-family:inherit;border:1px solid var(--border);border-radius:4px;padding:4px 8px;color:var(--text-primary);outline:none;width:100%;" /></div>
+          </div>
+
+          <div class="field-cell">
+            <span class="field-label">Comments</span>
+            <div class="field-value">
+              <textarea id="info-info-comments" maxlength="150" placeholder="Enter comments…" rows="2" style="width:100%;font-size:13px;font-family:inherit;border:1px solid var(--border);border-radius:4px;padding:5px 8px;resize:none;color:var(--text-primary);outline:none;" oninput="document.getElementById('info-info-comments-counter').textContent=this.value.length+'/150'"></textarea>
+              <div style="text-align:right;font-size:11px;color:var(--text-muted);margin-top:3px;"><span id="info-info-comments-counter">0/150</span></div>
+            </div>
           </div>
 
         </div>
@@ -395,20 +437,19 @@
 
           <div class="field-cell">
             <span class="field-label">Last Time Buy Date MPN</span>
-            <div class="field-value">6/18/2026
-              <span class="edit-pencil" onclick="showToast('Edit Last Time Buy Date')">✏</span>
-            </div>
+            <div class="field-value"><input type="date" id="info-ltb-date" value="2026-06-18" style="font-size:13px;font-family:inherit;border:1px solid var(--border);border-radius:4px;padding:4px 8px;color:var(--text-primary);outline:none;" /></div>
           </div>
 
           <div class="field-cell">
             <span class="field-label">Max Operating Temperature (C)</span>
-            <div class="field-value empty">—</div>
+            <div class="field-value"><input type="text" id="info-max-op-temp" placeholder="e.g. 125" /></div>
           </div>
 
           <div class="field-cell">
             <span class="field-label">Comments</span>
-            <div class="field-value empty">—
-              <span class="edit-pencil" onclick="showToast('Edit Comments')">✏</span>
+            <div class="field-value">
+              <textarea id="info-comments" maxlength="150" placeholder="Enter comments…" rows="2" style="width:100%;font-size:13px;font-family:inherit;border:1px solid var(--border);border-radius:4px;padding:5px 8px;resize:none;color:var(--text-primary);outline:none;" oninput="document.getElementById('info-comments-counter').textContent=this.value.length+'/150'"></textarea>
+              <div style="text-align:right;font-size:11px;color:var(--text-muted);margin-top:3px;"><span id="info-comments-counter">0/150</span></div>
             </div>
           </div>
 
@@ -416,19 +457,41 @@
             <span class="field-label">
               Country of Origin (COO) <span class="info-icon" title="Country where the part is manufactured">ⓘ</span>
             </span>
-            <div class="field-value">CN</div>
-          </div>
-
-          <div class="field-cell">
-            <span class="field-label">COQ Responsible Department</span>
-            <div class="field-value empty">—
-              <span class="edit-pencil" onclick="showToast('Edit COQ Responsible Department')">✏</span>
+            <div class="field-value">
+              <select id="info-coo" style="font-size:13px;border:1px solid var(--border);border-radius:4px;padding:4px 8px;background:#fff;color:var(--text-primary);width:100%;outline:none;">
+                <option value="">— Select —</option>
+                 <option value="IN">India (IN)</option>
+                <option value="CN" selected>China (CN)</option>
+                <option value="US">United States (US)</option>
+                <option value="DE">Germany (DE)</option>
+                <option value="JP">Japan (JP)</option>
+                <option value="KR">South Korea (KR)</option>
+                <option value="TW">Taiwan (TW)</option>
+                <option value="MX">Mexico (MX)</option>
+                <option value="GB">United Kingdom (GB)</option>
+                <option value="FR">France (FR)</option>
+                <option value="IT">Italy (IT)</option>
+                <option value="VN">Vietnam (VN)</option>
+                <option value="TH">Thailand (TH)</option>
+                <option value="MY">Malaysia (MY)</option>
+                <option value="SG">Singapore (SG)</option>
+                <option value="BR">Brazil (BR)</option>
+                <option value="CA">Canada (CA)</option>
+                <option value="AU">Australia (AU)</option>
+                <option value="NL">Netherlands (NL)</option>
+                <option value="CH">Switzerland (CH)</option>
+              </select>
             </div>
           </div>
 
           <div class="field-cell">
+            <span class="field-label">COQ Responsible Department</span>
+            <div class="field-value"><input type="text" id="info-coq-dept" placeholder="Enter department…" /></div>
+          </div>
+
+          <div class="field-cell">
             <span class="field-label">FOA Accession #</span>
-            <div class="field-value empty">—</div>
+            <div class="field-value"><input type="text" id="info-foa-accession" placeholder="Enter accession #…" /></div>
           </div>
 
         </div>
@@ -472,8 +535,18 @@
         <span class="toggle">▾</span>
         <span class="section-head-title">Attachments</span>
       </div>
-      <div class="section-body">
-        <div class="empty-state">No attachments found for this manufacturer part.</div>
+      <div class="section-body" style="padding:16px;">
+        <p style="font-size:12px;color:#9faab5;margin-bottom:8px;">Files larger than 3 MB must be loaded after the record is created.</p>
+        <div id="mfr-drop-zone" onclick="document.getElementById('mfr-file-input').click()"
+             ondragover="event.preventDefault();this.style.borderColor='var(--accent)'"
+             ondragleave="this.style.borderColor='var(--border)'"
+             ondrop="mfrHandleDrop(event)"
+             style="border:2px dashed var(--border);border-radius:6px;padding:28px 20px;text-align:center;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:10px;transition:border-color 0.15s;">
+          <input type="file" id="mfr-file-input" multiple onchange="mfrHandleFiles(this.files)" style="display:none;" />
+          <button class="btn btn-outline-blue" onclick="event.stopPropagation();document.getElementById('mfr-file-input').click()">&#8679; Upload Files</button>
+          <span style="font-size:13px;color:#9faab5;">Or drop files here</span>
+        </div>
+        <div id="mfr-file-list" style="margin-top:12px;display:flex;flex-direction:column;gap:6px;"></div>
       </div>
     </div>
   </div>
@@ -498,7 +571,7 @@
                 <th>New Value</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody id="mfr-history-tbody">
               <tr>
                 <td>6/18/2026, 10:22 AM PDT</td>
                 <td>Karkuvel V</td>
@@ -552,18 +625,22 @@
     document.getElementById('page-title').textContent    = 'MFR Part ' + mpn + ' — NEXTGEN PLM';
     document.getElementById('breadcrumb-mpn').textContent = mpn;
     document.getElementById('header-mpn').textContent    = mpn;
-    document.getElementById('info-mpn').textContent      = mpn;
-    document.getElementById('info-manufacturer').textContent = mfr;
+    document.getElementById('info-mpn').value             = mpn;
+    document.getElementById('info-manufacturer').value = mfr;
     document.getElementById('history-mpn').textContent   = mpn;
 
     const descEl = document.getElementById('info-desc');
     if (desc) {
-      descEl.textContent = desc;
+      descEl.value = desc;
       descEl.classList.remove('empty');
+      document.getElementById('info-desc-counter').textContent = desc.length + '/150';
     }
 
     const lcEl = document.getElementById('info-lifecycle');
-    lcEl.textContent = lc;
+    if (lc && lc !== '—') lcEl.value = lc;
+
+    const today = new Date().toISOString().slice(0, 10);
+    document.getElementById('info-created-date').value = today;
   })();
 
   // ── Render Where Used table from localStorage ──
@@ -587,6 +664,23 @@
     }).join('');
   })();
 
+  function mfrHandleFiles(files) {
+    const list = document.getElementById('mfr-file-list');
+    Array.from(files).forEach(function(file) {
+      const row = document.createElement('div');
+      row.style.cssText = 'display:flex;align-items:center;justify-content:space-between;padding:7px 12px;background:#f4f6f9;border:1px solid var(--border);border-radius:4px;font-size:13px;';
+      row.innerHTML = '<span>📎 ' + file.name + ' <span style="color:#9faab5;font-size:11px;">(' + (file.size > 1024*1024 ? (file.size/1024/1024).toFixed(1)+'MB' : (file.size/1024).toFixed(0)+'KB') + ')</span></span>'
+        + '<span onclick="this.parentElement.remove()" style="cursor:pointer;color:#9faab5;font-size:16px;line-height:1;" title="Remove">×</span>';
+      list.appendChild(row);
+    });
+    document.getElementById('mfr-drop-zone').style.borderColor = 'var(--border)';
+  }
+
+  function mfrHandleDrop(e) {
+    e.preventDefault();
+    mfrHandleFiles(e.dataTransfer.files);
+  }
+
   function switchTab(el, name) {
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
@@ -598,6 +692,31 @@
     headEl.classList.toggle('collapsed');
     const body = headEl.nextElementSibling;
     body.classList.toggle('hidden');
+  }
+
+  function mfrEditDetails() {
+    document.querySelectorAll('#panel-details input:not([readonly]), #panel-details select, #panel-details textarea').forEach(el => {
+      el.style.outline = '2px solid var(--accent)';
+    });
+    showToast('✎ Editing — make your changes then click Save');
+  }
+
+  function mfrSaveDetails() {
+    document.querySelectorAll('#panel-details input:not([readonly]), #panel-details select, #panel-details textarea').forEach(el => {
+      el.style.outline = 'none';
+    });
+
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('en-US', { month:'2-digit', day:'2-digit', year:'numeric' }) +
+      ', ' + now.toLocaleTimeString('en-US', { hour:'2-digit', minute:'2-digit' });
+    const mpn = document.getElementById('info-mpn').value || '—';
+
+    const tbody = document.getElementById('mfr-history-tbody');
+    const row = document.createElement('tr');
+    row.innerHTML = `<td>${dateStr}</td><td>You</td><td>Updated</td><td>Details</td><td>—</td><td>${mpn}</td>`;
+    tbody.insertBefore(row, tbody.firstChild);
+
+    showToast('✓ Details saved');
   }
 
   let toastTimer;

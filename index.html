@@ -1003,7 +1003,7 @@
     <div class="field-group">
       <label class="field-label">Sub Category</label>
       <select class="field-select" id="itemSubCategory">
-        <option value="">Select sub category…</option>
+        <option value="">--Select Sub Category--</option>
         <option value="Label Image">Label Image</option>
         <option value="Software">Software</option>
         <option value="Accessory Kit">Accessory Kit</option>
@@ -1092,8 +1092,8 @@
         <input class="field-input" type="text" placeholder="e.g. TPS7A4700RGWR" id="mpnPartNumber" required />
       </div>
       <div class="field-group">
-        <label class="field-label">Description</label>
-        <textarea class="field-textarea" placeholder="Describe the part…" id="mpnDesc" required></textarea>
+        <label class="field-label">Description <span style="color:#dc2626">*</span></label>
+        <textarea class="field-textarea" placeholder="Describe the part…" id="mpnDesc"></textarea>
       </div>
       <div class="field-group">
         <label class="field-label">Lifecycle of MPN</label>
@@ -1719,6 +1719,7 @@
     const desc         = document.getElementById('mpnDesc').value.trim();
     const lifecycle    = document.getElementById('mpnLifecycle').value.trim() || 'Active';
     if (!manufacturer || !partNumber) { showToast('⚠ Please fill in Manufacturer and Part Number'); return; }
+    if (!desc) { showToast('⚠ Description is required'); return; }
     closeModal('mpn');
     const params = new URLSearchParams({ mpn: partNumber, mfr: manufacturer, desc, lifecycle });
     window.location.href = './MFR_Part.html?' + params.toString();
