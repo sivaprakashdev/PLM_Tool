@@ -1,0 +1,1264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title id="page-title">Item — NEXTGEN PLM</title>
+<style>
+  :root {
+    --bg: #f0f2f5;
+    --topbar-bg: #ffffff;
+    --accent: #2563eb;
+    --accent-light: #dbeafe;
+    --accent-dark: #1d4ed8;
+    --text-primary: #111827;
+    --text-secondary: #6b7280;
+    --text-muted: #9ca3af;
+    --border: #e5e7eb;
+    --white: #ffffff;
+    --green: #16a34a;
+    --shadow: 0 1px 4px rgba(0,0,0,0.08);
+    --radius: 8px;
+    --font: 'Segoe UI', system-ui, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* TOP BAR */
+  .topbar {
+    background: var(--topbar-bg);
+    border-bottom: 1px solid var(--border);
+    height: 52px;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    gap: 12px;
+    flex-shrink: 0;
+    box-shadow: var(--shadow);
+    z-index: 100;
+  }
+
+  .brand-logo {
+    width: 34px; height: 34px;
+    background: linear-gradient(135deg, var(--accent), #7c3aed);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; color: var(--white); font-weight: 900; letter-spacing: -1px;
+  }
+
+  .brand-name { font-size: 13px; font-weight: 700; color: var(--text-primary); }
+  .brand-sub  { font-size: 10px; color: var(--text-secondary); }
+
+  .topbar-search {
+    position: relative; flex: 0 0 240px; margin-left: auto;
+  }
+  .topbar-search input {
+    width: 100%; padding: 7px 12px 7px 30px;
+    border: 1px solid var(--border); border-radius: 20px;
+    font-size: 13px; background: var(--bg); outline: none;
+  }
+  .topbar-search .si { position: absolute; left: 9px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+
+  .avatar-btn {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), #7c3aed);
+    color: var(--white); font-size: 12px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; border: 2px solid var(--border);
+  }
+
+  /* BREADCRUMB */
+  .breadcrumb {
+    padding: 10px 24px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    display: flex; align-items: center; gap: 6px;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+  }
+  .breadcrumb a { color: var(--accent); text-decoration: none; }
+  .breadcrumb a:hover { text-decoration: underline; }
+
+  /* ITEM HEADER CARD */
+  .item-header {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 24px 0;
+  }
+
+  .item-top-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+
+  .item-identity { display: flex; flex-direction: column; gap: 2px; }
+
+  .item-type-label {
+    font-size: 10px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.6px; color: var(--text-muted);
+  }
+
+  .item-number {
+    font-size: 22px; font-weight: 800; color: var(--text-primary);
+    display: flex; align-items: center; gap: 10px;
+  }
+
+  .item-desc {
+    font-size: 12px; color: var(--text-secondary); max-width: 680px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    margin-top: 2px;
+  }
+  .desc-label { font-size: 10px; font-weight: 600; text-transform: uppercase; color: var(--text-muted); }
+
+  /* ACTION BUTTONS */
+  .action-btns {
+    display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+  }
+
+  .btn {
+    padding: 6px 12px; border-radius: 6px; font-size: 12px;
+    font-weight: 600; cursor: pointer; border: 1px solid var(--border);
+    background: var(--white); color: var(--text-primary);
+    display: flex; align-items: center; gap: 4px;
+    transition: background 0.15s, border-color 0.15s;
+    white-space: nowrap;
+  }
+  .btn:hover { background: var(--bg); border-color: var(--text-muted); }
+  .btn-primary { background: var(--accent); color: var(--white); border-color: var(--accent); }
+  .btn-primary:hover { background: var(--accent-dark); }
+  .btn-blue-outline { color: var(--accent); border-color: var(--accent); }
+  .btn-blue-outline:hover { background: var(--accent-light); }
+
+  /* META ROW */
+  .item-meta-row {
+    display: flex; align-items: center; gap: 24px;
+    padding: 10px 0 0;
+    flex-wrap: wrap;
+  }
+
+  .meta-field { display: flex; flex-direction: column; gap: 2px; }
+  .meta-label { font-size: 10px; font-weight: 600; text-transform: uppercase; color: var(--text-muted); }
+
+  .meta-select {
+    display: flex; align-items: center; gap: 4px;
+    border: 1px solid var(--border); border-radius: 5px;
+    padding: 5px 8px; font-size: 12px; font-weight: 600;
+    background: var(--white); cursor: pointer; color: var(--text-primary);
+    min-width: 140px;
+  }
+
+  .meta-text { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+
+  .meta-checkbox { display: flex; align-items: center; gap: 5px; font-size: 12px; }
+  .check-box {
+    width: 16px; height: 16px; border: 2px solid var(--border); border-radius: 3px;
+    background: var(--white); display: flex; align-items: center; justify-content: center;
+    font-size: 11px;
+  }
+  .check-box.checked { background: var(--accent); border-color: var(--accent); color: var(--white); }
+
+  /* SECOND ACTION ROW */
+  .item-action-row {
+    display: flex; align-items: center; gap: 6px; padding: 10px 0 12px; flex-wrap: wrap;
+  }
+
+  /* TABS */
+  .tab-bar {
+    background: var(--white);
+    border-bottom: 2px solid var(--border);
+    display: flex; align-items: center; padding: 0 24px; gap: 0;
+  }
+
+  .tab {
+    padding: 12px 16px; font-size: 13px; font-weight: 500;
+    color: var(--text-secondary); cursor: pointer;
+    border-bottom: 3px solid transparent; margin-bottom: -2px;
+    transition: color 0.15s, border-color 0.15s; white-space: nowrap;
+  }
+  .tab:hover { color: var(--accent); }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 700; }
+
+  /* CONTENT */
+  .content { padding: 20px 24px; flex: 1; }
+
+  /* FILTER ROW */
+  .filter-row {
+    display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;
+  }
+  .record-count { font-size: 12px; color: var(--text-muted); }
+  .filter-actions { display: flex; align-items: center; gap: 6px; }
+  .search-within {
+    display: flex; align-items: center; gap: 6px; padding: 5px 12px;
+    border: 1px solid var(--border); border-radius: 6px;
+    background: var(--white); font-size: 12px; color: var(--text-muted);
+    min-width: 160px;
+  }
+  .btn-icon {
+    width: 28px; height: 28px; border: 1px solid var(--border);
+    border-radius: 6px; background: var(--white);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: var(--text-secondary); font-size: 13px;
+  }
+  .btn-icon:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* TABLE */
+  .table-wrap {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow);
+  }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+
+  thead th {
+    background: #f8fafc; padding: 10px 14px; text-align: left;
+    font-size: 11px; font-weight: 700; color: var(--text-secondary);
+    text-transform: uppercase; letter-spacing: 0.5px;
+    border-bottom: 1px solid var(--border); white-space: nowrap; user-select: none;
+  }
+  thead th .th-inner { display: flex; align-items: center; gap: 4px; }
+  .sort-icon { opacity: 0.4; font-size: 10px; }
+
+  tbody tr { border-bottom: 1px solid var(--border); transition: background 0.12s; cursor: pointer; }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: #f9fafb; }
+  td { padding: 11px 14px; color: var(--text-primary); vertical-align: middle; }
+
+  .link { color: var(--accent); font-weight: 600; text-decoration: none; }
+  .link:hover { text-decoration: underline; }
+
+  .status-badge {
+    padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600;
+    display: inline-block;
+  }
+  .status-released { background: #dcfce7; color: #166534; }
+  .status-prototype { background: #e0e7ff; color: #3730a3; }
+
+  /* TAB PANELS */
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* DETAILS PANEL */
+  /* ── DETAIL SECTIONS ── */
+  .details-wrap { display: flex; flex-direction: column; gap: 0; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+
+  /* flat top card — no collapsible header */
+  .detail-flat {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius) var(--radius) 0 0;
+    overflow: hidden;
+  }
+  .details-wrap > .detail-flat + .detail-section .section-header { border-top: none; border-radius: 0; }
+  .details-wrap > .detail-section:first-child .section-header { border-radius: 0; }
+
+  .section-header {
+    padding: 9px 16px; background: var(--bg);
+    border: 1px solid var(--border); border-top: none;
+    font-size: 11.5px; font-weight: 700; color: var(--text-secondary);
+    letter-spacing: 0.6px; text-transform: uppercase;
+    cursor: pointer; display: flex; align-items: center; gap: 8px;
+    user-select: none; transition: background 0.12s;
+  }
+  .details-wrap > .detail-section:first-child .section-header { border-top: 1px solid var(--border); border-radius: 0; }
+  .details-wrap > .detail-section:last-child .section-body { border-radius: 0 0 var(--radius) var(--radius); }
+  .section-header:hover { background: #e9edf2; }
+  .section-chevron { font-size: 10px; display: inline-block; transition: transform 0.18s; }
+  .section-header.collapsed .section-chevron { transform: rotate(-90deg); }
+
+  .section-body { background: var(--white); border: 1px solid var(--border); border-top: none; overflow: hidden; }
+  .section-body.collapsed { display: none; }
+
+  .detail-pair-row { display: flex; border-bottom: 1px solid var(--border); }
+  .detail-pair-row:last-child { border-bottom: none; }
+
+  .field-pair { flex: 1; display: flex; min-width: 0; }
+  .field-pair + .field-pair { border-left: 1px solid var(--border); }
+  .field-pair.span-full { flex: 2; }
+
+  .detail-label {
+    width: 170px; flex-shrink: 0; padding: 10px 14px;
+    font-size: 12.5px; font-weight: 600; color: var(--text-secondary);
+    background: #f8fafc; border-right: 1px solid var(--border);
+  }
+  .detail-value { flex: 1; padding: 10px 14px; font-size: 13px; color: var(--text-primary); word-break: break-word; }
+  .detail-value.muted { color: var(--text-muted); font-style: italic; }
+  .detail-value select, .detail-value input[type="text"], .detail-value textarea {
+    width: 100%; border: 1px solid var(--border); border-radius: 4px;
+    padding: 5px 8px; font-size: 13px; font-family: inherit;
+    color: var(--text-primary); background: var(--white);
+    outline: none; transition: border-color 0.15s, box-shadow 0.15s;
+    resize: none;
+  }
+  .detail-value select:focus, .detail-value input[type="text"]:focus, .detail-value textarea:focus {
+    border-color: var(--accent); box-shadow: 0 0 0 2px rgba(37,99,235,0.1);
+  }
+  .detail-value textarea { min-height: 56px; line-height: 1.5; }
+  .char-counter { font-size: 11px; color: var(--text-muted); text-align: right; margin-top: 3px; }
+
+  .empty-state {
+    text-align: center; padding: 48px 24px; color: var(--text-muted); font-size: 13px;
+  }
+
+  /* ATTACHMENTS */
+  .attach-notice {
+    font-size: 12px; color: var(--text-secondary);
+    background: #fffbeb; border: 1px solid #fde68a;
+    border-radius: 6px; padding: 8px 12px; margin-bottom: 16px;
+  }
+  .attach-label { font-size: 12px; font-weight: 600; color: var(--text-secondary); margin-bottom: 8px; }
+  .drop-zone {
+    border: 2px dashed var(--border); border-radius: 8px;
+    padding: 28px 20px; display: flex; align-items: center; gap: 14px;
+    background: var(--white); cursor: pointer; transition: border-color 0.15s, background 0.15s;
+  }
+  .drop-zone:hover, .drop-zone.drag-over { border-color: var(--accent); background: var(--accent-light); }
+  .drop-zone input[type="file"] { display: none; }
+  .attach-file-list { margin-top: 14px; display: flex; flex-direction: column; gap: 6px; }
+  .attach-file-item {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 6px; padding: 8px 12px; font-size: 13px;
+  }
+  .attach-file-name { flex: 1; color: var(--text-primary); }
+  .attach-file-size { font-size: 12px; color: var(--text-muted); }
+  .attach-remove {
+    background: none; border: none; cursor: pointer; color: var(--text-muted);
+    font-size: 15px; line-height: 1; padding: 0 2px; transition: color 0.12s;
+  }
+  .attach-remove:hover { color: #dc2626; }
+
+  .ml-8 { margin-left: 8px; }
+
+  .meta-select-arrow { margin-left: auto; opacity: 0.5; }
+
+  .tab-bar-inset { margin: 0 -24px; padding: 0 24px; }
+
+  .chk-meta {
+    width: 15px; height: 15px;
+    accent-color: var(--accent);
+    cursor: pointer;
+  }
+
+  .td-nowrap { white-space: nowrap; }
+
+  .td-desc-cell {
+    max-width: 320px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="brand-logo">PLM</div>
+  <div class="ml-8">
+    <div class="brand-name">NEXTGEN PLM</div>
+    <div class="brand-sub">InESS Solutions</div>
+  </div>
+  <div class="topbar-search">
+    <span class="si">🔍</span>
+    <input type="text" placeholder="Search…" />
+  </div>
+  <div class="avatar-btn ml-8">KV</div>
+</div>
+
+<!-- BREADCRUMB -->
+<div class="breadcrumb">
+  <a href="./index.html.html">Home</a>
+  <span>›</span>
+  <a href="#">Items</a>
+  <span>›</span>
+  <span id="breadcrumb-num"></span>
+</div>
+
+<!-- ITEM HEADER -->
+<div class="item-header">
+  <div class="item-top-row">
+    <div class="item-identity">
+      <span class="item-type-label">Items</span>
+      <div class="item-number" id="item-number-display"></div>
+      <div class="desc-label">Description</div>
+      <div class="item-desc" id="item-desc-display"></div>
+    </div>
+
+    <div class="meta-field">
+      <span class="meta-label">Revision</span>
+      <span class="meta-text">01</span>
+    </div>
+    <div class="meta-field">
+      <span class="meta-label">Lifecycle Phase</span>
+      <span class="meta-text">Prototype</span>
+    </div>
+    <div class="meta-field">
+      <span class="meta-label">Has BOM</span>
+      <div class="meta-checkbox">
+        <input type="checkbox" id="chk-bom" class="chk-meta" />
+      </div>
+    </div>
+    <div class="meta-field">
+      <span class="meta-label">Has AML</span>
+      <div class="meta-checkbox">
+        <input type="checkbox" id="chk-aml" checked class="chk-meta" />
+      </div>
+    </div>
+    <div class="meta-field">
+      <span class="meta-label">Has Item Attachments</span>
+      <div class="meta-checkbox">
+        <input type="checkbox" id="chk-attachments" checked class="chk-meta" />
+      </div>
+    </div>
+  </div>
+
+  <!-- META ROW -->
+  <div class="item-meta-row">
+    <div class="meta-field">
+      <span class="meta-label">Revision</span>
+      <div class="meta-select">
+        <span>01 (ECO-24912)</span> <span class="meta-select-arrow">▾</span>
+      </div>
+    </div>
+   
+  </div>
+
+ 
+
+  <!-- TABS -->
+  <div class="tab-bar tab-bar-inset">
+    <div class="tab active" onclick="switchTab(this,'details')">Details</div>
+    <div class="tab" onclick="switchTab(this,'changes')">Changes</div>
+    <div class="tab" onclick="switchTab(this,'manufacturers')">Manufacturers</div>
+    <div class="tab" onclick="switchTab(this,'whereUsed')">Where Used</div>
+    <div class="tab" onclick="switchTab(this,'attachments')">Attachments</div>
+    <div class="tab" onclick="switchTab(this,'history')">History</div>
+  </div>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+
+  <!-- CHANGES TAB -->
+  <div id="panel-changes" class="tab-panel active">
+    <div class="filter-row">
+      <span class="record-count">1 of 1 records</span>
+      <div class="filter-actions">
+        <div class="search-within">🔍 Search Within Results</div>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th><div class="th-inner">#</div></th>
+            <th><div class="th-inner">Item Revision <span class="sort-icon">▼</span></div></th>
+            <th><div class="th-inner">Lifecycle … <span class="sort-icon">▼</span></div></th>
+            <th><div class="th-inner">Approved Date T… <span class="sort-icon">▼</span></div></th>
+            <th><div class="th-inner">Change Order <span class="sort-icon">▼</span></div></th>
+            <th><div class="th-inner">Category Name <span class="sort-icon">▼</span></div></th>
+            <th><div class="th-inner">Description</div></th>
+            <th><div class="th-inner">Status</div></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td><a class="link" href="#" id="changes-item-rev"></a></td>
+            <td><span class="status-badge status-prototype">Prototype</span></td>
+            <td class="td-nowrap">5/6/2026, 11:33 AM PDT</td>
+            <td><a class="link" href="#">ECO-24912</a></td>
+            <td>NPI Change Order - ECO</td>
+            <td class="td-desc-cell">
+              <span id="changes-item-desc"></span>
+            </td>
+            <td><span class="status-badge status-released">Released</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- DETAILS TAB -->
+  <div id="panel-details" class="tab-panel">
+    <div class="details-wrap">
+
+      <!-- FLAT TOP CARD -->
+      <div class="detail-flat">
+        <!-- Row 1: Category | Item Number -->
+        <div class="detail-pair-row">
+          <div class="field-pair">
+            <div class="detail-label">Category</div>
+            <div class="detail-value">
+              <select id="detail-category" disabled style="background:#f8fafc;cursor:default;opacity:1;color:var(--text-primary)">
+                <option value="">— Select —</option>
+                <option value="Electrical">Electrical</option>
+                <option value="Mechanical">Mechanical</option>
+                <option value="Software">Software</option>
+                <option value="Packaging">Packaging</option>
+                <option value="Documentation">Documentation</option>
+              </select>
+            </div>
+          </div>
+          <div class="field-pair">
+            <div class="detail-label">Item Number</div>
+            <div class="detail-value" id="detail-item-num-gi" style="font-weight:600;color:var(--accent)"></div>
+          </div>
+        </div>
+        <!-- Row 2: Description Latest Rev | Product Line(s) -->
+        <div class="detail-pair-row">
+          <div class="field-pair">
+            <div class="detail-label">Description <span title="Pulled from latest revision" style="color:var(--accent);cursor:help;font-size:12px">ⓘ</span></div>
+            <div class="detail-value">
+              <textarea id="detail-desc" maxlength="150" placeholder="Enter description…" oninput="document.getElementById('desc-counter').textContent = this.value.length + '/150'"></textarea>
+              <div class="char-counter"><span id="desc-counter">0/150</span></div>
+            </div>
+          </div>
+          <div class="field-pair">
+            <div class="detail-label">Product Line(s) <span title="Product lines this item belongs to" style="color:var(--accent);cursor:help;font-size:12px">ⓘ</span></div>
+            <div class="detail-value">
+              <input type="text" id="detail-product-line" maxlength="30" placeholder="Enter product line…" />
+            </div>
+          </div>
+        </div>
+        <!-- Row 3: Make/Buy | Part Subcategory -->
+        <div class="detail-pair-row">
+          <div class="field-pair">
+            <div class="detail-label">Make/Buy <span title="Whether this part is made or purchased" style="color:var(--accent);cursor:help;font-size:12px">ⓘ</span></div>
+            <div class="detail-value">
+              <select id="detail-buy-status">
+                <option value="Buy" selected>Buy</option>
+                <option value="Make">Make</option>
+              </select>
+            </div>
+          </div>
+          <div class="field-pair">
+            <div class="detail-label">Part Subcategory</div>
+            <div class="detail-value">
+              <select id="detail-subcategory" disabled style="background:#f8fafc;cursor:default;opacity:1;color:var(--text-primary)">
+                <option value="">— Select category first —</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <!-- Row 4: Functional Teams | Whitelisted AML Check -->
+        <div class="detail-pair-row" style="border-bottom:none">
+          <div class="field-pair">
+            <div class="detail-label">Functional Teams</div>
+            <div class="detail-value"><input type="text" id="detail-func-teams" placeholder="Enter functional teams…" /></div>
+          </div>
+          <div class="field-pair">
+            <div class="detail-label">Whitelisted AML Check</div>
+            <div class="detail-value">
+              <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px">
+                <input type="checkbox" id="detail-aml-check" style="width:16px;height:16px;cursor:pointer" />
+                <span id="aml-check-label" style="color:var(--text-muted)">No</span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- GENERAL INFO (collapsible) -->
+      <div class="detail-section">
+        <div class="section-header" onclick="toggleSection(this)"><span class="section-chevron">▼</span> General Info</div>
+        <div class="section-body">
+          <div class="detail-pair-row">
+            <div class="field-pair">
+              <div class="detail-label">UOM </div>
+              <div class="detail-value" style="background:#f8fafc;color:var(--text-secondary)">Each</div>
+            </div>
+            <div class="field-pair">
+              <div class="detail-label">Sourcing Status</div>
+              <div class="detail-value">
+                <select id="detail-sourcing-status">
+                  <option value="Single" selected>Single</option>
+                  <option value="Multiple">Multiple</option>
+                  <option value="Sole Source">Sole Source</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="detail-pair-row">
+            <div class="field-pair">
+              <div class="detail-label">Custom/Off the Shelf</div>
+              <div class="detail-value">
+                <select id="detail-off-shelf">
+                  <option value="Off the Shelf" selected>Off the Shelf</option>
+                  <option value="Custom">Custom</option>
+                </select>
+              </div>
+            </div>
+            <div class="field-pair">
+              <div class="detail-label">Temperature Grade</div>
+              <div class="detail-value">
+                <select id="detail-temp-grade">
+                  <option value="Commercial (0C/+70C)">Commercial (0C/+70C)</option>
+                  <option value="Industrial (-40C/+85C)">Industrial (-40C/+85C)</option>
+                  <option value="Extended (-40C/+125C)" selected>Extended (-40C/+125C)</option>
+                  <option value="Military (-55C/+125C)">Military (-55C/+125C)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="detail-pair-row">
+            <div class="field-pair">
+              <div class="detail-label">Risk</div>
+              <div class="detail-value">
+                <select id="detail-risk">
+                  <option value="1 - Critical">1 - Critical</option>
+                  <option value="2 - High">2 - High</option>
+                  <option value="3 - Medium">3 - Medium</option>
+                  <option value="4 - Low" selected>4 - Low</option>
+                </select>
+              </div>
+            </div>
+            <div class="field-pair">
+              <div class="detail-label">Risk Comments</div>
+              <div class="detail-value">
+                <input type="text" id="detail-risk-comments" placeholder="Enter risk comments…" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUPPLIER ACCESS -->
+      <div class="detail-section">
+        <div class="section-header" onclick="toggleSection(this)"><span class="section-chevron">▼</span> Supplier Access</div>
+        <div class="section-body">
+          <div class="detail-pair-row">
+            <div class="field-pair span-full">
+              <div class="detail-label">Accessible By</div>
+              <div class="detail-value"><input type="text" id="detail-supplier-access" placeholder="Enter supplier access…" /></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CRITICAL INFO -->
+      <div class="detail-section">
+        <div class="section-header" onclick="toggleSection(this)"><span class="section-chevron">▼</span> Critical Info</div>
+        <div class="section-body">
+          <div class="detail-pair-row">
+            <div class="field-pair">
+              <div class="detail-label">Critical Part</div>
+              <div class="detail-value">
+                <select id="detail-critical-part">
+                  <option value="No">No</option>
+                  <option value="Yes">Yes</option>
+                </select>
+              </div>
+            </div>
+            <div class="field-pair">
+              <div class="detail-label">Safety Critical?</div>
+              <div class="detail-value">
+                <select id="detail-safety-critical">
+                  <option value="No">No</option>
+                  <option value="Yes">Yes</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="detail-pair-row">
+            <div class="field-pair">
+              <div class="detail-label">EMI Critical?</div>
+              <div class="detail-value">
+                <select id="detail-emi-critical">
+                  <option value="No">No</option>
+                  <option value="Yes">Yes</option>
+                </select>
+              </div>
+            </div>
+            <div class="field-pair"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- COST INFORMATION -->
+      <div class="detail-section">
+        <div class="section-header" onclick="toggleSection(this)"><span class="section-chevron">▼</span> Cost Information</div>
+        <div class="section-body">
+          <div class="detail-pair-row">
+            <div class="field-pair">
+              <div class="detail-label">Commodity Code</div>
+              <div class="detail-value"><input type="text" id="detail-commodity-code" placeholder="Enter commodity code…" /></div>
+            </div>
+            <div class="field-pair">
+              <div class="detail-label">Commodity Manager</div>
+              <div class="detail-value"><input type="text" id="detail-commodity-mgr" placeholder="Enter commodity manager…" /></div>
+            </div>
+          </div>
+          <div class="detail-pair-row">
+            <div class="field-pair">
+              <div class="detail-label">Sourcing Strategy (non-editable)</div>
+              <div class="detail-value"><input type="text" id="detail-sourcing-strategy" readonly style="background:#f8fafc;cursor:default;" value="Arista Controlled Non-Consigned" /></div>
+            </div>
+            <div class="field-pair">
+              <div class="detail-label">Item NPI Cost</div>
+              <div class="detail-value"><input type="number" id="detail-npi-cost" placeholder="0.00" step="0.01" min="0" /></div>
+            </div>
+          </div>
+          <div class="detail-pair-row">
+            <div class="field-pair">
+              <div class="detail-label">North America Standard Cost</div>
+              <div class="detail-value"><input type="number" id="detail-na-cost" placeholder="0.00" step="0.01" min="0" /></div>
+            </div>
+            <div class="field-pair">
+              <div class="detail-label">Asia Standard Cost</div>
+              <div class="detail-value"><input type="number" id="detail-asia-cost" placeholder="0.00" step="0.01" min="0" /></div>
+            </div>
+          </div>
+          <div class="detail-pair-row">
+            <div class="field-pair">
+              <div class="detail-label">Lead Time (weeks)</div>
+              <div class="detail-value"><input type="number" id="detail-lead-time" placeholder="e.g. 52" min="0" /></div>
+            </div>
+            <div class="field-pair">
+              <div class="detail-label">Lead Time Updated Date</div>
+              <div class="detail-value"><input type="date" id="detail-lead-time-date" style="border:1px solid var(--border);border-radius:4px;padding:5px 8px;font-size:13px;font-family:inherit;color:var(--text-primary);background:var(--white);width:100%;" /></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LIBRARY SYMBOLS / SI MODELS -->
+      <div class="detail-section">
+        <div class="section-header" onclick="toggleSection(this)"><span class="section-chevron">▼</span> Library Symbols / SI Models</div>
+        <div class="section-body">
+          <div class="detail-pair-row">
+            <div class="field-pair">
+              <div class="detail-label">Symbol</div>
+              <div class="detail-value"><input type="text" id="detail-symbol" value="IND_3Pin" /></div>
+            </div>
+            <div class="field-pair">
+              <div class="detail-label">PCB Footprint</div>
+              <div class="detail-value"><input type="text" id="detail-pcb-footprint" value="LC291X299S_3PIN" /></div>
+            </div>
+          </div>
+          <div class="detail-pair-row">
+            <div class="field-pair">
+              <div class="detail-label">Signal Model</div>
+              <div class="detail-value"><input type="text" id="detail-signal-model" placeholder="Enter signal model…" /></div>
+            </div>
+            <div class="field-pair">
+              <div class="detail-label">ASI Model</div>
+              <div class="detail-value"><input type="text" id="detail-asi-model" placeholder="Enter ASI model…" /></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PART DETAILS -->
+      <div class="detail-section">
+        <div class="section-header" onclick="toggleSection(this)"><span class="section-chevron">▼</span> Part Details</div>
+        <div class="section-body" id="part-details-body">
+          <div class="detail-pair-row">
+            <div class="field-pair">
+              <div class="detail-label">Type</div>
+              <div class="detail-value"><input type="text" id="pd-type" value="IND" /></div>
+            </div>
+            <div class="field-pair">
+              <div class="detail-label">Subtype</div>
+              <div class="detail-value"><input type="text" id="pd-subtype" value="PWR" /></div>
+            </div>
+          </div>
+          <div class="detail-pair-row">
+            <div class="field-pair">
+              <div class="detail-label">Inductance (uH)</div>
+              <div class="detail-value"><input type="text" id="pd-inductance-uh-" value="0.82uH" /></div>
+            </div>
+            <div class="field-pair">
+              <div class="detail-label">Peak Isat @ 25C (#A)</div>
+              <div class="detail-value"><input type="text" id="pd-peak-isat-25c--a-" value="21.0A" /></div>
+            </div>
+          </div>
+          <div class="detail-pair-row">
+            <div class="field-pair">
+              <div class="detail-label">Rated current (Irms) @ 25C (#A)</div>
+              <div class="detail-value"><input type="text" id="pd-rated-current-irms--25c--a-" value="19.0A" /></div>
+            </div>
+            <div class="field-pair">
+              <div class="detail-label">Ferrite Impedance (Nominal)</div>
+              <div class="detail-value"><input type="text" id="pd-ferrite-impedance-nominal-" placeholder="Enter value…" /></div>
+            </div>
+          </div>
+          <div class="detail-pair-row">
+            <div class="field-pair">
+              <div class="detail-label">Test Frequency</div>
+              <div class="detail-value"><input type="text" id="pd-test-frequency" value="100kHz" /></div>
+            </div>
+            <div class="field-pair">
+              <div class="detail-label">Tolerance</div>
+              <div class="detail-value"><input type="text" id="pd-tolerance" value="20%" /></div>
+            </div>
+          </div>
+          <div class="detail-pair-row">
+            <div class="field-pair">
+              <div class="detail-label">Max DC Resistance (DCR) (# OHM)</div>
+              <div class="detail-value"><input type="text" id="pd-max-dc-resistance-dcr---ohm-" value=".0023" /></div>
+            </div>
+            <div class="field-pair">
+              <div class="detail-label">Body Size (EIA/SMD)</div>
+              <div class="detail-value"><input type="text" id="pd-body-size-eia-smd-" placeholder="Enter value…" /></div>
+            </div>
+          </div>
+          <div class="detail-pair-row">
+            <div class="field-pair">
+              <div class="detail-label">SMD: Max Body Length x Width (mm)</div>
+              <div class="detail-value"><input type="text" id="pd-smd--max-body-length-x-width-mm-" value="7.4x7.6" /></div>
+            </div>
+            <div class="field-pair">
+              <div class="detail-label">Max Height</div>
+              <div class="detail-value"><input type="text" id="pd-max-height" value="6.4mm" /></div>
+            </div>
+          </div>
+          <div class="detail-pair-row">
+            <div class="field-pair">
+              <div class="detail-label">Max Operating Temperature</div>
+              <div class="detail-value"><input type="text" id="pd-max-operating-temperature" value="125C" /></div>
+            </div>
+            <div class="field-pair">
+              <div class="detail-label">SRF</div>
+              <div class="detail-value"><input type="text" id="pd-srf" placeholder="Enter value…" /></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ITEM REVISION INFORMATION -->
+      <div class="detail-section">
+        <div class="section-header" onclick="toggleSection(this)"><span class="section-chevron">▼</span> Item Revision Information</div>
+        <div class="section-body">
+          <!-- Row 1: Revision | Description -->
+          <div class="detail-pair-row">
+            <div class="field-pair">
+              <div class="detail-label">Revision</div>
+              <div class="detail-value"><input type="text" id="detail-revision" value="01" /></div>
+            </div>
+            <div class="field-pair">
+              <div class="detail-label">Description</div>
+              <div class="detail-value">
+                <textarea id="detail-ext-desc" maxlength="250" placeholder="Enter description…" oninput="document.getElementById('ext-desc-counter').textContent=this.value.length+'/250'">IND, PWR, 0.82uH, 20%, 21.0A Isat, 0.0023 OHM DCR, 19A Irms, 100kHz, SHLD, 125C, 3-LD</textarea>
+                <div class="char-counter"><span id="ext-desc-counter">89/250</span></div>
+              </div>
+            </div>
+          </div>
+          <!-- Row 2: Lifecycle Phase | Unit of Measure -->
+          <div class="detail-pair-row">
+            <div class="field-pair">
+              <div class="detail-label">Lifecycle Phase</div>
+              <div class="detail-value">
+                <select id="detail-lifecycle">
+                  <option value="Preliminary">Preliminary</option>
+                  <option value="Prototype" selected>Prototype</option>
+                  <option value="Inactive">Inactive</option>
+                  <option value="EOL">EOL</option>
+                  <option value="Obsolete">Obsolete</option>
+                </select>
+              </div>
+            </div>
+            <div class="field-pair">
+              <div class="detail-label">Unit of Measure</div>
+              <div class="detail-value"><input type="text" id="detail-uom-rev" value="Each" readonly style="background:#f8fafc;cursor:default;" /></div>
+            </div>
+          </div>
+          <!-- Row 3: Sourcing Strategy | Category Control -->
+          <div class="detail-pair-row">
+            <div class="field-pair">
+              <div class="detail-label">Sourcing Strategy <span title="How this item is sourced" style="color:var(--accent);cursor:help;font-size:12px">ⓘ</span></div>
+              <div class="detail-value"><input type="text" id="detail-sourcing-strategy-rev" value="Arista Controlled Non-Consigned" /></div>
+            </div>
+            <div class="field-pair">
+              <div class="detail-label">Category Control</div>
+              <div class="detail-value"><input type="text" id="detail-category-control" value="Inductor" readonly style="background:#f8fafc;cursor:default;" /></div>
+            </div>
+          </div>
+          <!-- Row 4: Release Date Time | Created By -->
+          <div class="detail-pair-row">
+            <div class="field-pair">
+              <div class="detail-label">Release Date Time</div>
+              <div class="detail-value"><input type="datetime-local" id="detail-release-date" style="border:1px solid var(--border);border-radius:4px;padding:5px 8px;font-size:13px;font-family:inherit;color:var(--text-primary);background:var(--white);width:100%;" /></div>
+            </div>
+            <div class="field-pair">
+              <div class="detail-label">Created By</div>
+              <div class="detail-value"><input type="text" id="detail-created-by" value="Joanne Lee" style="color:var(--accent);" /></div>
+            </div>
+          </div>
+          <!-- Row 5: Created Date | Has Item Attachments -->
+          <div class="detail-pair-row">
+            <div class="field-pair">
+              <div class="detail-label">Created Date</div>
+              <div class="detail-value"><input type="text" id="detail-created-date" readonly style="background:#f8fafc;cursor:default;" /></div>
+            </div>
+            <div class="field-pair">
+              <div class="detail-label">Has Item Attachments</div>
+              <div class="detail-value">
+                <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px">
+                  <input type="checkbox" id="detail-has-attachments" style="width:16px;height:16px;cursor:pointer" />
+                  <span id="attach-check-label" style="color:var(--text-muted)">No</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /details-wrap -->
+  </div>
+
+  <!-- MANUFACTURERS TAB -->
+  <div id="panel-manufacturers" class="tab-panel">
+    <div class="filter-row" style="margin-bottom:12px">
+      <span class="record-count" id="mfr-count">0 records</span>
+      <div class="filter-actions">
+        <button class="btn btn-primary" onclick="addMfrRow()">+ Add</button>
+        <button class="btn" onclick="removeMfrSelected()">&#128465; Remove</button>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table id="mfr-table">
+        <thead>
+          <tr>
+            <th><div class="th-inner"><input type="checkbox" id="mfr-check-all" onchange="toggleAllMfr(this)" /></div></th>
+            <th><div class="th-inner">Manufacturer Name</div></th>
+            <th><div class="th-inner">Manufacturer Part Number</div></th>
+            <th><div class="th-inner">Status</div></th>
+            <th><div class="th-inner">Description</div></th>
+          </tr>
+        </thead>
+        <tbody id="mfr-tbody">
+          <tr id="mfr-empty-row">
+            <td colspan="5" style="text-align:center;padding:32px;color:var(--text-muted);font-size:13px">No manufacturer records found for this item.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- QUALITY TAB -->
+  <div id="panel-quality" class="tab-panel">
+    <div class="empty-state">No quality records found for this item.</div>
+  </div>
+
+  <!-- RELATIONSHIPS TAB -->
+  <div id="panel-relationships" class="tab-panel">
+    <div class="empty-state">No relationship records found for this item.</div>
+  </div>
+
+  <!-- WHERE USED TAB -->
+  <div id="panel-whereUsed" class="tab-panel">
+    <div class="empty-state">No where-used records found for this item.</div>
+  </div>
+
+  <!-- ATTACHMENTS TAB -->
+  <div id="panel-attachments" class="tab-panel">
+    <p class="attach-notice">Files larger than 3 MB must be loaded after Item is created.</p>
+    <p class="attach-label">Attachment</p>
+    <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()"
+         ondragover="event.preventDefault();this.classList.add('drag-over')"
+         ondragleave="this.classList.remove('drag-over')"
+         ondrop="handleDrop(event)">
+      <input type="file" id="fileInput" multiple onchange="handleFiles(this.files)" />
+      <button class="btn btn-blue-outline" onclick="event.stopPropagation();document.getElementById('fileInput').click()">&#8679; Upload Files</button>
+      <span style="font-size:13px;color:var(--text-muted)">Or drop files</span>
+    </div>
+    <div class="attach-file-list" id="attachFileList"></div>
+  </div>
+
+  <!-- HISTORY TAB -->
+  <div id="panel-history" class="tab-panel">
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th><div class="th-inner">Date / Time</div></th>
+            <th><div class="th-inner">User</div></th>
+            <th><div class="th-inner">Action</div></th>
+            <th><div class="th-inner">Field</div></th>
+            <th><div class="th-inner">Old Value</div></th>
+            <th><div class="th-inner">New Value</div></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>5/6/2026, 11:35 AM PDT</td>
+            <td>Karkuvel V</td>
+            <td>Updated</td>
+            <td>Lifecycle Phase</td>
+            <td>Preliminary</td>
+            <td>Prototype</td>
+          </tr>
+          <tr>
+            <td>5/6/2026, 11:33 AM PDT</td>
+            <td>Karkuvel V</td>
+            <td>Created</td>
+            <td>—</td>
+            <td>—</td>
+            <td id="history-item-num"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div><!-- /content -->
+
+<script>
+  const p           = new URLSearchParams(window.location.search);
+  const itemNum     = p.get('itemno')      || ('IND-' + Math.floor(1000000 + Math.random() * 9000000));
+  const desc        = p.get('desc')        || '';
+  const category    = p.get('category')    || '—';
+  const subCategory = p.get('subCategory') || '—';
+
+  const nowStr = new Date().toLocaleString('en-US', { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true });
+
+  document.title = 'Item ' + itemNum + ' — NEXTGEN PLM';
+  document.getElementById('breadcrumb-num').textContent      = itemNum;
+  document.getElementById('item-number-display').textContent = itemNum;
+  document.getElementById('changes-item-rev').textContent    = itemNum + ':01';
+  document.getElementById('detail-item-num-gi').textContent  = itemNum;
+  document.getElementById('detail-aml-check').addEventListener('change', function() {
+    document.getElementById('aml-check-label').textContent = this.checked ? 'Yes' : 'No';
+    document.getElementById('aml-check-label').style.color = this.checked ? 'var(--green)' : 'var(--text-muted)';
+  });
+  document.getElementById('detail-has-attachments').addEventListener('change', function() {
+    document.getElementById('attach-check-label').textContent = this.checked ? 'Yes' : 'No';
+    document.getElementById('attach-check-label').style.color = this.checked ? 'var(--green)' : 'var(--text-muted)';
+  });
+  document.getElementById('history-item-num').textContent    = itemNum;
+
+  const descVal = desc.trim().slice(0, 150);
+  document.getElementById('item-desc-display').textContent   = descVal;
+  document.getElementById('changes-item-desc').textContent   = descVal || '—';
+
+  // Details tab fields — dynamic values from index.html URL params
+  document.getElementById('detail-created-date').value = nowStr;
+  // Category Control mirrors the subcategory chosen in index.html
+  if (subCategory && subCategory !== '—') {
+    document.getElementById('detail-category-control').value = subCategory;
+  }
+
+  // ── SUBCATEGORY LIST & CATEGORY CHANGE (must be defined before first call) ──
+  const _allSubCategories = [
+    'Accessory Kit','Active Optical Cable (AOC)','Assembly','Battery','Cable',
+    'Capacitor','Component','Connector','Crystal','Dummy Part','Fan','Fastener',
+    'Fee Upgrade IC','Fuse','Gasket','Heat Sink','IC','Inductor','Label','Label Image',
+    'Loopback','Mechanical','Memory','Metal','Optics','Oscillator',
+    'Power Supply (PSU)','Printed Circuit Assembly','Printed Circuit Board',
+    'Programmable Part','Purchased Document','Resistor','Software','Subassembly',
+    'Switch','Top Assembly','Transceiver','Transformer','Transistor'
+  ];
+
+  function onCategoryChange(preselect) {
+    const cat = document.getElementById('detail-category').value;
+    const subEl = document.getElementById('detail-subcategory');
+    subEl.innerHTML = '<option value="">— Select sub category —</option>';
+    if (cat) {
+      _allSubCategories.forEach(function(s) {
+        const o = document.createElement('option');
+        o.value = s; o.textContent = s;
+        subEl.appendChild(o);
+      });
+      subEl.disabled = true;
+      if (preselect && preselect !== '—') subEl.value = preselect;
+    } else {
+      subEl.innerHTML = '<option value="">— Select category first —</option>';
+      subEl.disabled = true;
+    }
+    renderPartDetails(subEl.value);
+    subEl.onchange = function() { renderPartDetails(this.value); };
+  }
+
+  // Pre-populate editable fields from URL params
+  const catEl = document.getElementById('detail-category');
+  if (category !== '—') { catEl.value = category; }
+  onCategoryChange(subCategory);
+
+  const descEl = document.getElementById('detail-desc');
+  if (descVal) {
+    descEl.value = descVal;
+    document.getElementById('desc-counter').textContent = descVal.length + '/150';
+  }
+
+  // Save to localStorage
+  const stored  = JSON.parse(localStorage.getItem('plm_items') || '[]');
+  const already = stored.some(function(i) { return i.itemno === itemNum; });
+  if (!already) {
+    stored.push({ itemno: itemNum, desc: desc || '—', lifecycle: 'Prototype', revision: '01', qualStatus: 'Qualified' });
+    localStorage.setItem('plm_items', JSON.stringify(stored));
+  }
+
+  // ── PART DETAILS (dynamic per subcategory) ──
+  const partFieldsMap = {
+    'Inductor': [
+      ['Type','IND'],                              ['Subtype','PWR'],
+      ['Inductance (uH)','0.82uH'],                ['Peak Isat @ 25C (#A)','21.0A'],
+      ['Rated current (Irms) @ 25C (#A)','19.0A'], ['Ferrite Impedance (Nominal)',''],
+      ['Test Frequency','100kHz'],                 ['Tolerance','20%'],
+      ['Max DC Resistance (DCR) (# OHM)','.0023'], ['Body Size (EIA/SMD)',''],
+      ['SMD: Max Body Length x Width (mm)','7.4x7.6'], ['Max Height','6.4mm'],
+      ['Max Operating Temperature','125C'],         ['SRF','']
+    ],
+    'Capacitor':               [['Capacitance','—'],['Voltage Rating','—'],['Tolerance','—'],['Temperature Coefficient','—'],['Package Type','—'],['Max Operating Temperature','—']],
+    'Resistor':                [['Resistance (Ohm)','—'],['Power Rating (W)','—'],['Tolerance','—'],['Temperature Coefficient','—'],['Package Type','—']],
+    'IC':                      [['Function','—'],['Supply Voltage','—'],['Package Type','—'],['Pin Count','—'],['Operating Temp Range','—']],
+    'Connector':               [['Number of Positions','—'],['Contact Type','—'],['Mounting Type','—'],['Current Rating (A)','—'],['Housing Material','—']],
+    'Crystal':                 [['Frequency (MHz)','—'],['Frequency Tolerance (ppm)','—'],['Load Capacitance (pF)','—'],['Package Type','—'],['Operating Temp Range','—']],
+    'Transistor':              [['Type','—'],['Max Collector Current (A)','—'],['Max Collector-Emitter Voltage (V)','—'],['Package Type','—'],['Max Power Dissipation (W)','—']],
+    'Printed Circuit Board':   [['Layer Count','—'],['Board Thickness (mm)','—'],['Surface Finish','—'],['Max Dimensions (mm)','—'],['Material','—']],
+    'Printed Circuit Assembly':[['Assembly Type','—'],['Layer Count','—'],['Board Thickness (mm)','—'],['Max Dimensions (mm)','—'],['Surface Mount Technology','—']],
+    'Assembly':                [['Assembly Type','—'],['Weight (g)','—'],['Dimensions (mm)','—'],['Material','—']],
+    'Cable':                   [['Cable Type','—'],['Length (mm)','—'],['Wire Gauge (AWG)','—'],['Connector Type','—'],['Max Current (A)','—']],
+    'Mechanical':              [['Material','—'],['Surface Finish','—'],['Weight (g)','—'],['Dimensions (mm)','—'],['Process','—']],
+    'Fan':                     [['Voltage (V)','—'],['Airflow (CFM)','—'],['Speed (RPM)','—'],['Noise Level (dBA)','—'],['Connector Type','—']],
+    'Power Supply (PSU)':      [['Input Voltage (V)','—'],['Output Voltage (V)','—'],['Output Current (A)','—'],['Efficiency','—'],['Form Factor','—']],
+    'Fuse':                    [['Current Rating (A)','—'],['Voltage Rating (V)','—'],['Breaking Capacity','—'],['Package Type','—']],
+    'Oscillator':              [['Frequency (MHz)','—'],['Output Type','—'],['Supply Voltage (V)','—'],['Phase Jitter','—'],['Package Type','—']],
+    'Label':                   [['Material','—'],['Dimensions (mm)','—'],['Adhesive Type','—'],['Print Method','—']],
+    'Label Image':             [['Image Format','—'],['Resolution (DPI)','—'],['Color Mode','—']],
+    'Software':                [['Version','—'],['Platform','—'],['License Type','—'],['File Format','—']],
+    'Programmable Part':       [['Device Type','—'],['Memory Size','—'],['I/O Count','—'],['Programming Interface','—']],
+    'Engineering Document':    [['Document Type','—'],['Revision','—'],['Approval Status','—'],['File Format','—']],
+    'Purchased Document':      [['Document Type','—'],['Vendor','—'],['Document Number','—'],['Revision','—']],
+    'Subassembly':             [['Assembly Level','—'],['Component Count','—'],['Weight (g)','—'],['Dimensions (mm)','—']],
+    'Top Assembly':            [['Assembly Level','—'],['BOM Level','—'],['Weight (g)','—'],['Dimensions (mm)','—']],
+    'Battery':                 [['Chemistry','—'],['Capacity (mAh)','—'],['Voltage (V)','—'],['Cycle Life','—'],['Package Type','—']],
+    'Transceiver':             [['Speed (Gbps)','—'],['Form Factor','—'],['Wavelength (nm)','—'],['Reach (m)','—'],['Interface','—']],
+    'Memory':                  [['Type','—'],['Capacity','—'],['Speed (MHz)','—'],['Interface','—'],['Form Factor','—']],
+    'Transformer':             [['Primary Voltage (V)','—'],['Secondary Voltage (V)','—'],['Power Rating (VA)','—'],['Mounting Type','—']],
+    'Optics':                  [['Wavelength (nm)','—'],['Numerical Aperture','—'],['Form Factor','—'],['Connector Type','—']],
+    'Heat Sink':               [['Thermal Resistance (°C/W)','—'],['Material','—'],['Dimensions (mm)','—'],['Mounting Type','—']],
+    'Gasket':                  [['Material','—'],['Thickness (mm)','—'],['Compression Set','—'],['Temperature Range','—']],
+    'Fastener':                [['Type','—'],['Drive Type','—'],['Thread Size','—'],['Material','—'],['Length (mm)','—']],
+    'Metal':                   [['Alloy/Grade','—'],['Thickness (mm)','—'],['Temper','—'],['Surface Finish','—']],
+    'Switch':                  [['Type','—'],['Current Rating (A)','—'],['Voltage Rating (V)','—'],['Actuator Style','—'],['Mounting Type','—']],
+    'Dummy Part':              [['Usage','—'],['Placeholder For','—']],
+    'Accessory Kit':           [['Kit Contents','—'],['Qty per Kit','—'],['Compatible With','—']],
+    'Node':                    [['Node Type','—'],['Interface','—'],['Power (W)','—'],['Form Factor','—']],
+    'Loopback':                [['Connector Type','—'],['Speed (Gbps)','—'],['Form Factor','—']],
+    'Active Optical Cable (AOC)':[['Speed (Gbps)','—'],['Length (m)','—'],['Wavelength (nm)','—'],['Connector Type','—'],['Power (W)','—']],
+    'Fee Upgrade IC':          [['Feature Set','—'],['License Type','—'],['Compatible Device','—']],
+    'Component':               [['Component Type','—'],['Rating','—'],['Package Type','—'],['Operating Temp Range','—']]
+  };
+
+  function renderPartDetails(sub) {
+    const body = document.getElementById('part-details-body');
+    const fields = partFieldsMap[sub];
+    if (!fields) {
+      body.innerHTML = '<div class="detail-pair-row"><div class="field-pair span-full"><div class="detail-value muted" style="padding:14px 16px">No part-specific fields defined for this subcategory.</div></div></div>';
+      return;
+    }
+    function fieldId(label) {
+      return 'pd-' + label.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    }
+    function renderField(f) {
+      var id = fieldId(f[0]);
+      var val = (f[1] && f[1] !== '—') ? ' value="' + f[1] + '"' : '';
+      return '<div class="field-pair">'
+        + '<div class="detail-label">' + f[0] + '</div>'
+        + '<div class="detail-value"><input type="text" id="' + id + '" placeholder="Enter value…"' + val + ' /></div>'
+        + '</div>';
+    }
+    let html = '';
+    for (let i = 0; i < fields.length; i += 2) {
+      html += '<div class="detail-pair-row">';
+      html += renderField(fields[i]);
+      html += fields[i + 1] ? renderField(fields[i + 1]) : '<div class="field-pair"></div>';
+      html += '</div>';
+    }
+    body.innerHTML = html;
+  }
+
+  renderPartDetails(subCategory);
+
+  // ── SECTION TOGGLE ──
+  function toggleSection(header) {
+    header.classList.toggle('collapsed');
+    const body = header.nextElementSibling;
+    body.classList.toggle('collapsed');
+  }
+
+  // ── MANUFACTURERS ──
+  let mfrRowCount = 0;
+
+  function updateMfrCount() {
+    const rows = document.querySelectorAll('#mfr-tbody tr.mfr-row');
+    document.getElementById('mfr-count').textContent = rows.length + ' record' + (rows.length !== 1 ? 's' : '');
+    document.getElementById('mfr-empty-row').style.display = rows.length ? 'none' : '';
+  }
+
+  function addMfrRow() {
+    mfrRowCount++;
+    const empty = document.getElementById('mfr-empty-row');
+    empty.style.display = 'none';
+    const tr = document.createElement('tr');
+    tr.className = 'mfr-row';
+    tr.dataset.id = mfrRowCount;
+    tr.innerHTML =
+      '<td style="padding:8px 14px"><input type="checkbox" class="mfr-check" /></td>' +
+      '<td style="padding:6px 10px"><input type="text" placeholder="Manufacturer name" style="width:100%;border:1px solid var(--border);border-radius:4px;padding:5px 8px;font-size:13px;font-family:inherit;outline:none" /></td>' +
+      '<td style="padding:6px 10px"><input type="text" placeholder="MPN" style="width:100%;border:1px solid var(--border);border-radius:4px;padding:5px 8px;font-size:13px;font-family:inherit;outline:none" /></td>' +
+      '<td style="padding:6px 10px"><select style="width:100%;border:1px solid var(--border);border-radius:4px;padding:5px 8px;font-size:13px;font-family:inherit;outline:none">' +
+        '<option value="Active">Active</option>' +
+        '<option value="Inactive">Inactive</option>' +
+        '<option value="Preferred">Preferred</option>' +
+        '<option value="Obsolete">Obsolete</option>' +
+      '</select></td>' +
+      '<td style="padding:6px 10px"><input type="text" placeholder="Description" style="width:100%;border:1px solid var(--border);border-radius:4px;padding:5px 8px;font-size:13px;font-family:inherit;outline:none" /></td>';
+    document.getElementById('mfr-tbody').insertBefore(tr, empty);
+    updateMfrCount();
+  }
+
+  function removeMfrSelected() {
+    const checked = document.querySelectorAll('#mfr-tbody .mfr-check:checked');
+    if (!checked.length) { alert('Select at least one row to remove.'); return; }
+    checked.forEach(function(cb) { cb.closest('tr').remove(); });
+    document.getElementById('mfr-check-all').checked = false;
+    updateMfrCount();
+  }
+
+  function toggleAllMfr(master) {
+    document.querySelectorAll('#mfr-tbody .mfr-check').forEach(function(cb) { cb.checked = master.checked; });
+  }
+
+  function handleFiles(files) {
+    const list = document.getElementById('attachFileList');
+    Array.from(files).forEach(function(f) {
+      const item = document.createElement('div');
+      item.className = 'attach-file-item';
+      const size = f.size > 1048576 ? (f.size / 1048576).toFixed(1) + ' MB' : (f.size / 1024).toFixed(0) + ' KB';
+      item.innerHTML = '<span class="attach-file-name">📄 ' + f.name + '</span>'
+        + '<span class="attach-file-size">' + size + '</span>'
+        + '<button class="attach-remove" title="Remove" onclick="this.parentElement.remove()">✕</button>';
+      list.appendChild(item);
+    });
+    document.getElementById('dropZone').classList.remove('drag-over');
+  }
+
+  function handleDrop(e) {
+    e.preventDefault();
+    handleFiles(e.dataTransfer.files);
+  }
+
+  function switchTab(el, name) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('panel-' + name).classList.add('active');
+  }
+</script>
+</body>
+</html>

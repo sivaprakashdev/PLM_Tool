@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title id="page-title">MFR Part — NEXTGEN PLM</title>
+<style>
+  :root {
+    --bg: #f4f6f9;
+    --accent: #0070d2;
+    --accent-light: #e8f4fd;
+    --accent-dark: #005fb2;
+    --text-primary: #16325c;
+    --text-secondary: #54698d;
+    --text-muted: #9faab5;
+    --border: #dddbda;
+    --white: #ffffff;
+    --shadow: 0 2px 6px rgba(0,0,0,0.09);
+    --radius: 4px;
+    --font: 'Segoe UI', system-ui, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ══ GLOBAL NAV ══ */
+  .global-nav {
+    background: var(--text-primary);
+    height: 46px;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    flex-shrink: 0;
+    z-index: 200;
+    gap: 0;
+  }
+
+  .gnav-grid { color: rgba(255,255,255,0.7); font-size: 18px; padding: 0 10px; cursor: pointer; }
+  .gnav-grid:hover { color: #fff; }
+
+  .gnav-brand {
+    display: flex; align-items: center; gap: 6px;
+    padding: 0 10px; margin-right: 4px;
+    border-right: 1px solid rgba(255,255,255,0.18); cursor: pointer;
+  }
+  .gnav-logo {
+    width: 26px; height: 26px;
+    background: linear-gradient(135deg,#0070d2,#7c3aed);
+    border-radius: 4px; display: flex; align-items: center; justify-content: center;
+    font-size: 11px; color:#fff; font-weight:900;
+  }
+  .gnav-name { font-size:13px; font-weight:700; color:#fff; white-space:nowrap; }
+
+  .gnav-items { display:flex; align-items:stretch; flex:1; height:100%; }
+
+  .gnav-item {
+    position: relative;
+    display: flex; align-items: center; gap: 3px;
+    padding: 0 11px;
+    font-size: 13px; font-weight:500; color: rgba(255,255,255,0.85);
+    cursor: pointer; white-space:nowrap;
+    border-bottom: 3px solid transparent;
+    transition: background 0.15s, color 0.15s;
+    user-select: none;
+  }
+  .gnav-item:hover { background: rgba(255,255,255,0.08); color:#fff; }
+  .gnav-item.active { color:#fff; border-bottom-color:var(--accent); }
+  .gnav-item .caret { font-size:9px; opacity:0.65; }
+
+  .gnav-item .dropdown {
+    display:none; position:absolute; top:100%; left:0;
+    background:#fff; border:1px solid var(--border);
+    border-radius:var(--radius); box-shadow:0 8px 24px rgba(0,0,0,0.14);
+    min-width:195px; z-index:500; padding:4px 0;
+  }
+  .gnav-item:hover .dropdown { display:block; }
+  .dd-item { padding:8px 16px; font-size:13px; color:var(--text-primary); cursor:pointer; }
+  .dd-item:hover { background:var(--accent-light); color:var(--accent); }
+  .dd-divider { height:1px; background:var(--border); margin:3px 0; }
+  .dd-section { padding:5px 16px 2px; font-size:10px; font-weight:700; text-transform:uppercase; color:var(--text-muted); letter-spacing:0.5px; }
+
+  .gnav-search { position:relative; flex:0 0 210px; margin:0 8px; }
+  .gnav-search input {
+    width:100%; padding:5px 10px 5px 28px;
+    border:1px solid rgba(255,255,255,0.22); border-radius:20px;
+    font-size:13px; color:#fff; background:rgba(255,255,255,0.1); outline:none;
+  }
+  .gnav-search input::placeholder { color:rgba(255,255,255,0.5); }
+  .gnav-search .si { position:absolute; left:8px; top:50%; transform:translateY(-50%); color:rgba(255,255,255,0.55); font-size:13px; pointer-events:none; }
+
+  .gnav-right { display:flex; align-items:center; gap:1px; }
+  .gicon { width:32px; height:32px; display:flex; align-items:center; justify-content:center; border-radius:50%; cursor:pointer; color:rgba(255,255,255,0.72); font-size:16px; border:none; background:transparent; position:relative; }
+  .gicon:hover { background:rgba(255,255,255,0.1); color:#fff; }
+  .notif-badge { position:absolute; top:3px; right:3px; background:#c23934; color:#fff; font-size:8px; font-weight:700; border-radius:10px; padding:1px 3px; min-width:14px; text-align:center; line-height:1.3; }
+  .avatar { width:28px; height:28px; border-radius:50%; background:linear-gradient(135deg,#0070d2,#7c3aed); color:#fff; font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:center; cursor:pointer; border:2px solid rgba(255,255,255,0.28); margin-left:2px; }
+
+  /* ══ BREADCRUMB ══ */
+  .breadcrumb {
+    background: #f3f2f2; border-bottom: 1px solid var(--border);
+    padding: 7px 20px; font-size: 12px; color: var(--text-secondary);
+    display: flex; align-items: center; gap: 5px;
+  }
+  .breadcrumb a { color: var(--accent); text-decoration:none; }
+  .breadcrumb a:hover { text-decoration:underline; }
+
+  /* ══ ITEM HEADER ══ */
+  .item-header {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 20px 0;
+    box-shadow: var(--shadow);
+  }
+
+  .item-top {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    gap: 12px; flex-wrap: wrap; margin-bottom: 4px;
+  }
+
+  .item-left { display:flex; flex-direction:column; gap:3px; }
+
+  .item-type-row {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 11px; color: var(--text-secondary); font-weight:500;
+  }
+  .item-type-icon {
+    width:18px; height:18px; background:#6366f1; border-radius:3px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:10px; color:#fff;
+  }
+
+  .item-number {
+    font-size: 20px; font-weight: 800; color: var(--text-primary);
+    letter-spacing: -0.2px;
+  }
+
+  .item-right { display:flex; align-items:center; gap:6px; }
+
+  .btn {
+    padding:6px 14px; border-radius:4px; font-size:12.5px; font-weight:600;
+    cursor:pointer; border:1px solid var(--border); background:var(--white);
+    color:var(--text-primary); display:flex; align-items:center; gap:4px;
+    transition: background 0.15s, border-color 0.15s; white-space:nowrap;
+  }
+  .btn:hover { background:#f3f3f3; border-color:#9faab5; }
+  .btn-outline-blue { color:var(--accent); border-color:var(--accent); }
+  .btn-outline-blue:hover { background:var(--accent-light); }
+  .btn-primary { background:var(--accent); color:#fff; border-color:var(--accent); }
+  .btn-primary:hover { background:var(--accent-dark); }
+
+  /* ══ TABS ══ */
+  .tab-bar {
+    display: flex; align-items:center; gap:0;
+    margin: 10px -20px 0; padding: 0 20px;
+    border-top: 1px solid var(--border);
+  }
+  .tab {
+    padding: 11px 16px; font-size:13px; font-weight:500;
+    color:var(--text-secondary); cursor:pointer; white-space:nowrap;
+    border-bottom: 3px solid transparent; margin-bottom:-1px;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .tab:hover { color:var(--accent); }
+  .tab.active { color:var(--accent); border-bottom-color:var(--accent); font-weight:700; }
+
+  /* ══ CONTENT ══ */
+  .content { flex:1; padding:18px 20px; display:flex; flex-direction:column; gap:12px; overflow-y:auto; }
+
+  /* ══ SECTION CARD ══ */
+  .section-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+
+  .section-head {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 16px;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    cursor: pointer; user-select:none;
+  }
+  .section-head .toggle { font-size:12px; color:var(--text-secondary); transition:transform 0.2s; }
+  .section-head.collapsed .toggle { transform: rotate(-90deg); }
+  .section-head-title { font-size:13px; font-weight:700; color:var(--text-primary); }
+
+  .section-body { padding:0; }
+  .section-body.hidden { display:none; }
+
+  /* FIELD GRID: two-column */
+  .field-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+  }
+
+  .field-cell {
+    padding: 12px 18px;
+    border-bottom: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+    display: flex; flex-direction: column; gap: 3px;
+  }
+  .field-cell:nth-child(even) { border-right: none; }
+  .field-cell:nth-last-child(-n+2) { border-bottom: none; }
+
+  .field-label {
+    font-size: 11px; font-weight: 600; color: var(--text-secondary);
+    text-transform: none; display: flex; align-items: center; gap: 4px;
+  }
+  .field-label .info-icon { font-size:11px; color:var(--text-muted); cursor:help; }
+
+  .field-value {
+    font-size: 13px; color: var(--text-primary); min-height:18px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .field-value.link { color:var(--accent); font-weight:500; cursor:pointer; }
+  .field-value.link:hover { text-decoration:underline; }
+  .field-value.empty { color:var(--text-muted); font-style:italic; }
+
+  .edit-pencil { font-size:12px; color:var(--text-muted); cursor:pointer; margin-left:auto; }
+  .edit-pencil:hover { color:var(--accent); }
+
+  .check-val { font-size:15px; color:#2e7d32; }
+  .uncheck-val { width:14px; height:14px; border:1.5px solid var(--border); border-radius:2px; display:inline-block; }
+
+  /* ══ WHERE USED / ATTACHMENTS / HISTORY TABS ══ */
+  .empty-state {
+    text-align:center; padding:48px 24px;
+    color:var(--text-muted); font-size:13px;
+  }
+
+  /* HISTORY TABLE */
+  .table-wrap { border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow); }
+  table { width:100%; border-collapse:collapse; font-size:13px; }
+  thead th { background:#fafaf9; padding:9px 14px; text-align:left; font-size:11.5px; font-weight:700; color:var(--text-secondary); border-bottom:1px solid var(--border); white-space:nowrap; }
+  tbody tr { border-bottom:1px solid var(--border); transition:background 0.1s; }
+  tbody tr:last-child { border-bottom:none; }
+  tbody tr:hover { background:#f9fafb; }
+  td { padding:10px 14px; vertical-align:middle; }
+  .cell-link { color:var(--accent); font-weight:600; text-decoration:none; }
+  .cell-link:hover { text-decoration:underline; }
+
+  /* TAB PANELS */
+  .tab-panel { display:none; }
+  .tab-panel.active { display:flex; flex-direction:column; gap:12px; }
+
+  /* TOAST */
+  .toast {
+    position:fixed; bottom:18px; right:18px;
+    background:var(--text-primary); color:#fff; padding:10px 18px; border-radius:6px;
+    font-size:13px; font-weight:500; box-shadow:0 6px 18px rgba(0,0,0,0.2);
+    z-index:999; opacity:0; transform:translateY(8px); pointer-events:none;
+    transition: opacity 0.22s, transform 0.22s;
+  }
+  .toast.show { opacity:1; transform:translateY(0); }
+
+  .td-empty-state { text-align:center; padding:24px; color:var(--text-muted); font-style:italic; }
+  .td-desc-cell { max-width:280px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+
+  ::-webkit-scrollbar { width:6px; height:6px; }
+  ::-webkit-scrollbar-track { background:transparent; }
+  ::-webkit-scrollbar-thumb { background:#c5cdd6; border-radius:3px; }
+</style>
+</head>
+<body>
+
+
+<!-- BREADCRUMB -->
+<div class="breadcrumb">
+  <a href="./index.html.html">Home</a> ›
+  <a href="#">Manufacturer Parts</a> ›
+  <span id="breadcrumb-mpn">—</span>
+</div>
+
+<!-- ══ ITEM HEADER ══ -->
+<div class="item-header">
+  <div class="item-top">
+    <div class="item-left">
+      <div class="item-type-row">
+        <div class="item-type-icon">M</div>
+        <span>Manufacturer Part</span>
+      </div>
+      <div class="item-number" id="header-mpn"></div>
+    </div>
+    <div class="item-right">
+      <button class="btn btn-outline-blue">+ Follow</button>
+      <button class="btn" onclick="showToast('Edit mode')">✎ Edit</button>
+      <button class="btn" onclick="showToast('Details')">Details</button>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tab-bar">
+    <div class="tab active" onclick="switchTab(this,'details')">Details</div>
+    <div class="tab" onclick="switchTab(this,'whereused')">Where Used Item Numbers</div>
+    <div class="tab" onclick="switchTab(this,'attachments')">Attachments</div>
+    <div class="tab" onclick="switchTab(this,'history')">History</div>
+  </div>
+</div>
+
+<!-- ══ CONTENT ══ -->
+<div class="content">
+
+  <!-- ── DETAILS TAB ── -->
+  <div id="panel-details" class="tab-panel active">
+
+    <!-- Information Section -->
+    <div class="section-card">
+      <div class="section-head" onclick="toggleSection(this)">
+        <span class="toggle">▾</span>
+        <span class="section-head-title">Information</span>
+      </div>
+      <div class="section-body">
+        <div class="field-grid">
+
+          <div class="field-cell">
+            <span class="field-label">Manufacturer</span>
+            <div class="field-value link" id="info-manufacturer">—</div>
+          </div>
+
+          <div class="field-cell">
+            <span class="field-label">Mfr. Part Number</span>
+            <div class="field-value" id="info-mpn">—</div>
+          </div>
+
+          <div class="field-cell">
+            <span class="field-label">Description</span>
+            <div class="field-value empty" id="info-desc">—
+              <span class="edit-pencil" onclick="showToast('Edit Description')">✏</span>
+            </div>
+          </div>
+
+          <div class="field-cell">
+            <span class="field-label">
+              Lifecycle <span class="info-icon" title="Manufacturer part lifecycle status">ⓘ</span>
+            </span>
+            <div class="field-value" id="info-lifecycle">—</div>
+          </div>
+
+          <div class="field-cell">
+            <span class="field-label">Has Attachments</span>
+            <div class="field-value"><span class="check-val">✓</span></div>
+          </div>
+
+          <div class="field-cell">
+            <span class="field-label">Released to Item?</span>
+            <div class="field-value"><span class="uncheck-val"></span></div>
+          </div>
+
+          <div class="field-cell">
+            <span class="field-label">Accessible By</span>
+            <div class="field-value empty">—
+              <span class="edit-pencil" onclick="showToast('Edit Accessible By')">✏</span>
+            </div>
+          </div>
+
+          <div class="field-cell">
+            <span class="field-label">Parent Manufacturer Industry</span>
+            <div class="field-value empty">—</div>
+          </div>
+
+          <div class="field-cell">
+            <span class="field-label">MPN_Sharing_Update</span>
+            <div class="field-value empty">—
+              <span class="edit-pencil" onclick="showToast('Edit MPN_Sharing_Update')">✏</span>
+            </div>
+          </div>
+
+          <div class="field-cell">
+            <span class="field-label">&nbsp;</span>
+            <div class="field-value">&nbsp;</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- MPN Information Section -->
+    <div class="section-card">
+      <div class="section-head" onclick="toggleSection(this)">
+        <span class="toggle">▾</span>
+        <span class="section-head-title">MPN Information</span>
+      </div>
+      <div class="section-body">
+        <div class="field-grid">
+
+          <div class="field-cell">
+            <span class="field-label">Last Time Buy Date MPN</span>
+            <div class="field-value">6/18/2026
+              <span class="edit-pencil" onclick="showToast('Edit Last Time Buy Date')">✏</span>
+            </div>
+          </div>
+
+          <div class="field-cell">
+            <span class="field-label">Max Operating Temperature (C)</span>
+            <div class="field-value empty">—</div>
+          </div>
+
+          <div class="field-cell">
+            <span class="field-label">Comments</span>
+            <div class="field-value empty">—
+              <span class="edit-pencil" onclick="showToast('Edit Comments')">✏</span>
+            </div>
+          </div>
+
+          <div class="field-cell">
+            <span class="field-label">
+              Country of Origin (COO) <span class="info-icon" title="Country where the part is manufactured">ⓘ</span>
+            </span>
+            <div class="field-value">CN</div>
+          </div>
+
+          <div class="field-cell">
+            <span class="field-label">COQ Responsible Department</span>
+            <div class="field-value empty">—
+              <span class="edit-pencil" onclick="showToast('Edit COQ Responsible Department')">✏</span>
+            </div>
+          </div>
+
+          <div class="field-cell">
+            <span class="field-label">FOA Accession #</span>
+            <div class="field-value empty">—</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /panel-details -->
+
+  <!-- ── WHERE USED TAB ── -->
+  <div id="panel-whereused" class="tab-panel">
+    <div class="section-card">
+      <div class="section-head" onclick="toggleSection(this)">
+        <span class="toggle">▾</span>
+        <span class="section-head-title">Where Used Item Numbers</span>
+      </div>
+      <div class="section-body">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Item Number</th>
+                <th>Description</th>
+                <th>Lifecycle Phase</th>
+                <th>Revision</th>
+                <th>Qual Status</th>
+              </tr>
+            </thead>
+            <tbody id="whereused-tbody">
+              <!-- populated dynamically from localStorage -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── ATTACHMENTS TAB ── -->
+  <div id="panel-attachments" class="tab-panel">
+    <div class="section-card">
+      <div class="section-head">
+        <span class="toggle">▾</span>
+        <span class="section-head-title">Attachments</span>
+      </div>
+      <div class="section-body">
+        <div class="empty-state">No attachments found for this manufacturer part.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── HISTORY TAB ── -->
+  <div id="panel-history" class="tab-panel">
+    <div class="section-card">
+      <div class="section-head" onclick="toggleSection(this)">
+        <span class="toggle">▾</span>
+        <span class="section-head-title">History</span>
+      </div>
+      <div class="section-body">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Date / Time</th>
+                <th>User</th>
+                <th>Action</th>
+                <th>Field</th>
+                <th>Old Value</th>
+                <th>New Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>6/18/2026, 10:22 AM PDT</td>
+                <td>Karkuvel V</td>
+                <td>Updated</td>
+                <td>Lifecycle</td>
+                <td>Active</td>
+                <td>LTB</td>
+              </tr>
+              <tr>
+                <td>6/18/2026, 09:45 AM PDT</td>
+                <td>Karkuvel V</td>
+                <td>Created</td>
+                <td>—</td>
+                <td>—</td>
+                <td id="history-mpn">—</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── RELATED PCNs TAB ── -->
+  <div id="panel-relatedpcns" class="tab-panel">
+    <div class="section-card">
+      <div class="section-head">
+        <span class="toggle">▾</span>
+        <span class="section-head-title">Related PCNs</span>
+      </div>
+      <div class="section-body">
+        <div class="empty-state">No PCNs associated with this manufacturer part.</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /content -->
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+  // ── Read URL params passed from the Create MFR Part Number modal ──
+  (function () {
+    const p   = new URLSearchParams(window.location.search);
+    const mpn  = p.get('mpn')       || 'New MFR Part';
+    const mfr  = p.get('mfr')       || '—';
+    const desc = p.get('desc')      || '';
+    const lc   = p.get('lifecycle') || '—';
+
+    document.getElementById('page-title').textContent    = 'MFR Part ' + mpn + ' — NEXTGEN PLM';
+    document.getElementById('breadcrumb-mpn').textContent = mpn;
+    document.getElementById('header-mpn').textContent    = mpn;
+    document.getElementById('info-mpn').textContent      = mpn;
+    document.getElementById('info-manufacturer').textContent = mfr;
+    document.getElementById('history-mpn').textContent   = mpn;
+
+    const descEl = document.getElementById('info-desc');
+    if (desc) {
+      descEl.textContent = desc;
+      descEl.classList.remove('empty');
+    }
+
+    const lcEl = document.getElementById('info-lifecycle');
+    lcEl.textContent = lc;
+  })();
+
+  // ── Render Where Used table from localStorage ──
+  (function () {
+    const tbody = document.getElementById('whereused-tbody');
+    const items = JSON.parse(localStorage.getItem('plm_items') || '[]');
+
+    if (items.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5" class="td-empty-state">No items linked to this manufacturer part yet.</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = items.map(function(item) {
+      return '<tr>' +
+        '<td><a class="cell-link" href="Item_no.html?itemno=' + encodeURIComponent(item.itemno) + '&desc=' + encodeURIComponent(item.desc) + '">' + item.itemno + '</a></td>' +
+        '<td class="td-desc-cell">' + item.desc + '</td>' +
+        '<td>' + (item.lifecycle || 'Prototype') + '</td>' +
+        '<td>' + (item.revision  || '01') + '</td>' +
+        '<td>' + (item.qualStatus || 'Qualified') + '</td>' +
+      '</tr>';
+    }).join('');
+  })();
+
+  function switchTab(el, name) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('panel-' + name).classList.add('active');
+  }
+
+  function toggleSection(headEl) {
+    headEl.classList.toggle('collapsed');
+    const body = headEl.nextElementSibling;
+    body.classList.toggle('hidden');
+  }
+
+  let toastTimer;
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+  }
+</script>
+</body>
+</html>

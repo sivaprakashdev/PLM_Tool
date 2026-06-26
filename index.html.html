@@ -1,0 +1,1871 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>NEXTGEN SaaS PLM Platform</title>
+<style>
+  :root {
+    --bg: #f0f2f5;
+    --sidebar-bg: #1a2340;
+    --sidebar-hover: #253460;
+    --topbar-bg: #ffffff;
+    --accent: #2563eb;
+    --accent-light: #dbeafe;
+    --accent-dark: #1d4ed8;
+    --text-primary: #111827;
+    --text-secondary: #6b7280;
+    --text-muted: #9ca3af;
+    --border: #e5e7eb;
+    --white: #ffffff;
+    --green: #16a34a;
+    --orange: #ea580c;
+    --red: #dc2626;
+    --badge-bg: #ef4444;
+    --row-hover: #f9fafb;
+    --tab-active: #2563eb;
+    --shadow: 0 1px 4px rgba(0,0,0,0.08);
+    --radius: 8px;
+    --font: 'Segoe UI', system-ui, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text-primary);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* ── TOP BAR ── */
+  .topbar {
+    background: var(--topbar-bg);
+    border-bottom: 1px solid var(--border);
+    height: 52px;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    gap: 12px;
+    flex-shrink: 0;
+    box-shadow: var(--shadow);
+    z-index: 100;
+  }
+
+  .topbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 200px;
+  }
+
+  .brand-logo {
+    width: 34px;
+    height: 34px;
+    background: linear-gradient(135deg, var(--accent), #7c3aed);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    color: var(--white);
+    font-weight: 900;
+    letter-spacing: -1px;
+  }
+
+  .brand-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: 0.3px;
+    line-height: 1.2;
+  }
+
+  .brand-sub {
+    font-size: 10px;
+    color: var(--text-secondary);
+    font-weight: 400;
+  }
+
+  /* NAV PILLS */
+  .topbar-nav {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    flex: 1;
+  }
+
+  .nav-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 10px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    border-radius: 6px;
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+    transition: background 0.15s, color 0.15s;
+  }
+
+  .nav-item:hover, .nav-item.active {
+    background: var(--accent-light);
+    color: var(--accent);
+  }
+
+  .nav-item svg { width: 12px; height: 12px; opacity: 0.6; }
+
+  /* DROPDOWN */
+  .nav-item .dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    min-width: 180px;
+    z-index: 200;
+    padding: 4px 0;
+  }
+
+  .nav-item:hover .dropdown { display: block; }
+
+  .dropdown-item {
+    padding: 8px 16px;
+    font-size: 13px;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: background 0.12s;
+  }
+
+  .dropdown-item:hover { background: var(--accent-light); color: var(--accent); }
+
+  /* SEARCH */
+  .topbar-search {
+    position: relative;
+    flex: 0 0 260px;
+  }
+
+  .topbar-search input {
+    width: 100%;
+    padding: 7px 12px 7px 32px;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    font-size: 13px;
+    color: var(--text-primary);
+    background: var(--bg);
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+
+  .topbar-search input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+    background: var(--white);
+  }
+
+  .topbar-search .search-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    font-size: 14px;
+  }
+
+  /* TOPBAR ACTIONS */
+  .topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-left: auto;
+  }
+
+  .icon-btn {
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    cursor: pointer;
+    color: var(--text-secondary);
+    font-size: 16px;
+    transition: background 0.15s, color 0.15s;
+    position: relative;
+    border: none;
+    background: transparent;
+  }
+
+  .icon-btn:hover { background: var(--bg); color: var(--accent); }
+
+  .badge {
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    background: var(--badge-bg);
+    color: var(--white);
+    font-size: 9px;
+    font-weight: 700;
+    border-radius: 10px;
+    padding: 1px 4px;
+    line-height: 1.4;
+    min-width: 16px;
+    text-align: center;
+  }
+
+  .avatar-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), #7c3aed);
+    color: var(--white);
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 2px solid var(--border);
+    transition: border-color 0.15s;
+  }
+
+  .avatar-btn:hover { border-color: var(--accent); }
+
+  /* ── BODY LAYOUT ── */
+  .body-wrap {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: 56px;
+    background: var(--sidebar-bg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px 0;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+
+  .sidebar-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    cursor: pointer;
+    color: rgba(255,255,255,0.5);
+    font-size: 18px;
+    transition: background 0.15s, color 0.15s;
+  }
+
+  .sidebar-icon:hover, .sidebar-icon.active {
+    background: var(--sidebar-hover);
+    color: var(--white);
+  }
+
+  /* ── MAIN CONTENT ── */
+  .main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+ 
+  .tab-bar {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: 0 24px;
+    flex-shrink: 0;
+  }
+
+  .tab {
+    padding: 13px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: color 0.15s, border-color 0.15s;
+    white-space: nowrap;
+  }
+
+  .tab:hover { color: var(--accent); }
+
+  .tab.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+    font-weight: 600;
+  }
+
+  /* SECONDARY TAB ROW */
+  .subtab-bar {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: 0 24px;
+    flex-shrink: 0;
+  }
+
+  .subtab {
+    padding: 9px 14px;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: color 0.15s, border-color 0.15s;
+  }
+
+  .subtab:hover { color: var(--accent); }
+
+  .subtab.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  /* CONTENT AREA */
+  .content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  /* FILTER ROW */
+  .filter-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .section-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-title select {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--accent);
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    outline: none;
+  }
+
+  .filter-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn-icon {
+    width: 30px;
+    height: 30px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--text-secondary);
+    font-size: 13px;
+    transition: border-color 0.15s, color 0.15s;
+  }
+
+  .btn-icon:hover { border-color: var(--accent); color: var(--accent); }
+
+  .search-within {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--white);
+    font-size: 12px;
+    color: var(--text-muted);
+    cursor: text;
+    min-width: 160px;
+  }
+
+  .record-count {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  /* TABLE */
+  .table-wrap {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  thead th {
+    background: #f8fafc;
+    padding: 10px 14px;
+    text-align: left;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  thead th:hover { color: var(--accent); }
+
+  thead th .th-inner {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  thead th .sort-icon { opacity: 0.4; font-size: 10px; }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.12s;
+    cursor: pointer;
+  }
+
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: var(--row-hover); }
+
+  td { padding: 11px 14px; color: var(--text-primary); vertical-align: middle; }
+
+  /* INSPECT CIRCLE */
+  .inspect-btn {
+    width: 22px;
+    height: 22px;
+    border: 2px solid var(--accent);
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  .inspect-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  /* CHANGE NUMBER LINK */
+  .change-link {
+    color: var(--accent);
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 12.5px;
+  }
+
+  .change-link:hover { text-decoration: underline; }
+
+  /* CATEGORY BADGE */
+  .cat-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .cat-qa { background: #fef3c7; color: #92400e; }
+  .cat-npi { background: #e0e7ff; color: #3730a3; }
+
+  /* STATUS BADGE */
+  .status-badge {
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  .status-review { background: #fef9c3; color: #854d0e; }
+  .status-approved { background: #dcfce7; color: #166534; }
+  .status-pending { background: #fee2e2; color: #991b1b; }
+
+  .created-date { color: var(--text-secondary); font-size: 12px; }
+  .title-cell { color: var(--text-primary); font-size: 12.5px; max-width: 280px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  /* QUICK STATS ROW */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+
+  .stat-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+
+  .stat-card:hover { border-color: var(--accent); box-shadow: 0 4px 16px rgba(37,99,235,0.1); }
+
+  .stat-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); }
+  .stat-value { font-size: 26px; font-weight: 700; color: var(--text-primary); }
+  .stat-sub { font-size: 11.5px; color: var(--text-secondary); }
+
+  .stat-card.blue .stat-value { color: var(--accent); }
+  .stat-card.orange .stat-value { color: var(--orange); }
+  .stat-card.green .stat-value { color: var(--green); }
+
+  /* MODAL OVERLAY */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 500;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--white);
+    border-radius: 12px;
+    width: 520px;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    animation: slideUp 0.2s ease;
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .modal-header {
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .modal-title { font-size: 15px; font-weight: 700; }
+  .modal-close { font-size: 18px; cursor: pointer; color: var(--text-muted); border: none; background: none; line-height: 1; }
+  .modal-close:hover { color: var(--text-primary); }
+
+  .modal-body { padding: 20px 24px; display: flex; flex-direction: column; gap: 14px; }
+
+  .field-group { display: flex; flex-direction: column; gap: 5px; }
+  .field-label { font-size: 12px; font-weight: 600; color: var(--text-secondary); display: flex; align-items: center; gap: 6px; }
+  .label-icon { font-size: 14px; opacity: 0.8; }
+
+  /* TWO-COLUMN REPORT ROW (label left, field right) */
+  .report-row {
+    display: grid;
+    grid-template-columns: 130px 1fr;
+    align-items: center;
+    gap: 16px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px 16px;
+  }
+  .report-row > .report-label { font-size: 18px; font-weight: 600; color: var(--text-primary); }
+  .report-label .label-sub { font-size: 13px; font-weight: 400; color: var(--text-muted); }
+  .report-label .req { color: var(--red); margin-left: 2px; }
+
+  /* NUMBERED REPORT ROW (label left, field right) */
+  .num-row {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    align-items: center;
+    gap: 16px;
+    padding: 6px 0;
+  }
+  .num-row > .num-label { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+  .num-label .label-sub { font-weight: 400; color: var(--text-muted); }
+  .num-label .req { color: var(--red); margin-left: 2px; }
+  .radio-group { display: flex; flex-direction: column; gap: 8px; }
+  .radio-option { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-primary); cursor: pointer; }
+  .radio-option input { accent-color: var(--accent); cursor: pointer; }
+  .field-hint { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+  /* INPUT WITH TRAILING ICON */
+  .input-icon-wrap { position: relative; display: flex; align-items: center; }
+  .input-icon-wrap .field-input,
+  .input-icon-wrap .field-textarea { padding-right: 38px; }
+  .input-icon-wrap .field-icon {
+    position: absolute;
+    right: 12px;
+    color: var(--text-muted);
+    font-size: 15px;
+    pointer-events: none;
+  }
+  .input-icon-wrap .field-textarea ~ .field-icon { top: 10px; }
+
+  .field-input, .field-select, .field-textarea {
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 13px;
+    color: var(--text-primary);
+    font-family: var(--font);
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    background: var(--white);
+    width: 100%;
+  }
+
+  .field-input:focus, .field-select:focus, .field-textarea:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+  }
+
+  .field-textarea { resize: vertical; min-height: 72px; }
+
+  .modal-footer {
+    padding: 14px 24px 20px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+
+  .btn {
+    padding: 8px 18px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: background 0.15s, box-shadow 0.15s;
+  }
+
+  .btn-primary { background: var(--accent); color: var(--white); }
+  .btn-primary:hover { background: var(--accent-dark); box-shadow: 0 4px 12px rgba(37,99,235,0.3); }
+  .btn-secondary { background: var(--bg); color: var(--text-primary); border: 1px solid var(--border); }
+  .btn-secondary:hover { background: var(--border); }
+
+  /* TOP ACTION BTN */
+  .create-btn {
+    padding: 7px 14px;
+    background: var(--accent);
+    color: var(--white);
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.15s;
+  }
+
+  .create-btn:hover { background: var(--accent-dark); }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--text-primary);
+    color: var(--white);
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    z-index: 999;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.25s, transform 0.25s;
+    pointer-events: none;
+  }
+
+  .toast.show { opacity: 1; transform: translateY(0); }
+
+  /* USER INFO PANEL */
+  .user-panel {
+    display: none;
+    position: absolute;
+    top: 52px;
+    right: 8px;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    z-index: 300;
+    min-width: 200px;
+    padding: 12px 0;
+  }
+
+  .user-panel.open { display: block; }
+  .user-panel-header { padding: 4px 16px 12px; border-bottom: 1px solid var(--border); margin-bottom: 4px; }
+  .user-panel-name { font-size: 13px; font-weight: 700; }
+  .user-panel-role { font-size: 11px; color: var(--text-muted); }
+  .user-panel-item { padding: 8px 16px; font-size: 13px; color: var(--text-primary); cursor: pointer; transition: background 0.12s; }
+  .user-panel-item:hover { background: var(--accent-light); color: var(--accent); }
+
+  /* scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+  /* filter-row spacing */
+  .filter-row-spaced { margin-bottom: 10px; }
+
+  /* read-only item number input */
+  .input-readonly {
+    background: #f3f4f6;
+    color: #374151;
+    cursor: not-allowed;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+  }
+
+  /* detail modal injected content */
+  .detail-change-num { font-size: 14px; font-weight: 700; color: var(--accent); }
+  .detail-title-text { font-size: 13px; }
+</style>
+</head>
+<body>
+
+<!-- ══ TOP BAR ══ -->
+<div class="topbar">
+  <div class="topbar-brand">
+    <div class="brand-logo">PLM</div>
+    <div>
+      <div class="brand-name">NEXTGEN PLM</div>
+      <div class="brand-sub">InESS Solutions</div>
+    </div>
+  </div>
+
+  <nav class="topbar-nav">
+    <div class="nav-item active">
+      Home
+    </div>
+    <div class="nav-item">
+      Create ▾
+      <div class="dropdown">
+        <div class="dropdown-item" onclick="openItemModal()">Create New Item Number</div>
+        <div class="dropdown-item" onclick="openMpnModal()">Create New MFR Part Number</div>
+        <div class="dropdown-item" onclick="openMfrModal()">Create New MFR</div>
+      </div>
+    </div>
+    <div class="nav-item">
+      Changes ▾
+      <div class="dropdown">
+        <div class="dropdown-item" onclick="openEcoModal()">Create ECO</div>
+        <div class="dropdown-item" onclick="openMcoModal()">Create MCO</div>
+        <div class="dropdown-item" onclick="openDevModal()">Create DEV</div>
+        <div class="dropdown-item" onclick="openDcoModal()">Create DCO</div>
+      </div>
+    </div>
+    <div class="nav-item">
+      Reports ▾
+      <div class="dropdown">
+        <div class="dropdown-item" onclick="openWhereUsedModal()">Where-Used Report</div>
+        <div class="dropdown-item" onclick="openMpnReportModal()">MPN Associated Item Number</div>
+        <div class="dropdown-item" onclick="openMfrReportModal()">MPN Associated MFR</div>
+      </div>
+    </div>
+    <div class="nav-item">
+    
+  </nav>
+
+  <div class="topbar-search">
+    <span class="search-icon">🔍</span>
+    <input type="text" placeholder="Search…" />
+  </div>
+
+  <div class="topbar-actions">
+    <button class="icon-btn" title="Starred" onclick="showToast('Starred items')">★</button>
+    <button class="icon-btn" title="Notifications" onclick="showToast('Notifications panel')">
+      🔔
+      <span class="badge">20+</span>
+    </button>
+    <button class="icon-btn" title="Settings" onclick="showToast('Settings')">⚙️</button>
+    <button class="icon-btn" title="Help" onclick="showToast('Help center')">❓</button>
+    <div class="avatar-btn" title="Karkuvel V" onclick="toggleUserPanel()">KV</div>
+  </div>
+</div>
+
+<!-- user panel -->
+<div class="user-panel" id="userPanel">
+  <div class="user-panel-header">
+    <div class="user-panel-name">Karkuvel V</div>
+    <div class="user-panel-role">PLM Administrator</div>
+  </div>
+  <div class="user-panel-item" onclick="showToast('My Profile')">My Profile</div>
+  <div class="user-panel-item" onclick="showToast('Preferences')">Preferences</div>
+  <div class="user-panel-item" onclick="showToast('Signed out')">Sign Out</div>
+</div>
+
+<!-- ══ BODY ══ -->
+<div class="body-wrap">
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- TAB BAR: Assignments / Change Tracker / Quality Tracker … -->
+    <div class="tab-bar">
+      <div class="tab active" onclick="switchTab(this, 'assignments')">Assignments</div>
+      
+    </div>
+
+    <!-- SUB TAB BAR: My Changes / My Quality -->
+    <div class="subtab-bar">
+      <div class="subtab active" id="subtab-my-changes" onclick="switchSubTab('my-changes')">My Changes</div>
+      <div class="subtab" id="subtab-my-quality" onclick="switchSubTab('my-quality')">My Quality</div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+      <!-- STAT CARDS -->
+      <div class="stats-row">
+        <div class="stat-card blue" onclick="showToast('3 items to approve')">
+          <div class="stat-label">To Approve</div>
+          <div class="stat-value">3</div>
+          <div class="stat-sub">Changes need review</div>
+        </div>
+        <div class="stat-card orange" onclick="showToast('5 in progress')">
+          <div class="stat-label">In Progress</div>
+          <div class="stat-value">5</div>
+          <div class="stat-sub">Active change orders</div>
+        </div>
+        <div class="stat-card green" onclick="showToast('12 completed this month')">
+          <div class="stat-label">Completed</div>
+          <div class="stat-value">12</div>
+          <div class="stat-sub">This month</div>
+        </div>
+      </div>
+
+      <!-- TABLE -->
+      <div>
+        <div class="filter-row filter-row-spaced">
+          <div class="section-title">
+            Changes
+            <select onchange="showToast('Filter applied')">
+              <option>Need to approve</option>
+              <option>All changes</option>
+              <option>My changes</option>
+            </select>
+          </div>
+          <div class="filter-actions">
+            <span class="record-count">3 of 3 records</span>
+            <button class="btn-icon" title="Refresh" onclick="showToast('Refreshed')">⟳</button>
+            <button class="btn-icon" title="Export" onclick="showToast('Exporting…')">⬇</button>
+            <div class="search-within">🔍 Search within results</div>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table id="changesTable">
+            <thead>
+              <tr>
+                <th><div class="th-inner">Inspect</div></th>
+                <th><div class="th-inner">Change Number <span class="sort-icon">▲</span></div></th>
+                <th><div class="th-inner">Category <span class="sort-icon">▼</span></div></th>
+                <th><div class="th-inner">Status</div></th>
+                <th><div class="th-inner">Title</div></th>
+                <th><div class="th-inner">Created Date <span class="sort-icon">▼</span></div></th>
+                <th><div class="th-inner">Actions</div></th>
+              </tr>
+            </thead>
+            <tbody id="tableBody">
+              <!-- rows injected by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /body-wrap -->
+
+<!-- ══ CREATE MODAL ══ -->
+<div class="modal-overlay" id="createModal" onclick="handleOverlayClick(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Create New Change</span>
+      <button class="modal-close" onclick="closeModal('create')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="field-group">
+        <label class="field-label">Change Number</label>
+        <input class="field-input" type="text" placeholder="Auto-generated (e.g. ECO-26220)" id="newChangeNum" />
+      </div>
+      <div class="field-group">
+        <label class="field-label">Category</label>
+        <select class="field-select" id="newCategory">
+          <option value="">Select category…</option>
+          <option>Quality Alert (LA/LS/SS)</option>
+          <option>NPI Change Order - ECO</option>
+          <option>Engineering Change Order</option>
+          <option>Deviation Request</option>
+        </select>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Status</label>
+        <select class="field-select" id="newStatus">
+          <option>Draft</option>
+          <option selected>Final Review</option>
+          <option>Approved</option>
+          <option>Released</option>
+        </select>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Title</label>
+        <input class="field-input" type="text" placeholder="Brief description of the change…" id="newTitle" />
+      </div>
+      <div class="field-group">
+        <label class="field-label">Description</label>
+        <textarea class="field-textarea" placeholder="Detailed notes about this change order…" id="newDesc" required></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('create')">Cancel</button>
+      <button class="btn btn-primary" onclick="submitCreate()">Create Change</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CREATE NEW ITEM NUMBER MODAL ══ -->
+<div class="modal-overlay" id="itemModal" onclick="handleOverlayClick(event, 'item')">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Create New Item Number</span>
+      <button class="modal-close" onclick="closeModal('item')">✕</button>
+    </div>
+    <div class="modal-body">
+
+      <div class="field-group">
+        <label class="field-label">Category</label>
+        <select class="field-select" id="itemCategory" onchange="updateSubCategory()">
+          <option value="">Select category…</option>
+          <option value="Electrical">Electrical</option>
+          <option value="Mechanical">Mechanical</option>
+          <option value="Software">Software</option>
+          <option value="Packaging">Packaging</option>
+          <option value="Documentation">Documentation</option>
+        </select>
+      </div>
+
+    <div class="field-group">
+      <label class="field-label">Sub Category</label>
+      <select class="field-select" id="itemSubCategory">
+        <option value="">Select sub category…</option>
+        <option value="Label Image">Label Image</option>
+        <option value="Software">Software</option>
+        <option value="Accessory Kit">Accessory Kit</option>
+        <option value="Active Optical Cable (AOC)">Active Optical Cable (AOC)</option>
+        <option value="Assembly">Assembly</option>
+        <option value="Battery">Battery</option>
+        <option value="Cable">Cable</option>
+        <option value="Capacitor">Capacitor</option>
+        <option value="Component">Component</option>
+        <option value="Connector">Connector</option>
+        <option value="Crystal">Crystal</option>
+        <option value="Dummy Part">Dummy Part</option>
+        <option value="Fan">Fan</option>
+        <option value="Fastener">Fastener</option>
+        <option value="Fee Upgrade IC">Fee Upgrade IC</option>
+        <option value="Fuse">Fuse</option>
+        <option value="Gasket">Gasket</option>
+        <option value="Heat Sink">Heat Sink</option>
+        <option value="IC">IC</option>
+        <option value="Inductor">Inductor</option>
+        <option value="Label">Label</option>
+        <option value="Loopback">Loopback</option>
+        <option value="Mechanical">Mechanical</option>
+        <option value="Memory">Memory</option>
+        <option value="Metal">Metal</option>
+        <option value="Optics">Optics</option>
+        <option value="Oscillator">Oscillator</option>
+        <option value="Power Supply (PSU)">Power Supply (PSU)</option>
+        <option value="Printed Circuit Assembly">Printed Circuit Assembly</option>
+        <option value="Printed Circuit Board">Printed Circuit Board</option>
+        <option value="Programmable Part">Programmable Part</option>
+        <option value="Purchased Document">Purchased Document</option>
+        <option value="Resistor">Resistor</option>
+        <option value="Subassembly">Subassembly</option>
+        <option value="Switch">Switch</option>
+        <option value="Top Assembly">Top Assembly</option>
+        <option value="Transceiver">Transceiver</option>
+        <option value="Transformer">Transformer</option>
+        <option value="Transistor">Transistor</option>
+
+    </select>
+</div>
+      <div class="field-group">
+        <label class="field-label">Item Number</label>
+        <input class="field-input input-readonly" type="text" id="itemNumber" readonly />
+      </div>
+      
+      <div class="field-group">
+        <label class="field-label">Description <span style="color:#dc2626">*</span></label>
+        <textarea class="field-textarea" placeholder="Describe the item… (required)" id="itemDesc"></textarea>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Attachment</label>
+        <input class="field-input" type="file" id="itemAttachment" />
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('item')">Cancel</button>
+      <button class="btn btn-primary" onclick="submitItem()">Create</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CREATE NEW MFR PART NUMBER MODAL ══ -->
+<div class="modal-overlay" id="mpnModal" onclick="handleOverlayClick(event, 'mpn')">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">New MFR Part Number</span>
+      <button class="modal-close" onclick="closeModal('mpn')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="field-group">
+        <label class="field-label">Manufacturer</label>
+        <select class="field-select" id="mpnManufacturer">
+          <option value="">Select manufacturer…</option>
+          <option>Texas Instruments</option>
+          <option>Analog Devices</option>
+          <option>STMicroelectronics</option>
+          <option>Infineon</option>
+          <option>NXP Semiconductors</option>
+          <option>Microchip</option>
+        </select>
+      </div>
+      <div class="field-group">
+        <label class="field-label">MFR Part Number</label>
+        <input class="field-input" type="text" placeholder="e.g. TPS7A4700RGWR" id="mpnPartNumber" required />
+      </div>
+      <div class="field-group">
+        <label class="field-label">Description</label>
+        <textarea class="field-textarea" placeholder="Describe the part…" id="mpnDesc" required></textarea>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Lifecycle of MPN</label>
+        <input class="field-input" type="text" placeholder="Active" id="mpnLifecycle" />
+
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('mpn')">Cancel</button>
+      <button class="btn btn-primary" onclick="submitMpn()">Create</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CREATE NEW MFR MODAL ══ -->
+<div class="modal-overlay" id="mfrModal" onclick="handleOverlayClick(event, 'mfr')">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">New MFR Creation</span>
+      <button class="modal-close" onclick="closeModal('mfr')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="field-group">
+        <label class="field-label">Manufacturer Official Name</label>
+        <div class="input-icon-wrap">
+          <input class="field-input" type="text" placeholder="e.g., Texas Instruments" id="mfrName" />
+          <span class="field-icon">🏢</span>
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">MFR Address</label>
+        <div class="input-icon-wrap">
+          <textarea class="field-textarea" placeholder="Enter full corporate address" id="mfrAddress"></textarea>
+          <span class="field-icon">📍</span>
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Contact Number</label>
+        <div class="input-icon-wrap">
+          <input class="field-input" type="tel" id="mfrContact"/>
+          <span class="field-icon">📞</span>
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Fax Number</label>
+        <div class="input-icon-wrap">
+          <input class="field-input" type="tel" id="mfrFax"/>
+          <span class="field-icon">📠</span>
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Official Email</label>
+        <div class="input-icon-wrap">
+          <input class="field-input" type="email" placeholder="e.g., contact@manufacturer.com" id="mfrEmail" />
+          <span class="field-icon">✉️</span>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('mfr')">Cancel</button>
+      <button class="btn btn-primary" onclick="submitMfr()">Create</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CREATE ECO MODAL ══ -->
+<div class="modal-overlay" id="ecoModal" onclick="handleOverlayClick(event, 'eco')">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">New Engineering Change Order (ECO)</span>
+      <button class="modal-close" onclick="closeModal('eco')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="field-group">
+        <label class="field-label"><span class="label-icon">📦</span> Category</label>
+        <select class="field-select" id="ecoCategory">
+          <option value="" disabled selected>Select Category</option>
+          <option>Sustaining - ECO</option>
+          <option>NPI - ECO</option>
+      
+        </select>
+      </div>
+      <div class="field-group">
+        <label class="field-label"><span class="label-icon">📝</span> ECO Number</label>
+        <input class="field-input" type="text" placeholder="ECO Number" id="ecoName" />
+      </div>
+      <div class="field-group">
+        <label class="field-label"><span class="label-icon">📋</span> Description of Change</label>
+        <textarea class="field-textarea" id="ecoDesc"></textarea>
+      </div>
+      <div class="field-group">
+        <label class="field-label"><span class="label-icon">ⓘ</span> Reason for Change</label>
+        <textarea class="field-textarea" id="ecoReason"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('eco')">Cancel</button>
+      <button class="btn btn-primary" onclick="submitEco()">Create</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CREATE MCO MODAL ══ -->
+<div class="modal-overlay" id="mcoModal" onclick="handleOverlayClick(event, 'mco')">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">New Manufacturing Change Order (MCO)</span>
+      <button class="modal-close" onclick="closeModal('mco')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="field-group">
+        <label class="field-label"><span class="label-icon">📦</span> Category</label>
+        <input class="field-select" id="mcoCategory" placeholder="Manufacturing Change Order (MCO)" />
+      </div>
+      <div class="field-group">
+        <label class="field-label"><span class="label-icon">✏️</span> MCO Number</label>
+        <input class="field-input" type="text" placeholder=" MCO Number" id="mcoName" />
+      </div>
+      <div class="field-group">
+        <label class="field-label"><span class="label-icon">⚙️</span> Description of Change</label>
+        <textarea class="field-textarea" id="mcoDesc"></textarea>
+      </div>
+      <div class="field-group">
+        <label class="field-label"><span class="label-icon">ⓘ</span> Reason for Change</label>
+        <textarea class="field-textarea" id="mcoReason"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('mco')">Cancel</button>
+      <button class="btn btn-primary" onclick="submitMco()">Create</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CREATE DEV MODAL ══ -->
+<div class="modal-overlay" id="devModal" onclick="handleOverlayClick(event, 'dev')">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">New Deviation (DEV)</span>
+      <button class="modal-close" onclick="closeModal('dev')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="field-group">
+        <label class="field-label"><span class="label-icon">📦</span> Category</label>
+        <input class="field-select" id="devCategory"placeholder="DEVIATION (DEV)">
+          
+      </input>
+      </div>
+      <div class="field-group">
+        <label class="field-label"><span class="label-icon">✏️</span> DEV Number</label>
+        <input class="field-input" type="text" placeholder="DEV Number (e.g., DEV-001)" id="devName" />
+      </div>
+      <div class="field-group">
+        <label class="field-label"><span class="label-icon">⚙️</span> Description of Change</label>
+        <textarea class="field-textarea" id="devDesc"></textarea>
+      </div>
+      <div class="field-group">
+        <label class="field-label"><span class="label-icon">ⓘ</span> Reason for Change</label>
+        <textarea class="field-textarea" id="devReason"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('dev')">Cancel</button>
+      <button class="btn btn-primary" onclick="submitDev()">Create</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CREATE DCO MODAL ══ -->
+<div class="modal-overlay" id="dcoModal" onclick="handleOverlayClick(event, 'dco')">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">New Document Change Order (DCO)</span>
+      <button class="modal-close" onclick="closeModal('dco')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="field-group">
+        <label class="field-label"><span class="label-icon">📦</span> Category</label>
+        <input class="field-select" id="dcoCategory" placeholder="Document Change Order (DCO)" />
+        
+      </div>
+      <div class="field-group">
+        <label class="field-label"><span class="label-icon">✏️</span> DCO Number</label>
+        <input class="field-input" type="text" placeholder="DCO Number (e.g., DCO-001)" id="dcoName" />
+      </div>
+      <div class="field-group">
+        <label class="field-label"><span class="label-icon">⚙️</span> Description of Change</label>
+        <textarea class="field-textarea" id="dcoDesc"></textarea>
+      </div>
+      <div class="field-group">
+        <label class="field-label"><span class="label-icon">ⓘ</span> Reason for Change</label>
+        <textarea class="field-textarea" id="dcoReason"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('dco')">Cancel</button>
+      <button class="btn btn-primary" onclick="submitDco()">Create</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ WHERE-USED REPORT MODAL ══ -->
+<div class="modal-overlay" id="whereUsedModal" onclick="handleOverlayClick(event, 'whereUsed')">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Generate Where-Used Report</span>
+      <button class="modal-close" onclick="closeModal('whereUsed')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="report-row">
+        <span class="report-label">Item Number</span>
+        <div class="input-icon-wrap">
+          <input class="field-input" type="text" list="wuItemOptions" placeholder="Search item number…" id="wuItemNumber" />
+          <span class="field-icon">🔍</span>
+          <datalist id="wuItemOptions">
+            <option value="RPT-0034-7B"></option>
+            <option value="RPT-0034-7A"></option>
+            <option value="ITM-100245"></option>
+          </datalist>
+        </div>
+      </div>
+      <div class="report-row">
+        <span class="report-label">Level</span>
+        <select class="field-select" id="wuLevel">
+          <option>Single Level </option>
+          <option>All Levels (Exploded)</option>
+          
+        </select>
+      </div>
+      <div class="report-row">
+        <span class="report-label">Item Number Lifecycle</span>
+        <select class="field-select" id="wuLifecycle">
+          <option value="" disabled selected>Select lifecycle…</option>
+          <option>Preliminary</option>
+          <option>Prototype</option>
+          <option>Inactive</option>
+          <option>EOL</option>
+          <option>Obsolete</option>
+        </select>
+      </div>
+      <div class="report-row">
+        <span class="report-label">Export Format</span>
+        <select class="field-select" id="wuFormat">
+          <option>PDF</option>
+          <option>Excel (.xlsx)</option>
+          <option>CSV</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" onclick="submitWhereUsed()">Generate Report</button>
+      <button class="btn btn-secondary" onclick="closeModal('whereUsed')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MPN ASSOCIATED REPORT MODAL ══ -->
+<div class="modal-overlay" id="mpnReportModal" onclick="handleOverlayClick(event, 'mpnReport')">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Generate MPN Associated Item Number Report</span>
+      <button class="modal-close" onclick="closeModal('mpnReport')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="report-row">
+        <span class="report-label">MPN <span class="label-sub">(Mandatory)</span><span class="req">*</span></span>
+        <div class="input-icon-wrap">
+          <input class="field-input" type="text" list="mpnReportOptions" placeholder="Search MPN…" id="mpnReportMpn" />
+          <span class="field-icon">🔍</span>
+          <datalist id="mpnReportOptions">
+            <option value="123-ABC-456"></option>
+            <option value="456-DEF-789"></option>
+            <option value="789-GHI-123"></option>
+          </datalist>
+        </div>
+      </div>
+      <div class="report-row">
+        <span class="report-label">Manufacture Name <span class="label-sub">(Optional)</span></span>
+        <input class="field-input" type="text" placeholder="e.g., Acme Corp." id="mpnReportMfr" />
+      </div>
+      <div class="report-row">
+        <span class="report-label">Item Number Lifecycle</span>
+        <select class="field-select" id="mpnReportLifecycle">
+          <option value="" disabled selected>Select lifecycle…</option>
+          <option>Preliminary</option>
+          <option>Prototype</option>
+          <option>Inactive</option>
+          <option>EOL</option>
+          <option>Obsolete</option>
+        </select>
+      </div>
+      <div class="report-row">
+        <span class="report-label">Export Format</span>
+        <select class="field-select" id="mpnReportFormat">
+          <option>PDF</option>
+          <option>Excel (.xlsx)</option>
+          <option>CSV</option>
+          
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" onclick="submitMpnReport()">Generate Report</button>
+      <button class="btn btn-secondary" onclick="closeModal('mpnReport')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MPN ASSOCIATED MFR REPORT MODAL ══ -->
+<div class="modal-overlay" id="mfrReportModal" onclick="handleOverlayClick(event, 'mfrReport')">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Generate MPN Associated MFR Report</span>
+      <button class="modal-close" onclick="closeModal('mfrReport')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="num-row">
+        <span class="num-label">1. MPN <span class="label-sub">(Mandatory)</span><span class="req">*</span></span>
+        <div class="input-icon-wrap">
+          <input class="field-input" type="text" list="mfrReportOptions" placeholder="Search MPN…" id="mfrReportMpn" />
+          <span class="field-icon">🔍</span>
+          <datalist id="mfrReportOptions">
+            <option value="GRM188R61C105KA93D"></option>
+            <option value="GRM155R71C104KA88D"></option>
+            <option value="C0805C104K5RACTU"></option>
+          </datalist>
+        </div>
+      </div>
+      <div class="num-row">
+        <span class="num-label">2. MPN Lifecycle</span>
+        <select class="field-select" id="mfrReportLifecycle">
+          <option value="" disabled selected>Select lifecycle…</option>
+          <option>Active</option>
+          <option>Active-NRND</option>
+          <option>LTB</option>
+          
+          <option>Obsolete</option>
+        </select>
+      </div>
+      <div class="num-row">
+        <span class="num-label">3. Qual Status</span>
+        <select class="field-select" id="mfrReportQual">
+          <option value="" disabled selected>Select status…</option>
+          <option>Qualified</option>
+          <option>Disqualified</option>
+          <option> No New Buy</option>
+          <option> In Process Qual</option>
+          <option> Cancelled</option>
+        </select>
+      </div>
+      <div class="num-row">
+        <span class="num-label">5. Export Format</span>
+        <div class="radio-group">
+          <label class="radio-option"><input type="radio" name="mfrReportFormat" value="Excel (.xlsx)" checked /> Excel (.xlsx)</label>
+          <label class="radio-option"><input type="radio" name="mfrReportFormat" value="CSV" /> CSV</label>
+          <label class="radio-option"><input type="radio" name="mfrReportFormat" value="PDF" /> PDF</label>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" onclick="submitMfrReport()">Generate Report</button>
+      <button class="btn btn-secondary" onclick="closeModal('mfrReport')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- DETAIL MODAL -->
+<div class="modal-overlay" id="detailModal" onclick="handleOverlayClick(event, 'detail')">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="detailTitle">Change Detail</span>
+      <button class="modal-close" onclick="closeModal('detail')">✕</button>
+    </div>
+    <div class="modal-body" id="detailBody">
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('detail')">Close</button>
+      <button class="btn btn-primary" onclick="showToast('Approved!'); closeModal('detail')">Approve</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+  // ── DATA ──
+  const initialRows = [
+    { id: 'QA-00776', category: 'Quality Alert (LA/LS/SS)', catClass: 'cat-qa', status: 'Final Review', statusClass: 'status-review', title: 'LINE ALERT: YUBA, SMARTSVILLE-DO Ho...', created: '8/20/2025, 11:53 AM' },
+    { id: 'QA-00768', category: 'Quality Alert (LA/LS/SS)', catClass: 'cat-qa', status: 'Final Review', statusClass: 'status-review', title: 'Customers have reported five cases in...', created: '3/13/2026, 01:54 PM' },
+    { id: 'ECO-26219', category: 'NPI Change Order - ECO', catClass: 'cat-npi', status: 'Final Review', statusClass: 'status-review', title: 'JOPLIN PACKAGING SET TO RELEASE TO...', created: '6/1/2026, 02:38 PM' },
+  ];
+
+  let rows = [...initialRows];
+
+  function renderTable() {
+    const tbody = document.getElementById('tableBody');
+    tbody.innerHTML = rows.map(r => `
+      <tr onclick="openDetail('${r.id}')">
+        <td><div class="inspect-btn"><div class="inspect-dot"></div></div></td>
+        <td><a class="change-link" href="#" onclick="event.stopPropagation(); openDetail('${r.id}')">${r.id}</a></td>
+        <td><span class="cat-badge ${r.catClass}">${r.category}</span></td>
+        <td><span class="status-badge ${r.statusClass}">${r.status}</span></td>
+        <td class="title-cell">${r.title}</td>
+        <td class="created-date">${r.created}</td>
+        <td>
+          <button class="btn-icon" onclick="event.stopPropagation(); showToast('Approved: ${r.id}')" title="Approve">✓</button>
+        </td>
+      </tr>
+    `).join('');
+    document.querySelector('.record-count').textContent = `${rows.length} of ${rows.length} records`;
+  }
+
+  renderTable();
+
+  // ── TABS ──
+  function switchTab(el, name) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    showToast('Switched to: ' + el.textContent.trim());
+  }
+
+  function switchSubTab(name) {
+    document.querySelectorAll('.subtab').forEach(t => t.classList.remove('active'));
+    document.getElementById('subtab-' + name).classList.add('active');
+    showToast('Viewing: ' + (name === 'my-changes' ? 'My Changes' : 'My Quality'));
+  }
+
+  // ── MODAL ──
+  function openModal(type) {
+    if (type === 'create') {
+      document.getElementById('newChangeNum').value = 'ECO-' + (26220 + rows.length);
+      document.getElementById('newTitle').value = '';
+      document.getElementById('newDesc').value = '';
+      document.getElementById('newCategory').selectedIndex = 0;
+      document.getElementById('createModal').classList.add('open');
+    }
+  }
+
+  function closeModal(type) {
+    if (type === 'create') document.getElementById('createModal').classList.remove('open');
+    if (type === 'detail') document.getElementById('detailModal').classList.remove('open');
+    if (type === 'item') document.getElementById('itemModal').classList.remove('open');
+    if (type === 'mpn') document.getElementById('mpnModal').classList.remove('open');
+    if (type === 'mfr') document.getElementById('mfrModal').classList.remove('open');
+    if (type === 'eco') document.getElementById('ecoModal').classList.remove('open');
+    if (type === 'mco') document.getElementById('mcoModal').classList.remove('open');
+    if (type === 'dev') document.getElementById('devModal').classList.remove('open');
+    if (type === 'dco') document.getElementById('dcoModal').classList.remove('open');
+    if (type === 'whereUsed') document.getElementById('whereUsedModal').classList.remove('open');
+    if (type === 'mpnReport') document.getElementById('mpnReportModal').classList.remove('open');
+    if (type === 'mfrReport') document.getElementById('mfrReportModal').classList.remove('open');
+  }
+
+  // ── MPN ASSOCIATED MFR REPORT MODAL ──
+  function openMfrReportModal() {
+    // Reset the form fields before showing the dialog.
+    document.getElementById('mfrReportMpn').value = '';
+    document.getElementById('mfrReportLifecycle').selectedIndex = 0;
+    document.getElementById('mfrReportQual').selectedIndex = 0;
+    // Reset the export format radios to the first option (Excel).
+    document.querySelector('input[name="mfrReportFormat"][value="Excel (.xlsx)"]').checked = true;
+    document.getElementById('mfrReportModal').classList.add('open');
+  }
+
+  function submitMfrReport() {
+    const mpn = document.getElementById('mfrReportMpn').value.trim();
+    const format = document.querySelector('input[name="mfrReportFormat"]:checked').value;
+    // MPN is mandatory to generate the report.
+    if (!mpn) { showToast('⚠ MPN is mandatory'); return; }
+    closeModal('mfrReport');
+    showToast('✅ Generating MFR Report for ' + mpn + ' (' + format + ')');
+  }
+
+  // ── MPN ASSOCIATED REPORT MODAL ──
+  function openMpnReportModal() {
+    // Reset the form fields before showing the dialog.
+    document.getElementById('mpnReportMpn').value = '';
+    document.getElementById('mpnReportMfr').value = '';
+    document.getElementById('mpnReportLifecycle').selectedIndex = 0;
+    document.getElementById('mpnReportFormat').selectedIndex = 0;
+    document.getElementById('mpnReportModal').classList.add('open');
+  }
+
+  function submitMpnReport() {
+    const mpn = document.getElementById('mpnReportMpn').value.trim();
+    const format = document.getElementById('mpnReportFormat').value;
+    // MPN is mandatory to generate the report.
+    if (!mpn) { showToast('⚠ MPN is mandatory'); return; }
+    closeModal('mpnReport');
+    showToast('✅ Generating MPN Report for ' + mpn + ' (' + format + ')');
+  }
+
+  // ── WHERE-USED REPORT MODAL ──
+  function openWhereUsedModal() {
+    // Reset the form fields before showing the dialog.
+    document.getElementById('wuItemNumber').value = '';
+    document.getElementById('wuLevel').selectedIndex = 0;
+    document.getElementById('wuLifecycle').selectedIndex = 0;
+    document.getElementById('wuFormat').selectedIndex = 0;
+    document.getElementById('whereUsedModal').classList.add('open');
+  }
+
+  function submitWhereUsed() {
+    const itemNumber = document.getElementById('wuItemNumber').value.trim();
+    const format = document.getElementById('wuFormat').value;
+    // Item Number is required to generate the report.
+    if (!itemNumber) { showToast('⚠ Please enter an Item Number'); return; }
+    closeModal('whereUsed');
+    showToast('✅ Generating Where-Used Report for ' + itemNumber + ' (' + format + ')');
+  }
+
+  // ── CREATE DCO MODAL ──
+  function openDcoModal() {
+    // Reset the form fields before showing the dialog.
+    document.getElementById('dcoCategory').selectedIndex = 0;
+    document.getElementById('dcoName').value = '';
+    document.getElementById('dcoDesc').value = '';
+    document.getElementById('dcoReason').value = '';
+    document.getElementById('dcoModal').classList.add('open');
+  }
+
+  function submitDco() {
+    const category = document.getElementById('dcoCategory').value;
+    const name = document.getElementById('dcoName').value.trim();
+    // Category and DCO Name are required.
+    if (!category || !name) { showToast('⚠ Please fill in Category and DCO Name'); return; }
+    closeModal('dco');
+    showToast('✅ DCO created: ' + name);
+  }
+
+  // ── CREATE DEV MODAL ──
+  function openDevModal() {
+    // Reset the form fields before showing the dialog.
+    document.getElementById('devCategory').selectedIndex = 0;
+    document.getElementById('devName').value = '';
+    document.getElementById('devDesc').value = '';
+    document.getElementById('devReason').value = '';
+    document.getElementById('devModal').classList.add('open');
+  }
+
+  function submitDev() {
+    const category = document.getElementById('devCategory').value;
+    const name = document.getElementById('devName').value.trim();
+    // Category and DEV Name are required.
+    if (!category || !name) { showToast('⚠ Please fill in Category and DEV Name'); return; }
+    closeModal('dev');
+    showToast('✅ Deviation created: ' + name);
+  }
+
+  // ── CREATE MCO MODAL ──
+  function openMcoModal() {
+    // Reset the form fields before showing the dialog.
+    document.getElementById('mcoCategory').selectedIndex = 0;
+    document.getElementById('mcoName').value = '';
+    document.getElementById('mcoDesc').value = '';
+    document.getElementById('mcoReason').value = '';
+    document.getElementById('mcoModal').classList.add('open');
+  }
+
+  function submitMco() {
+    const category = document.getElementById('mcoCategory').value;
+    const name = document.getElementById('mcoName').value.trim();
+    // Category and MCO Name are required.
+    if (!category || !name) { showToast('⚠ Please fill in Category and MCO Name'); return; }
+    closeModal('mco');
+    showToast('✅ MCO created: ' + name);
+  }
+
+  // ── CREATE ECO MODAL ──
+  function openEcoModal() {
+    // Reset the form fields before showing the dialog.
+    document.getElementById('ecoCategory').selectedIndex = 0;
+    document.getElementById('ecoName').value = '';
+    document.getElementById('ecoDesc').value = '';
+    document.getElementById('ecoReason').value = '';
+    document.getElementById('ecoModal').classList.add('open');
+  }
+
+  function submitEco() {
+    const category = document.getElementById('ecoCategory').value;
+    const name = document.getElementById('ecoName').value.trim();
+    // Category and ECO Name are required.
+    if (!category || !name) { showToast('⚠ Please fill in Category and ECO Name'); return; }
+    closeModal('eco');
+    showToast('✅ ECO created: ' + name);
+  }
+
+  // ── CREATE NEW MFR MODAL ──
+  function openMfrModal() {
+    // Reset the form fields before showing the dialog.
+    document.getElementById('mfrName').value = '';
+    document.getElementById('mfrAddress').value = '';
+    document.getElementById('mfrContact').value = '';
+    document.getElementById('mfrFax').value = '';
+    document.getElementById('mfrEmail').value = '';
+    document.getElementById('mfrModal').classList.add('open');
+  }
+
+  function submitMfr() {
+    const name = document.getElementById('mfrName').value.trim();
+    const email = document.getElementById('mfrEmail').value.trim();
+    // Manufacturer name is required; validate email format if one was entered.
+    if (!name) { showToast('⚠ Please enter the Manufacturer Official Name'); return; }
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showToast('⚠ Please enter a valid email address'); return; }
+    closeModal('mfr');
+    showToast('✅ Manufacturer created: ' + name);
+  }
+
+  // ── CREATE NEW MFR PART NUMBER MODAL ──
+  function openMpnModal() {
+    // Reset the form fields before showing the dialog.
+    document.getElementById('mpnManufacturer').selectedIndex = 0;
+    document.getElementById('mpnPartNumber').value = '';
+    document.getElementById('mpnDesc').value = '';
+    document.getElementById('mpnLifecycle').value = '';
+    document.getElementById('mpnModal').classList.add('open');
+  }
+
+  function submitMpn() {
+    const manufacturer = document.getElementById('mpnManufacturer').value;
+    const partNumber   = document.getElementById('mpnPartNumber').value.trim();
+    const desc         = document.getElementById('mpnDesc').value.trim();
+    const lifecycle    = document.getElementById('mpnLifecycle').value.trim() || 'Active';
+    if (!manufacturer || !partNumber) { showToast('⚠ Please fill in Manufacturer and Part Number'); return; }
+    closeModal('mpn');
+    const params = new URLSearchParams({ mpn: partNumber, mfr: manufacturer, desc, lifecycle });
+    window.location.href = './MFR_Part.html?' + params.toString();
+  }
+
+  // ── SUB CATEGORY CASCADE MAP ──
+  const _allSubCategories = [
+    'Accessory Kit', 'Active Optical Cable (AOC)', 'Assembly', 'Battery', 'Cable',
+    'Capacitor', 'Component', 'Connector', 'Crystal', 'Dummy Part', 'Fan', 'Fastener',
+    'Fee Upgrade IC', 'Fuse', 'Gasket', 'Heat Sink', 'IC', 'Inductor', 'Label', 'Label Image',
+    'Loopback', 'Mechanical', 'Memory', 'Metal', 'Optics', 'Oscillator',
+    'Power Supply (PSU)', 'Printed Circuit Assembly', 'Printed Circuit Board',
+    'Programmable Part', 'Purchased Document', 'Resistor', 'Software', 'Subassembly',
+    'Switch', 'Top Assembly', 'Transceiver', 'Transformer', 'Transistor'
+  ];
+  const subCategoryMap = {
+    'Electrical':    _allSubCategories,
+    'Mechanical':    _allSubCategories,
+    'Software':      _allSubCategories,
+    'Packaging':     _allSubCategories,
+    'Documentation': _allSubCategories
+  };
+
+  function updateSubCategory() {
+    const category = document.getElementById('itemCategory').value;
+    const subCatSelect = document.getElementById('itemSubCategory');
+    subCatSelect.innerHTML = '<option value="">Select sub category…</option>';
+    if (category && subCategoryMap[category]) {
+      subCategoryMap[category].forEach(sub => {
+        const opt = document.createElement('option');
+        opt.value = sub;
+        opt.textContent = sub;
+        subCatSelect.appendChild(opt);
+      });
+      subCatSelect.disabled = false;
+    } else {
+      subCatSelect.disabled = true;
+    }
+  }
+
+  // ── CREATE NEW ITEM NUMBER MODAL ──
+  function openItemModal() {
+    document.getElementById('itemCategory').selectedIndex = 0;
+    const sc = document.getElementById('itemSubCategory');
+    sc.innerHTML = '<option value="">Select sub category…</option>';
+    sc.disabled = true;
+    document.getElementById('itemDesc').value = '';
+    document.getElementById('itemAttachment').value = '';
+    // Auto-generate a fresh 7-digit item number each time the modal opens
+    document.getElementById('itemNumber').value = 'IND-' + Math.floor(1000000 + Math.random() * 9000000);
+    document.getElementById('itemModal').classList.add('open');
+  }
+
+  function submitItem() {
+    const category    = document.getElementById('itemCategory').value;
+    const subCategory = document.getElementById('itemSubCategory').value;
+    const itemNumber  = document.getElementById('itemNumber').value;
+    const desc        = document.getElementById('itemDesc').value.trim();
+    if (!category) { showToast('⚠ Please select a Category'); return; }
+    if (!subCategory) { showToast('⚠ Please select a Sub Category'); return; }
+    if (!desc) { showToast('⚠ Description is required'); return; }
+    closeModal('item');
+    const params = new URLSearchParams({ itemno: itemNumber, category, subCategory, desc });
+    window.location.href = './Item_no.html?' + params.toString();
+  }
+
+  function handleOverlayClick(e, type) {
+    if (e.target.classList.contains('modal-overlay')) closeModal(type || 'create');
+  }
+
+  function submitCreate() {
+    const num = document.getElementById('newChangeNum').value || ('ECO-' + (26220 + rows.length));
+    const cat = document.getElementById('newCategory').value;
+    const status = document.getElementById('newStatus').value;
+    const title = document.getElementById('newTitle').value;
+    if (!cat || !title) { showToast('⚠ Please fill in Category and Title'); return; }
+    rows.push({
+      id: num,
+      category: cat,
+      catClass: cat.includes('Quality') ? 'cat-qa' : 'cat-npi',
+      status: status,
+      statusClass: status === 'Approved' ? 'status-approved' : status === 'Draft' ? 'status-pending' : 'status-review',
+      title: title,
+      created: new Date().toLocaleString('en-US', { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true })
+    });
+    renderTable();
+    closeModal('create');
+    showToast('✅ Change created: ' + num);
+  }
+
+  function openDetail(id) {
+    const r = rows.find(x => x.id === id);
+    if (!r) return;
+    document.getElementById('detailTitle').textContent = r.id + ' — Detail';
+    document.getElementById('detailBody').innerHTML = `
+      <div class="field-group">
+        <span class="field-label">Change Number</span>
+        <div class="detail-change-num">${r.id}</div>
+      </div>
+      <div class="field-group">
+        <span class="field-label">Category</span>
+        <div><span class="cat-badge ${r.catClass}">${r.category}</span></div>
+      </div>
+      <div class="field-group">
+        <span class="field-label">Status</span>
+        <div><span class="status-badge ${r.statusClass}">${r.status}</span></div>
+      </div>
+      <div class="field-group">
+        <span class="field-label">Title</span>
+        <div class="detail-title-text">${r.title}</div>
+      </div>
+      <div class="field-group">
+        <span class="field-label">Created</span>
+        <div class="created-date">${r.created}</div>
+      </div>
+    `;
+    document.getElementById('detailModal').classList.add('open');
+  }
+
+  // ── TOAST ──
+  let toastTimer;
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 2400);
+  }
+
+  // ── USER PANEL ──
+  function toggleUserPanel() {
+    document.getElementById('userPanel').classList.toggle('open');
+  }
+
+  document.addEventListener('click', e => {
+    const panel = document.getElementById('userPanel');
+    if (!panel.contains(e.target) && !e.target.classList.contains('avatar-btn')) {
+      panel.classList.remove('open');
+    }
+  });
+
+  // ── KEYBOARD SHORTCUT ──
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { closeModal('create'); closeModal('detail'); closeModal('item'); closeModal('mpn'); closeModal('mfr'); closeModal('eco'); closeModal('mco'); closeModal('dev'); closeModal('dco'); closeModal('whereUsed'); closeModal('mpnReport'); closeModal('mfrReport'); }
+    if ((e.ctrlKey || e.metaKey) && e.key === 'n') { e.preventDefault(); openModal('create'); }
+  });
+</script>
+
+</body>
+</html>
