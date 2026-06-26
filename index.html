@@ -1093,7 +1093,8 @@
       </div>
       <div class="field-group">
         <label class="field-label">Description <span style="color:#dc2626">*</span></label>
-        <textarea class="field-textarea" placeholder="Describe the part…" id="mpnDesc"></textarea>
+        <textarea class="field-textarea" placeholder="Describe the part.." id="mpnDesc" maxlength="150" style="resize:none;" oninput="document.getElementById('mpnDesc-counter').textContent=this.value.length+'/150'"></textarea>
+        <div style="text-align:right;font-size:11px;color:#9faab5;margin-top:3px;"><span id="mpnDesc-counter">0/150</span></div>
       </div>
       <div class="field-group">
         <label class="field-label">Lifecycle of MPN</label>
@@ -1709,6 +1710,7 @@
     document.getElementById('mpnManufacturer').selectedIndex = 0;
     document.getElementById('mpnPartNumber').value = '';
     document.getElementById('mpnDesc').value = '';
+    document.getElementById('mpnDesc-counter').textContent = '0/150';
     document.getElementById('mpnLifecycle').value = '';
     document.getElementById('mpnModal').classList.add('open');
   }
