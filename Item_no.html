@@ -589,11 +589,11 @@
           </div>
           <div class="detail-pair-row">
             <div class="field-pair">
-              <div class="detail-label">Custom/Off the Shelf</div>
+              <div class="detail-label">Buy Status</div>
               <div class="detail-value">
                 <select id="detail-off-shelf">
                   <option value="Off the Shelf" selected>Off the Shelf</option>
-                  <opCommentstion value="Custom">Custom</opCommentstion>
+                  <option value="Custom">Custom</option>
                 </select>
               </div>
             </div>
@@ -817,7 +817,7 @@
               </div>
             </div>
           </div>
-          <!-- Row 2: Lifecycle Phase | Unit of Measure -->
+          <!-- Row 2: Lifecycle Phase | Trade Data -->
           <div class="detail-pair-row">
             <div class="field-pair">
               <div class="detail-label">Lifecycle Phase</div>
@@ -832,8 +832,8 @@
               </div>
             </div>
             <div class="field-pair">
-              <div class="detail-label">Unit of Measure</div>
-              <div class="detail-value"><input type="text" id="detail-uom-rev" value="Each" readonly style="background:#f8fafc;cursor:default;" /></div>
+              <div class="detail-label">Trade Data</div>
+              <div class="detail-value"><input type="text" id="detail-uom-rev" value="TBD" readonly style="background:#f8fafc;cursor:default;" /></div>
             </div>
           </div>
           <!-- Row 3: Sourcing Strategy | Category Control -->
@@ -923,7 +923,7 @@
 
   <!-- ATTACHMENTS TAB -->
   <div id="panel-attachments" class="tab-panel">
-    <p class="attach-notice">Files larger than 3 MB must be loaded after Item is created.</p>
+    
     <p class="attach-label">Attachment</p>
     <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()"
          ondragover="event.preventDefault();this.classList.add('drag-over')"

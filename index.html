@@ -1053,7 +1053,7 @@
       
       <div class="field-group">
         <label class="field-label">Description <span style="color:#dc2626">*</span></label>
-        <textarea class="field-textarea" placeholder="Describe the item… (required)" id="newDesc"></textarea>
+        <textarea class="field-textarea" placeholder="Describe the item" id="newDesc"></textarea>
       </div>
       <div class="field-group">
         <label class="field-label">Attachment</label>
@@ -1721,7 +1721,7 @@
     const desc         = document.getElementById('mpnDesc').value.trim();
     const lifecycle    = document.getElementById('mpnLifecycle').value.trim() || 'Active';
     if (!manufacturer || !partNumber) { showToast('⚠ Please fill in Manufacturer and Part Number'); return; }
-    if (!desc) { showToast('⚠ Description is required'); return; }
+    if (!desc) { showToast(' Description is required'); return; }
     closeModal('mpn');
     const params = new URLSearchParams({ mpn: partNumber, mfr: manufacturer, desc, lifecycle });
     window.location.href = './MFR_Part.html?' + params.toString();
@@ -1782,7 +1782,7 @@
     const desc        = document.getElementById('newDesc').value.trim();
     if (!category) { showToast('⚠ Please select a Category'); return; }
     if (!subCategory) { showToast('⚠ Please select a Sub Category'); return; }
-    if (!desc) { showToast('⚠ Description is required'); return; }
+    if (!desc) { showToast('Description is required'); return; }
     closeModal('item');
     const params = new URLSearchParams({ itemno: itemNumber, category, subCategory, desc });
     window.location.href = './Item_no.html?' + params.toString();
