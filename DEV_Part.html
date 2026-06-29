@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DEV Detail — NEXTGEN PLM</title>
+<style>
+:root {
+  --bg: #f0f2f5;
+  --white: #ffffff;
+  --accent: #2563eb;
+  --accent-dark: #1d4ed8;
+  --accent-light: #dbeafe;
+  --text-primary: #111827;
+  --text-secondary: #6b7280;
+  --text-muted: #9ca3af;
+  --border: #e5e7eb;
+  --green: #16a34a;
+  --red: #dc2626;
+  --shadow: 0 1px 4px rgba(0,0,0,0.08);
+  --radius: 8px;
+  --font: 'Segoe UI', system-ui, sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font); background: var(--bg); color: var(--text-primary); min-height: 100vh; display: flex; flex-direction: column; }
+
+/* TOPBAR */
+.topbar { background: var(--white); border-bottom: 1px solid var(--border); height: 52px; display: flex; align-items: center; padding: 0 16px; gap: 12px; flex-shrink: 0; box-shadow: var(--shadow); z-index: 100; }
+.brand-wrap { display: flex; align-items: center; gap: 10px; }
+.brand-logo { width: 34px; height: 34px; background: linear-gradient(135deg,#2563eb,#7c3aed); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 15px; font-weight: 900; letter-spacing: -1px; }
+.brand-name { font-size: 13px; font-weight: 700; }
+.brand-sub  { font-size: 10px; color: var(--text-secondary); }
+.topbar-right { margin-left: auto; display: flex; align-items: center; gap: 4px; }
+.icon-btn { width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; border-radius: 8px; cursor: pointer; color: var(--text-secondary); font-size: 16px; border: none; background: transparent; transition: background 0.15s; }
+.icon-btn:hover { background: var(--bg); color: var(--accent); }
+.avatar-btn { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg,#2563eb,#7c3aed); color: #fff; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 2px solid var(--border); }
+
+/* BREADCRUMB */
+.breadcrumb { background: var(--white); border-bottom: 1px solid var(--border); padding: 8px 24px; font-size: 12px; color: var(--text-secondary); display: flex; align-items: center; gap: 6px; }
+.breadcrumb a { color: var(--accent); text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+
+/* DEV HEADER */
+.dev-header { background: var(--white); border-bottom: 1px solid var(--border); padding: 14px 24px 0; }
+.dev-header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; gap: 12px; flex-wrap: wrap; }
+.dev-id-wrap { display: flex; align-items: center; gap: 12px; }
+.dev-icon { width: 40px; height: 40px; background: #fdf4ff; border: 2px solid #a855f7; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+.dev-label-sm { font-size: 10.5px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+.dev-number { font-size: 22px; font-weight: 800; color: var(--text-primary); line-height: 1.1; }
+.dev-actions { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.hdr-btn { padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; border: 1px solid var(--border); background: var(--white); color: var(--text-primary); display: inline-flex; align-items: center; gap: 4px; transition: background 0.15s, border-color 0.15s; white-space: nowrap; }
+.hdr-btn:hover { background: var(--bg); border-color: #c1c9d2; }
+.hdr-btn.approve-btn { background: var(--green); color: #fff; border-color: var(--green); }
+.hdr-btn.approve-btn:hover { background: #15803d; }
+.hdr-btn.approve-btn:disabled { background: #6b7280; border-color: #6b7280; cursor: not-allowed; }
+
+/* META ROW */
+.dev-meta { display: flex; border-top: 1px solid var(--border); flex-wrap: wrap; }
+.meta-cell { flex: 1; padding: 10px 18px; display: flex; flex-direction: column; gap: 3px; border-right: 1px solid var(--border); min-width: 0; }
+.meta-cell:last-child { border-right: none; }
+.meta-lbl { font-size: 10px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.4px; }
+.meta-val { font-size: 13px; color: var(--text-primary); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.meta-val.link { color: var(--accent); font-weight: 500; cursor: pointer; }
+
+/* WORKFLOW STEPPER */
+.workflow-wrap { background: var(--white); border-bottom: 1px solid var(--border); padding: 10px 24px; display: flex; align-items: center; overflow-x: auto; gap: 0; }
+.wf-step {
+  display: flex; align-items: center; justify-content: center;
+  height: 36px; padding: 0 22px 0 30px; margin-right: 2px;
+  font-size: 11.5px; font-weight: 600; cursor: pointer; white-space: nowrap;
+  background: #eaecef; color: #9ca3af;
+  clip-path: polygon(12px 0%, calc(100% - 12px) 0%, 100% 50%, calc(100% - 12px) 100%, 12px 100%, 0% 50%);
+  transition: background 0.15s, color 0.15s;
+  user-select: none;
+}
+.wf-step:first-child { padding-left: 18px; clip-path: polygon(0% 0%, calc(100% - 12px) 0%, 100% 50%, calc(100% - 12px) 100%, 0% 100%); }
+.wf-step:last-child  { margin-right: 0; clip-path: polygon(12px 0%, 100% 0%, 100% 100%, 12px 100%, 0% 50%); }
+.wf-step.done   { background: #22c55e; color: #fff; }
+.wf-step.active { background: #1e3a5f; color: #fff; }
+.wf-step.active + .wf-step:not(.done) { background: #d4d8de; }
+.wf-step:hover:not(.done):not(.active) { background: #d1d5db; color: #374151; }
+
+/* TAB BAR (boxed) */
+.tab-section { padding: 10px 24px 0; background: var(--bg); }
+.tab-bar { background: var(--white); border: 1px solid var(--border); border-radius: 6px; display: flex; overflow: hidden; }
+.tab { padding: 12px 20px; font-size: 13px; font-weight: 500; color: var(--text-secondary); cursor: pointer; border-bottom: 3px solid transparent; transition: color 0.15s, background 0.15s; white-space: nowrap; }
+.tab:hover { color: var(--accent); background: #f9fafb; }
+.tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 700; }
+
+/* PAGE BODY */
+.page-body { flex: 1; overflow-y: auto; padding: 16px 24px 24px; }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* EDIT BAR */
+.edit-bar { display: flex; align-items: center; justify-content: flex-end; gap: 8px; margin-bottom: 16px; }
+.btn { padding: 6px 14px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; border: 1px solid var(--border); background: var(--white); color: var(--text-primary); display: inline-flex; align-items: center; gap: 4px; transition: background 0.15s, border-color 0.15s; white-space: nowrap; }
+.btn:hover { background: var(--bg); border-color: var(--text-muted); }
+.btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+.btn-primary:hover { background: var(--accent-dark); }
+.btn-blue-outline { color: var(--accent); border-color: var(--accent); background: var(--white); }
+.btn-blue-outline:hover { background: var(--accent-light); }
+.btn-secondary { color: var(--text-primary); border-color: var(--border); background: var(--white); }
+.btn-secondary:hover { background: #f3f4f6; }
+
+/* SECTION CARD */
+.sec-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 16px; overflow: hidden; box-shadow: var(--shadow); }
+.sec-head { padding: 10px 18px; background: #f8fafc; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none; }
+.sec-head:hover { background: #f1f5f9; }
+.sec-caret { font-size: 11px; color: var(--text-muted); display: inline-block; transition: transform 0.2s; }
+.sec-caret.closed { transform: rotate(-90deg); }
+.sec-title { font-size: 11px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.6px; }
+.sec-body { padding: 0; }
+.sec-body.collapsed { display: none; }
+
+/* FIELDS 2-COL GRID */
+.fields-grid { display: grid; grid-template-columns: 1fr 1fr; }
+.field-cell { padding: 14px 18px; border-bottom: 1px solid #f3f4f6; display: flex; flex-direction: column; gap: 5px; }
+.field-cell:nth-child(odd) { border-right: 1px solid #f3f4f6; }
+.field-cell.full-width { grid-column: span 2; border-right: none; }
+.f-lbl { font-size: 10.5px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.4px; display: flex; align-items: center; gap: 4px; }
+.f-lbl .req { color: var(--red); font-size: 12px; }
+.f-val { font-size: 13px; color: var(--text-primary); line-height: 1.6; min-height: 20px; }
+.f-val.empty { color: var(--text-muted); font-style: italic; }
+
+/* STATUS BADGE */
+.wf-badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+.wf-Pending      { background: #fef9c3; color: #854d0e; }
+.wf-Submitted    { background: #dbeafe; color: #1e40af; }
+.wf-CCB          { background: #1e3a5f; color: #fff; }
+.wf-Final-Review { background: #e0e7ff; color: #3730a3; }
+.wf-Released     { background: #dcfce7; color: #166534; }
+.wf-Closed       { background: #f3f4f6; color: #374151; }
+.wf-Canceled     { background: #fee2e2; color: #991b1b; }
+.wf-Hold         { background: #fef3c7; color: #92400e; }
+
+/* EDIT INPUTS */
+.f-input, .f-select, .f-textarea {
+  padding: 7px 10px; border: 1px solid var(--border); border-radius: 6px;
+  font-size: 13px; color: var(--text-primary); font-family: var(--font);
+  outline: none; width: 100%; background: var(--white);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.f-input:not(:disabled):focus, .f-select:not(:disabled):focus, .f-textarea:not(:disabled):focus {
+  border-color: var(--accent); box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+}
+.f-textarea { resize: none; min-height: 72px; }
+.f-input:disabled, .f-select:disabled, .f-textarea:disabled {
+  background: #f9fafb; color: var(--text-primary); cursor: default; border-color: transparent;
+}
+.f-char-count { font-size: 11px; color: var(--text-muted); text-align: right; }
+
+/* HISTORY TABLE */
+.hist-wrap { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+thead th { background: #f8fafc; padding: 10px 14px; text-align: left; font-size: 11px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.4px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+tbody tr { border-bottom: 1px solid var(--border); transition: background 0.12s; }
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: #f9fafb; }
+td { padding: 10px 14px; vertical-align: middle; color: var(--text-primary); }
+.hist-empty { text-align: center; padding: 32px; color: var(--text-muted); font-style: italic; font-size: 13px; }
+.action-badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; background: #dbeafe; color: #1e40af; }
+.action-badge.created  { background: #dcfce7; color: #166534; }
+.action-badge.workflow { background: #e0e7ff; color: #3730a3; }
+.old-val, .new-val { max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block; }
+.old-val { color: var(--text-secondary); }
+
+/* ATTACHMENTS */
+.attach-label { font-size: 12px; font-weight: 600; color: var(--text-secondary); margin-bottom: 8px; }
+.drop-zone { border: 2px dashed var(--border); border-radius: 8px; padding: 28px 20px; display: flex; align-items: center; gap: 14px; background: var(--white); cursor: pointer; transition: border-color 0.15s, background 0.15s; }
+.drop-zone:hover, .drop-zone.drag-over { border-color: var(--accent); background: var(--accent-light); }
+.drop-zone input[type="file"] { display: none; }
+.attach-file-list { margin-top: 14px; display: flex; flex-direction: column; gap: 6px; }
+.attach-file-item { display: flex; align-items: center; gap: 10px; background: var(--white); border: 1px solid var(--border); border-radius: 6px; padding: 8px 12px; font-size: 13px; }
+.attach-file-name { flex: 1; color: var(--text-primary); }
+.attach-file-size { font-size: 12px; color: var(--text-muted); }
+.attach-remove { background: none; border: none; cursor: pointer; color: var(--text-muted); font-size: 15px; line-height: 1; padding: 0 2px; transition: color 0.12s; }
+.attach-remove:hover { color: var(--red); }
+
+/* EMPTY STATE */
+.empty-state { text-align: center; padding: 48px 24px; color: var(--text-muted); }
+.empty-icon { font-size: 36px; margin-bottom: 10px; }
+.empty-text { font-size: 13px; }
+
+/* AFFECTED ITEMS */
+.ai-wrap { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+.ai-toolbar { display: flex; align-items: center; gap: 4px; padding: 8px 14px; border-bottom: 1px solid var(--border); flex-wrap: wrap; background: var(--white); }
+.ai-btn { padding: 5px 10px; border: 1px solid var(--border); border-radius: 4px; background: var(--white); font-size: 12px; font-weight: 500; color: var(--text-primary); cursor: pointer; white-space: nowrap; transition: background 0.12s; }
+.ai-btn:hover { background: #f3f4f6; border-color: #c1c9d2; }
+.ai-btn.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+.ai-btn.primary:hover { background: var(--accent-dark); }
+.ai-controls { display: flex; align-items: center; justify-content: space-between; padding: 7px 14px; background: #f8f9fa; border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 8px; }
+.ai-count { font-size: 12px; color: var(--text-secondary); font-weight: 500; }
+.ai-controls-right { display: flex; align-items: center; gap: 6px; }
+.ai-view-select { padding: 4px 8px; border: 1px solid var(--border); border-radius: 4px; font-size: 12px; background: var(--white); color: var(--text-primary); cursor: pointer; }
+.ai-search { padding: 5px 10px; border: 1px solid var(--border); border-radius: 4px; font-size: 12px; width: 200px; outline: none; }
+.ai-search:focus { border-color: var(--accent); }
+.ai-table-wrap { overflow-x: auto; }
+.ai-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.ai-table thead th { background: #f8f9fa; padding: 9px 12px; text-align: left; font-size: 11.5px; font-weight: 600; color: var(--text-secondary); border-bottom: 2px solid var(--border); white-space: nowrap; }
+.ai-table thead th.sortable { cursor: pointer; user-select: none; }
+.ai-table thead th.sortable:hover { color: var(--accent); }
+.ai-table tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
+.ai-table tbody tr:last-child { border-bottom: none; }
+.ai-table tbody tr:hover { background: #eff6ff; }
+.ai-table td { padding: 8px 12px; vertical-align: middle; }
+.ai-th-check, .ai-td-check { width: 34px; text-align: center; padding: 8px 6px; }
+.ai-td-num  { width: 32px; text-align: center; color: var(--text-muted); font-size: 12px; }
+.ai-td-eye  { width: 38px; text-align: center; cursor: pointer; color: var(--text-muted); font-size: 14px; }
+.ai-td-eye:hover { color: var(--accent); }
+.ai-td-item { color: var(--accent); font-weight: 600; cursor: pointer; white-space: nowrap; }
+.ai-td-item:hover { text-decoration: underline; }
+.ai-td-clip { width: 34px; text-align: center; color: var(--text-muted); }
+.ai-empty-row td { text-align: center; padding: 40px; color: var(--text-muted); font-style: italic; font-size: 13px; }
+.lc-badge       { display: inline-block; padding: 2px 9px; border-radius: 20px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+.lc-prototype   { background: #dbeafe; color: #1e40af; }
+.lc-preliminary { background: #fef9c3; color: #854d0e; }
+.lc-production  { background: #dcfce7; color: #166534; }
+.lc-obsolete    { background: #fee2e2; color: #991b1b; }
+.ai-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 800; align-items: center; justify-content: center; }
+.ai-modal-overlay.open { display: flex; }
+.ai-modal { background: var(--white); border-radius: var(--radius); padding: 24px; width: 420px; max-width: 95vw; box-shadow: 0 12px 40px rgba(0,0,0,0.18); }
+.ai-modal h3 { font-size: 15px; font-weight: 700; margin-bottom: 16px; color: var(--text-primary); }
+.ai-modal-field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 12px; }
+.ai-modal-field label { font-size: 11px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.4px; }
+.ai-modal-field input, .ai-modal-field select { padding: 7px 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; outline: none; font-family: inherit; }
+.ai-modal-field input:focus, .ai-modal-field select:focus { border-color: var(--accent); }
+.ai-modal-footer { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+
+/* APPROVERS */
+.apr-wrap { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); margin-bottom: 14px; }
+.apr-stage-head { display: flex; align-items: center; gap: 10px; padding: 10px 16px; background: #f8f9fa; border-bottom: 1px solid var(--border); cursor: pointer; user-select: none; }
+.apr-stage-caret { font-size: 11px; color: var(--text-secondary); transition: transform 0.2s; }
+.apr-stage-caret.closed { transform: rotate(-90deg); }
+.apr-stage-name { font-size: 13px; font-weight: 700; color: var(--text-primary); }
+.apr-stage-badge { margin-left: auto; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+.apr-badge-current { background: #dcfce7; color: #166534; }
+.apr-badge-pending  { background: #dbeafe; color: #1e40af; }
+.apr-badge-done     { background: #f3f4f6; color: #374151; }
+.apr-sub-tabs { display: flex; border-bottom: 1px solid var(--border); padding: 0 16px; background: var(--white); }
+.apr-sub-tab { padding: 10px 14px; font-size: 12.5px; font-weight: 500; color: var(--text-secondary); cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; }
+.apr-sub-tab:hover { color: var(--accent); }
+.apr-sub-tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 700; }
+.apr-tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
+.apr-tbl thead th { background: #f8f9fa; padding: 9px 14px; text-align: left; font-size: 11.5px; font-weight: 600; color: var(--text-secondary); border-bottom: 2px solid var(--border); white-space: nowrap; }
+.apr-tbl td { padding: 9px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+.apr-tbl tbody tr:last-child td { border-bottom: none; }
+.apr-tbl tbody tr:hover { background: #f9fafb; }
+.apr-name { color: var(--accent); font-weight: 500; }
+.apr-status-pending  { color: #ef4444; font-size: 16px; }
+.apr-status-approved { color: #16a34a; font-size: 16px; }
+.apr-empty { text-align: center; padding: 32px; color: var(--text-muted); font-size: 13px; font-style: italic; }
+.apr-footer { display: flex; align-items: center; gap: 6px; padding: 10px 16px; border-top: 1px solid var(--border); background: #f8f9fa; }
+.apr-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 900; align-items: center; justify-content: center; }
+.apr-modal-overlay.open { display: flex; }
+.apr-modal { background: var(--white); border-radius: var(--radius); padding: 24px; width: 400px; max-width: 95vw; box-shadow: 0 12px 40px rgba(0,0,0,0.18); }
+.apr-modal h3 { font-size: 15px; font-weight: 700; margin-bottom: 16px; }
+.apr-modal-field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 12px; }
+.apr-modal-field label { font-size: 11px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.4px; }
+.apr-modal-field input, .apr-modal-field select { padding: 7px 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; outline: none; font-family: inherit; }
+.apr-modal-field input:focus, .apr-modal-field select:focus { border-color: var(--accent); }
+.apr-modal-footer { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+
+/* RELATIONSHIPS */
+.rel-badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+.rel-eco     { background: #dbeafe; color: #1e40af; }
+.rel-mco     { background: #dcfce7; color: #166534; }
+.rel-pcn     { background: #fef9c3; color: #854d0e; }
+.rel-dev     { background: #fdf4ff; color: #7c3aed; }
+.rel-default { background: #f3f4f6; color: #374151; }
+.rel-num-link { color: var(--accent); font-weight: 600; cursor: pointer; }
+.rel-num-link:hover { text-decoration: underline; }
+
+/* TOAST */
+.toast { position: fixed; bottom: 24px; right: 24px; background: #111827; color: #fff; padding: 12px 20px; border-radius: 8px; font-size: 13px; font-weight: 500; box-shadow: 0 8px 24px rgba(0,0,0,0.2); z-index: 999; opacity: 0; transform: translateY(10px); transition: opacity 0.25s, transform 0.25s; pointer-events: none; }
+.toast.show { opacity: 1; transform: translateY(0); }
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+
+@media (max-width: 700px) {
+  .fields-grid { grid-template-columns: 1fr; }
+  .field-cell:nth-child(odd) { border-right: none; }
+  .field-cell.full-width { grid-column: span 1; }
+}
+</style>
+</head>
+<body>
+
+
+
+<!-- BREADCRUMB -->
+<div class="breadcrumb">
+  <a href="./index.html">Home</a>
+  <span>›</span>
+  <a href="./index.html">Changes</a>
+  <span>›</span>
+  <span id="bcNum">—</span>
+</div>
+
+<!-- DEV HEADER -->
+<div class="dev-header">
+  <div class="dev-header-top">
+    <div class="dev-id-wrap">
+      <div class="dev-icon">&#128257;</div>
+      <div>
+        <div class="dev-label-sm">Change</div>
+        <div class="dev-number" id="hdrNum">—</div>
+      </div>
+    </div>
+    <div class="dev-actions">
+      <button class="hdr-btn" onclick="showToast('Now following this DEV')">+ Follow</button>
+      <button class="hdr-btn" onclick="showToast('Change Owner dialog')">Change Owner</button>
+      <button class="hdr-btn" onclick="copyInfo()">Copy Clipboard</button>
+      <button class="hdr-btn" onclick="showToast('Share link copied')">Share Record</button>
+      <!-- <button class="hdr-btn approve-btn" id="approveBtn" onclick="advanceWorkflow()">Submit &#8594;</button> -->
+    </div>
+  </div>
+  <div class="dev-meta" id="devMeta"></div>
+</div>
+
+<!-- WORKFLOW STEPPER -->
+<div class="workflow-wrap" id="workflowBar"></div>
+
+<!-- TAB BAR (boxed) -->
+<div class="tab-section">
+  <div class="tab-bar">
+    <div class="tab active" onclick="switchTab('details',this)">Details</div>
+    <div class="tab" onclick="switchTab('affected-items',this)">Affected Items</div>
+    <div class="tab" onclick="switchTab('approvers',this)">Approvers</div>
+    <div class="tab" onclick="switchTab('relationships',this)">Relationships</div>
+    <div class="tab" onclick="switchTab('attachments',this)">Attachments</div>
+    <div class="tab" onclick="switchTab('history',this)">History</div>
+  </div>
+</div>
+
+<!-- PAGE BODY -->
+<div class="page-body">
+
+  <!-- DETAILS TAB -->
+  <div class="tab-panel active" id="panel-details">
+
+    <div class="edit-bar">
+      <button class="btn btn-blue-outline" id="btn-edit" onclick="enterEdit()">&#9998; Edit</button>
+      <button class="btn btn-primary"      id="btn-save" onclick="saveEdit()">&#10003; Save</button>
+    </div>
+
+    <!-- INFORMATION -->
+    <div class="sec-card">
+      <div class="sec-head" onclick="toggleSection('s-info')">
+        <span class="sec-caret" id="c-s-info">&#9660;</span>
+        <span class="sec-title">Information</span>
+      </div>
+      <div class="sec-body" id="s-info">
+        <div class="fields-grid" id="g-info"></div>
+      </div>
+    </div>
+
+    <!-- DEVIATION DETAILS -->
+    <div class="sec-card">
+      <div class="sec-head" onclick="toggleSection('s-dev')">
+        <span class="sec-caret" id="c-s-dev">&#9660;</span>
+        <span class="sec-title">Deviation Details</span>
+      </div>
+      <div class="sec-body" id="s-dev">
+        <div class="fields-grid" id="g-dev"></div>
+      </div>
+    </div>
+
+    <!-- SUPPLIER ACCESS -->
+    <div class="sec-card">
+      <div class="sec-head" onclick="toggleSection('s-supplier')">
+        <span class="sec-caret" id="c-s-supplier">&#9660;</span>
+        <span class="sec-title">Supplier Access (Internal Only)</span>
+      </div>
+      <div class="sec-body" id="s-supplier">
+        <div class="fields-grid" id="g-supplier"></div>
+      </div>
+    </div>
+
+    <!-- SYSTEM FIELDS -->
+    <div class="sec-card">
+      <div class="sec-head" onclick="toggleSection('s-system')">
+        <span class="sec-caret" id="c-s-system">&#9660;</span>
+        <span class="sec-title">System Fields</span>
+      </div>
+      <div class="sec-body" id="s-system">
+        <div class="fields-grid" id="g-system"></div>
+      </div>
+    </div>
+
+  </div>
+
+
+  <!-- AFFECTED ITEMS TAB -->
+  <div class="tab-panel" id="panel-affected-items">
+    <div class="ai-wrap">
+      <div class="ai-toolbar">
+        <button class="ai-btn primary" onclick="openAiModal()">+ Add</button>
+        <button class="ai-btn" onclick="aiRemoveSelected()">Remove</button>
+        <button class="ai-btn" onclick="aiCopy()">Copy to Clipboard</button>
+        <button class="ai-btn" onclick="renderAI()">&#8635; Refresh</button>
+      </div>
+      <div class="ai-controls">
+        <span class="ai-count" id="ai-count">0 of 0 records</span>
+        <div class="ai-controls-right">
+          <select class="ai-view-select"><option>Default View</option></select>
+          <input type="text" class="ai-search" placeholder="&#128269; Search Within Results" oninput="aiSearch(this.value)" />
+        </div>
+      </div>
+      <div class="ai-table-wrap">
+        <table class="ai-table">
+          <thead>
+            <tr>
+              <th class="ai-th-check"><input type="checkbox" id="ai-check-all" onchange="aiToggleAll(this)" /></th>
+              <th class="ai-td-num">#</th>
+              <th style="width:38px;">View</th>
+              <th class="sortable" onclick="aiSort('itemNumber')">Item Number &#9652;</th>
+              <th class="sortable" onclick="aiSort('lifecycle')">Lifecycle Phase &#9662;</th>
+              <th class="ai-td-clip">&#128206;</th>
+              <th class="sortable" onclick="aiSort('description')">Description &#9662;</th>
+              <th class="sortable" onclick="aiSort('revision')">Revision &#9662;</th>
+              <th style="text-align:center;">Has Item Attachments</th>
+            </tr>
+          </thead>
+          <tbody id="ai-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Affected Item Modal -->
+  <div class="ai-modal-overlay" id="aiModalOverlay">
+    <div class="ai-modal">
+      <h3>Add Affected Item</h3>
+      <div class="ai-modal-field">
+        <label>Item Number</label>
+        <input type="text" id="ai-inp-num" placeholder="e.g. ASY-00001-01" />
+      </div>
+      <div class="ai-modal-field">
+        <label>Description</label>
+        <input type="text" id="ai-inp-desc" placeholder="Item description" />
+      </div>
+      <div class="ai-modal-field">
+        <label>Lifecycle Phase</label>
+        <select id="ai-inp-lc">
+          <option value="Prototype">Prototype</option>
+          <option value="Preliminary">Preliminary</option>
+          <option value="Production">Production</option>
+          <option value="Obsolete">Obsolete</option>
+        </select>
+      </div>
+      <div class="ai-modal-field">
+        <label>Revision</label>
+        <input type="text" id="ai-inp-rev" placeholder="e.g. A0" value="A0" />
+      </div>
+      <div class="ai-modal-footer">
+        <button class="btn btn-secondary" onclick="closeAiModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="aiConfirmAdd()">Add Item</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- APPROVERS TAB -->
+  <div class="tab-panel" id="panel-approvers">
+    <div class="ai-wrap">
+      <div class="ai-toolbar">
+        <button class="ai-btn primary" onclick="openAprModal()">+ Add</button>
+        <button class="ai-btn" onclick="aprRemoveSelected()">Remove</button>
+      </div>
+      <div class="ai-controls">
+        <span class="ai-count" id="apr-count">0 records</span>
+        <div class="ai-controls-right">
+          <input type="checkbox" id="apr-check-all" onchange="aprToggleAll(this)" style="margin-right:6px;">
+          <label for="apr-check-all" style="font-size:12px;color:var(--text-secondary);cursor:pointer;">Select All</label>
+        </div>
+      </div>
+      <div class="ai-table-wrap">
+        <table class="ai-table">
+          <thead>
+            <tr>
+              <th class="ai-th-check"></th>
+              <th>Name</th>
+              <th>Product Team</th>
+              <th>Role</th>
+              <th>Stage</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="apr-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Approver Modal -->
+  <div class="ai-modal-overlay" id="aprModalOverlay">
+    <div class="ai-modal">
+      <h3>Add Approver</h3>
+      <div class="ai-modal-field">
+        <label>Name <span style="color:var(--red)">*</span></label>
+        <input type="text" id="aprName" placeholder="Full name" />
+      </div>
+      <div class="ai-modal-field">
+        <label>Product Team</label>
+        <input type="text" id="aprTeam" placeholder="e.g. Engineering, Quality..." />
+      </div>
+      <div class="ai-modal-field">
+        <label>Role</label>
+        <select id="aprRole">
+          <option value="Approver">Approver</option>
+          <option value="Observer">Observer</option>
+        </select>
+      </div>
+      <div class="ai-modal-field">
+        <label>Stage</label>
+        <select id="aprStage">
+          <option value="CCB">CCB</option>
+          <option value="Final Review">Final Review</option>
+          <option value="Released">Released</option>
+        </select>
+      </div>
+      <div class="ai-modal-footer">
+        <button class="btn" onclick="closeAprModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="confirmAddApprover()">Add</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- RELATIONSHIPS TAB -->
+  <div class="tab-panel" id="panel-relationships">
+    <div class="ai-wrap">
+      <div class="ai-toolbar">
+        <button class="ai-btn primary" onclick="openRelModal()">+ Add</button>
+        <button class="ai-btn" onclick="relRemoveSelected()">Remove</button>
+      </div>
+      <div class="ai-controls">
+        <span class="ai-count" id="rel-count">0 records</span>
+      </div>
+      <div class="ai-table-wrap">
+        <table class="ai-table">
+          <thead>
+            <tr>
+              <th class="ai-th-check"><input type="checkbox" id="rel-check-all" onchange="relToggleAll(this)"></th>
+              <th>From</th>
+              <th>From Title</th>
+              <th>Type</th>
+              <th>To</th>
+              <th>To Title</th>
+            </tr>
+          </thead>
+          <tbody id="rel-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Relationship Modal -->
+  <div class="ai-modal-overlay" id="relModalOverlay">
+    <div class="ai-modal" style="width:460px;max-width:95vw;">
+      <h3>Add Relationship</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div class="ai-modal-field">
+          <label>From (Number)</label>
+          <input type="text" id="relFromNum" placeholder="e.g. DEV-00123" />
+        </div>
+        <div class="ai-modal-field">
+          <label>From Title</label>
+          <input type="text" id="relFromTitle" placeholder="Title" />
+        </div>
+        <div class="ai-modal-field" style="grid-column:1/-1;">
+          <label>Relationship Type</label>
+          <select id="relType">
+            <option value="Follow-up DEV">Follow-up DEV</option>
+            <option value="Related ECO">Related ECO</option>
+            <option value="Related MCO">Related MCO</option>
+            <option value="PCN">PCN</option>
+            <option value="Supersedes">Supersedes</option>
+            <option value="Superseded By">Superseded By</option>
+            <option value="References">References</option>
+          </select>
+        </div>
+        <div class="ai-modal-field">
+          <label>To (Number)</label>
+          <input type="text" id="relToNum" placeholder="e.g. ECO-00456" />
+        </div>
+        <div class="ai-modal-field">
+          <label>To Title</label>
+          <input type="text" id="relToTitle" placeholder="Title" />
+        </div>
+      </div>
+      <div class="ai-modal-footer">
+        <button class="btn" onclick="closeRelModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="confirmAddRelationship()">Add</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ATTACHMENTS TAB -->
+  <div class="tab-panel" id="panel-attachments">
+    <p class="attach-label">Attachments</p>
+    <div class="drop-zone" id="devDropZone"
+         onclick="document.getElementById('devFileInput').click()"
+         ondragover="event.preventDefault();this.classList.add('drag-over')"
+         ondragleave="this.classList.remove('drag-over')"
+         ondrop="handleDrop(event)">
+      <input type="file" id="devFileInput" multiple onchange="handleFiles(this.files)" />
+      <button class="btn btn-blue-outline" onclick="event.stopPropagation();document.getElementById('devFileInput').click()">&#8679; Upload Files</button>
+      <span style="font-size:13px;color:var(--text-muted)">Or drop files here</span>
+    </div>
+    <div class="attach-file-list" id="attachFileList"></div>
+  </div>
+
+  <!-- HISTORY TAB -->
+  <div class="tab-panel" id="panel-history">
+    <div class="hist-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Date / Time</th>
+            <th>User</th>
+            <th>Action</th>
+            <th>Field</th>
+            <th>Previous Value</th>
+            <th>New Value</th>
+          </tr>
+        </thead>
+        <tbody id="histBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const WORKFLOW = ['Pending','Submitted','CCB','Final Review','Released','Closed','Canceled'];
+
+const SECTIONS = [
+  { id: 'info', fields: [
+    { key: 'category',          label: 'Category',           type: 'select',   options: ['Deviation','NPI - DEV','Sustaining - DEV'] },
+    { key: 'devNum',            label: 'Change Number',      type: 'readonly' },
+    { key: 'title',             label: 'Title',              type: 'textarea', maxlength: 200, noresize: true, req: true, half: true },
+    { key: 'description',       label: 'Description',        type: 'textarea', maxlength: 500, noresize: true, req: true, half: true },
+    { key: 'workflowStatus',    label: 'Change Status',      type: 'readonly' },
+    { key: 'changeSubcategory', label: 'Change Subcategory', type: 'select',   options: ['','Cut-in','Documentation','Phase-In'] },
+    { key: 'reasonForChange',   label: 'Reason for Change',  type: 'textarea', noresize: true },
+    { key: 'reasonCode',        label: 'Reason Code',        type: 'select',   options: ['','Cost Reduction','Improvement','Issue Resolution','Other','Supplier Driven'] },
+    { key: 'disposition',       label: 'Disposition',        type: 'select',   options: ['N/A','Use As Is','Scrap','Rework'] },
+    { key: 'productLines',      label: 'Product Lines',      type: 'text' },
+    { key: 'originator',        label: 'Originator',         type: 'text' },
+    { key: 'changeAnalyst',     label: 'Change Analyst',     type: 'text' },
+  ]},
+  { id: 'dev', fields: [
+    { key: 'deviationType',      label: 'Deviation Type',       type: 'select', options: ['','Temporary','Permanent','Concession'] },
+    { key: 'expiryDate',         label: 'Expiry Date',          type: 'text' },
+    { key: 'quantity',           label: 'Quantity',             type: 'text' },
+    { key: 'dfImpact',           label: 'DF Impact',            type: 'select', options: ['N/A','Yes','No'] },
+    { key: 'repairImpact',       label: 'Repair Impact',        type: 'select', options: ['N/A','Yes','No'] },
+    { key: 'serviceDepotImpact', label: 'Service Depot Impact', type: 'select', options: ['N/A','Yes','No'] },
+    { key: 'mfgImpact',          label: 'MFG Impact',           type: 'select', options: ['N/A','Yes','No'] },
+    { key: 'qualityImpact',      label: 'Quality Impact',       type: 'select', options: ['N/A','Yes','No'] },
+  ]},
+  { id: 'supplier', fields: [
+    { key: 'accessibleBy',  label: 'Accessible By',  type: 'textarea' },
+    { key: 'internalNotes', label: 'Internal Notes', type: 'textarea' },
+  ]},
+  { id: 'system', fields: [
+    { key: 'categoryControl', label: 'Category Control', type: 'readonly' },
+    { key: 'createdDate',     label: 'Created Date',     type: 'readonly' },
+    { key: 'createdBy',       label: 'Created By',       type: 'readonly' },
+    { key: 'releasedDate',    label: 'Released Date',    type: 'readonly' },
+    { key: 'closedDate',      label: 'Closed Date',      type: 'readonly' },
+    { key: 'legacyCreateBy',  label: 'Legacy Create By', type: 'text' },
+  ]},
+];
+
+const qp      = new URLSearchParams(location.search);
+const DEV_NUM = qp.get('devNum') || 'DEV-11471';
+const STORE_K = 'dev_' + DEV_NUM;
+const HIST_K  = 'devh_' + DEV_NUM;
+
+function nowStr() {
+  return new Date().toLocaleString('en-US',{month:'numeric',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit',hour12:true});
+}
+
+function makeDefault() {
+  return {
+    devNum:             DEV_NUM,
+    category:           qp.get('category')      || 'Deviation',
+    title:              qp.get('title')          || '',
+    description:        qp.get('desc')           || '',
+    workflowStatus:     qp.get('workflowStatus') || 'Pending',
+    changeSubcategory:  '',
+    reasonForChange:    qp.get('reason')         || '',
+    reasonCode:         '',
+    disposition:        'N/A',
+    productLines:       '',
+    originator:         'Karkuvel V',
+    changeAnalyst:      '',
+    deviationType:      '',
+    expiryDate:         '',
+    quantity:           '',
+    dfImpact:           'N/A',
+    repairImpact:       'N/A',
+    serviceDepotImpact: 'N/A',
+    mfgImpact:          'N/A',
+    qualityImpact:      'N/A',
+    accessibleBy:       '',
+    internalNotes:      '',
+    categoryControl:    qp.get('category') || 'Deviation',
+    createdBy:          'Karkuvel V',
+    createdDate:        qp.get('createdDate') || nowStr(),
+    releasedDate:       '',
+    closedDate:         '',
+    legacyCreateBy:     '',
+    hasAttachments:     false,
+  };
+}
+
+const stored = localStorage.getItem(STORE_K);
+let data     = stored ? JSON.parse(stored) : makeDefault();
+let history  = JSON.parse(localStorage.getItem(HIST_K) || '[]');
+let snap     = null;
+
+if (!stored) save();
+
+function save() {
+  localStorage.setItem(STORE_K, JSON.stringify(data));
+  localStorage.setItem(HIST_K,  JSON.stringify(history));
+}
+
+function init() {
+  document.getElementById('hdrNum').textContent = data.devNum;
+  document.getElementById('bcNum').textContent  = data.devNum;
+  renderMeta();
+  renderWorkflow();
+  renderAllSections();
+  renderHistory();
+  renderApprovers();
+}
+
+function renderMeta() {
+  const sc = 'wf-' + (data.workflowStatus || 'Pending').replace(/\s+/g,'-');
+  document.getElementById('devMeta').innerHTML = `
+    <div class="meta-cell">
+      <div class="meta-lbl">Title</div>
+      <div class="meta-val" style="white-space:normal;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;">${data.title || '—'}</div>
+    </div>
+    <div class="meta-cell">
+      <div class="meta-lbl">Category</div>
+      <div class="meta-val link">${data.category}</div>
+    </div>
+    <div class="meta-cell">
+      <div class="meta-lbl">In Approval Process</div>
+      <div class="meta-val" style="font-size:18px;line-height:1;color:#16a34a;">&#10003;</div>
+    </div>
+    <div class="meta-cell">
+      <div class="meta-lbl">Approved Date Time</div>
+      <div class="meta-val">${data.workflowStatus === 'Released' ? (data.releasedDate || '—') : '—'}</div>
+    </div>
+    <div class="meta-cell">
+      <div class="meta-lbl">Has Attachments</div>
+      <div class="meta-val">
+        <input type="checkbox" id="metaHasAttach" ${data.hasAttachments ? 'checked' : ''}
+          onchange="data.hasAttachments=this.checked;save()"
+          style="width:16px;height:16px;cursor:pointer;accent-color:var(--accent);">
+      </div>
+    </div>
+    <div class="meta-cell">
+      <div class="meta-lbl">Status</div>
+      <div class="meta-val"><span class="wf-badge ${sc}">${data.workflowStatus}</span></div>
+    </div>
+  `;
+  const btn = document.getElementById('approveBtn');
+  const idx = WORKFLOW.indexOf(data.workflowStatus);
+  if (btn) {
+    if (idx >= WORKFLOW.length - 1) {
+      btn.textContent = '&#10003; Closed';
+      btn.disabled    = true;
+    } else {
+      btn.innerHTML = idx === 0 ? 'Submit &#8594;' : 'Approve &#8594;';
+      btn.disabled  = false;
+    }
+  }
+}
+
+function renderWorkflow() {
+  const cur = WORKFLOW.indexOf(data.workflowStatus);
+  document.getElementById('workflowBar').innerHTML = WORKFLOW.map((s, i) => {
+    const cls = i < cur ? 'done' : i === cur ? 'active' : '';
+    return `<div class="wf-step ${cls}" onclick="setStep(${i})" title="Set to ${s}">${s}</div>`;
+  }).join('');
+}
+
+function setStep(idx) {
+  const old = data.workflowStatus;
+  data.workflowStatus = WORKFLOW[idx];
+  const ts = nowStr();
+  if (data.workflowStatus === 'Released' && !data.releasedDate) data.releasedDate = ts;
+  if (data.workflowStatus === 'Closed'   && !data.closedDate)   data.closedDate   = ts;
+  history.unshift({ ts, user: 'Karkuvel V', action: 'workflow', field: 'Change Status', oldVal: old, newVal: data.workflowStatus });
+  save();
+  renderMeta();
+  renderWorkflow();
+  renderAllSections();
+  renderHistory();
+  showToast('Status → ' + data.workflowStatus);
+}
+
+function advanceWorkflow() {
+  const idx = WORKFLOW.indexOf(data.workflowStatus);
+  if (idx < WORKFLOW.length - 1) setStep(idx + 1);
+}
+
+function renderAllSections() {
+  SECTIONS.forEach(sec => {
+    const g = document.getElementById('g-' + sec.id);
+    if (!g) return;
+    g.innerHTML = sec.fields.map(f => renderField(f)).join('');
+  });
+}
+
+function renderField(f) {
+  const isFull = f.type === 'textarea' && !f.half;
+  if (f.type === 'readonly') {
+    const raw = data[f.key] || '';
+    let display;
+    if (f.key === 'workflowStatus') {
+      const sc = 'wf-' + (raw || 'Pending').replace(/\s+/g,'-');
+      display = `<span class="wf-badge ${sc}">${raw || 'Pending'}</span>`;
+    } else {
+      display = raw ? raw.replace(/</g,'&lt;').replace(/\n/g,'<br>') : '<span style="color:var(--text-muted);font-style:italic;">—</span>';
+    }
+    return `<div class="field-cell${isFull ? ' full-width' : ''}">
+      <div class="f-lbl">${f.label}${f.req ? '<span class="req">*</span>' : ''}</div>
+      <div class="f-val">${display}</div>
+    </div>`;
+  }
+  return `<div class="field-cell${isFull ? ' full-width' : ''}">
+    <div class="f-lbl">${f.label}${f.req ? '<span class="req">*</span>' : ''}</div>
+    ${buildInput(f)}
+  </div>`;
+}
+
+function buildInput(f) {
+  const val = (data[f.key] || '').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+  if (f.type === 'select') {
+    const opts = f.options.map(o =>
+      `<option value="${o}"${o === data[f.key] ? ' selected' : ''}>${o || '-- Select --'}</option>`
+    ).join('');
+    return `<select class="f-select" data-key="${f.key}">${opts}</select>`;
+  }
+  if (f.type === 'textarea') {
+    const ml    = f.maxlength ? `maxlength="${f.maxlength}"` : '';
+    const style = f.noresize  ? ' style="resize:none"' : '';
+    const onInp = f.maxlength ? `oninput="updateCounter('${f.key}',this)"` : '';
+    const ctr   = f.maxlength ? `<div class="f-char-count" id="cc-${f.key}">${(data[f.key]||'').length}/${f.maxlength}</div>` : '';
+    return `<textarea class="f-textarea" data-key="${f.key}" ${ml}${onInp}${style}>${val}</textarea>${ctr}`;
+  }
+  const ml    = f.maxlength ? `maxlength="${f.maxlength}"` : '';
+  const ctr   = f.maxlength ? `<div class="f-char-count" id="cc-${f.key}">${(data[f.key]||'').length}/${f.maxlength}</div>` : '';
+  const onInp = f.maxlength ? `oninput="updateCounter('${f.key}',this)"` : '';
+  return `<input class="f-input" type="text" data-key="${f.key}" value="${val}" ${ml} ${onInp} />${ctr}`;
+}
+
+function updateCounter(key, el) {
+  const c = document.getElementById('cc-' + key);
+  if (c) c.textContent = el.value.length + '/' + el.getAttribute('maxlength');
+}
+
+function _editFields() {
+  return document.querySelectorAll('#panel-details [data-key]');
+}
+
+function enterEdit() {
+  snap = { ...data };
+  document.querySelectorAll('#panel-details [data-key]').forEach(el => {
+    el.style.outline = '2px solid var(--accent)';
+  });
+  showToast('✎ Editing — make changes then click Save');
+}
+
+function saveEdit() {
+  _editFields().forEach(el => { data[el.dataset.key] = el.value; });
+  if (!data.title.trim())       { showToast('⚠ Title is required');       return; }
+  if (!data.description.trim()) { showToast('⚠ Description is required'); return; }
+  data.categoryControl = data.category;
+  const ts = nowStr();
+  let changed = 0;
+  if (snap) {
+    SECTIONS.forEach(sec => {
+      sec.fields.forEach(f => {
+        if (f.type === 'readonly') return;
+        const ov = (snap[f.key]  || '').toString().trim();
+        const nv = (data[f.key] || '').toString().trim();
+        if (ov !== nv) {
+          history.unshift({ ts, user: 'Karkuvel V', action: 'edit', field: f.label, oldVal: ov || '—', newVal: nv || '—' });
+          changed++;
+        }
+      });
+    });
+  }
+  snap = null;
+  save();
+  document.querySelectorAll('#panel-details [data-key]').forEach(el => { el.style.outline = ''; });
+  renderMeta();
+  renderHistory();
+  showToast(changed ? '✅ ' + changed + ' change(s) saved' : '✓ Details saved');
+}
+
+function renderHistory() {
+  const tb = document.getElementById('histBody');
+  if (!history.length) {
+    tb.innerHTML = `<tr><td colspan="6" class="hist-empty">No history yet.</td></tr>`;
+    return;
+  }
+  tb.innerHTML = history.map(h => {
+    const aC = h.action === 'created' ? 'created' : h.action === 'workflow' ? 'workflow' : '';
+    const aL = h.action === 'created' ? 'Created'  : h.action === 'workflow' ? 'Workflow' : 'Edit';
+    return `<tr>
+      <td style="color:var(--text-muted);font-size:12px;white-space:nowrap;">${h.ts}</td>
+      <td style="color:var(--accent);font-weight:500;">${h.user}</td>
+      <td><span class="action-badge ${aC}">${aL}</span></td>
+      <td style="font-weight:500;">${h.field}</td>
+      <td><span class="old-val">${h.oldVal}</span></td>
+      <td><span class="new-val">${h.newVal}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+function switchTab(name, el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  if (name === 'approvers')     renderApprovers();
+  if (name === 'relationships') renderRelationships();
+}
+
+function toggleSection(id) {
+  const body  = document.getElementById(id);
+  const caret = document.getElementById('c-' + id);
+  const open  = !body.classList.contains('collapsed');
+  body.classList.toggle('collapsed', open);
+  caret.classList.toggle('closed', open);
+}
+
+function copyInfo() {
+  const txt = `${data.devNum} | ${data.category} | ${data.workflowStatus} | ${data.title || 'No title'}`;
+  navigator.clipboard.writeText(txt)
+    .then(() => showToast('Copied to clipboard'))
+    .catch(() => showToast('Copy failed'));
+}
+
+function handleFiles(files) {
+  const list = document.getElementById('attachFileList');
+  Array.from(files).forEach(f => {
+    const size = f.size > 1048576 ? (f.size/1048576).toFixed(1)+' MB' : (f.size/1024).toFixed(0)+' KB';
+    const item = document.createElement('div');
+    item.className = 'attach-file-item';
+    item.innerHTML = `<span class="attach-file-name">&#128196; ${f.name}</span>
+      <span class="attach-file-size">${size}</span>
+      <button class="attach-remove" onclick="this.parentElement.remove()">&#10005;</button>`;
+    list.appendChild(item);
+  });
+  document.getElementById('devDropZone').classList.remove('drag-over');
+}
+
+function handleDrop(e) {
+  e.preventDefault();
+  handleFiles(e.dataTransfer.files);
+}
+
+let _tt;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(_tt);
+  _tt = setTimeout(() => t.classList.remove('show'), 2600);
+}
+
+// ── AFFECTED ITEMS ──
+const AI_KEY = 'dev_ai_' + DEV_NUM;
+let affectedItems = JSON.parse(localStorage.getItem(AI_KEY) || '[]');
+
+function saveAI() { localStorage.setItem(AI_KEY, JSON.stringify(affectedItems)); }
+
+function lcClass(lc) {
+  const m = { prototype:'lc-prototype', preliminary:'lc-preliminary', production:'lc-production', obsolete:'lc-obsolete' };
+  return m[(lc||'').toLowerCase()] || 'lc-prototype';
+}
+
+function renderAI(filtered) {
+  const list  = filtered || affectedItems;
+  const tbody = document.getElementById('ai-tbody');
+  const count = document.getElementById('ai-count');
+  if (!tbody) return;
+  count.textContent = `${list.length} of ${affectedItems.length} records`;
+  if (!list.length) {
+    tbody.innerHTML = '<tr class="ai-empty-row"><td colspan="9">No affected items added yet. Click + Add to begin.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = list.map((item, i) => `
+    <tr data-idx="${affectedItems.indexOf(item)}">
+      <td class="ai-td-check"><input type="checkbox" /></td>
+      <td class="ai-td-num">${i + 1}</td>
+      <td class="ai-td-eye" title="Inspect" onclick="showToast('Inspecting ${item.itemNumber}')">&#128065;</td>
+      <td><span class="ai-td-item" onclick="showToast('Opening ${item.itemNumber}')">${item.itemNumber}</span></td>
+      <td><span class="lc-badge ${lcClass(item.lifecycle)}">${item.lifecycle}</span></td>
+      <td class="ai-td-clip">&#128206;</td>
+      <td style="max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${item.description || '—'}</td>
+      <td>${item.revision || 'A0'}</td>
+      <td style="text-align:center;color:var(--green);font-size:15px;">&#10003;</td>
+    </tr>`).join('');
+}
+
+function openAiModal() {
+  document.getElementById('ai-inp-num').value  = '';
+  document.getElementById('ai-inp-desc').value = '';
+  document.getElementById('ai-inp-rev').value  = 'A0';
+  document.getElementById('ai-inp-lc').value   = 'Prototype';
+  document.getElementById('aiModalOverlay').classList.add('open');
+  document.getElementById('ai-inp-num').focus();
+}
+function closeAiModal() { document.getElementById('aiModalOverlay').classList.remove('open'); }
+
+function aiConfirmAdd() {
+  const num = document.getElementById('ai-inp-num').value.trim();
+  if (!num) { showToast('⚠ Item Number is required'); return; }
+  affectedItems.push({
+    itemNumber:  num,
+    description: document.getElementById('ai-inp-desc').value.trim(),
+    lifecycle:   document.getElementById('ai-inp-lc').value,
+    revision:    document.getElementById('ai-inp-rev').value.trim() || 'A0',
+  });
+  saveAI();
+  renderAI();
+  closeAiModal();
+  showToast('✅ Item added');
+}
+
+function aiRemoveSelected() {
+  const checked = [...document.querySelectorAll('#ai-tbody input[type="checkbox"]:checked')];
+  if (!checked.length) { showToast('Select items to remove'); return; }
+  const idxs = checked.map(cb => parseInt(cb.closest('tr').dataset.idx));
+  affectedItems = affectedItems.filter((_, i) => !idxs.includes(i));
+  saveAI();
+  renderAI();
+  showToast(`${idxs.length} item(s) removed`);
+}
+
+function aiToggleAll(cb) {
+  document.querySelectorAll('#ai-tbody input[type="checkbox"]').forEach(el => el.checked = cb.checked);
+}
+
+function aiSearch(val) {
+  if (!val.trim()) { renderAI(); return; }
+  const q = val.toLowerCase();
+  renderAI(affectedItems.filter(item =>
+    (item.itemNumber + item.description + item.lifecycle + item.revision).toLowerCase().includes(q)));
+}
+
+function aiSort(key) {
+  affectedItems.sort((a, b) => (a[key] || '').localeCompare(b[key] || ''));
+  renderAI();
+}
+
+function aiCopy() {
+  const txt = affectedItems.map(i => `${i.itemNumber}\t${i.lifecycle}\t${i.description}\t${i.revision}`).join('\n');
+  navigator.clipboard.writeText(txt)
+    .then(() => showToast('Copied to clipboard'))
+    .catch(() => showToast('Copy failed'));
+}
+
+document.addEventListener('click', e => {
+  if (e.target.id === 'aiModalOverlay')  closeAiModal();
+  if (e.target.id === 'aprModalOverlay') closeAprModal();
+  if (e.target.id === 'relModalOverlay') closeRelModal();
+});
+
+// ── APPROVERS ──
+const APR_KEY = 'dev_apr_' + DEV_NUM;
+let approvers = JSON.parse(localStorage.getItem(APR_KEY) || '[]');
+
+function saveApprovers() { localStorage.setItem(APR_KEY, JSON.stringify(approvers)); }
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function renderApprovers() {
+  const tbody = document.getElementById('apr-tbody');
+  const count = document.getElementById('apr-count');
+  if (!tbody) return;
+  count.textContent = approvers.length + ' record' + (approvers.length !== 1 ? 's' : '');
+  if (!approvers.length) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--text-muted);font-style:italic;">No approvers added yet.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = approvers.map((a, i) => `
+    <tr>
+      <td class="ai-td-check"><input type="checkbox" data-idx="${i}"></td>
+      <td style="color:var(--accent);font-weight:500;">${escHtml(a.name)}</td>
+      <td>${escHtml(a.team || '—')}</td>
+      <td>${escHtml(a.role)}</td>
+      <td>${escHtml(a.stage)}</td>
+      <td style="color:${a.status==='Approved'?'var(--green)':'var(--text-muted)'}">
+        ${a.status === 'Approved' ? '✓ Approved' : '○ Pending'}
+      </td>
+    </tr>`).join('');
+}
+
+function openAprModal() {
+  document.getElementById('aprName').value  = '';
+  document.getElementById('aprTeam').value  = '';
+  document.getElementById('aprRole').value  = 'Approver';
+  document.getElementById('aprStage').value = 'CCB';
+  document.getElementById('aprModalOverlay').classList.add('open');
+  document.getElementById('aprName').focus();
+}
+function closeAprModal() { document.getElementById('aprModalOverlay').classList.remove('open'); }
+
+function confirmAddApprover() {
+  const name = document.getElementById('aprName').value.trim();
+  if (!name) { showToast('⚠ Name is required'); return; }
+  approvers.push({
+    name,
+    team:   document.getElementById('aprTeam').value.trim(),
+    role:   document.getElementById('aprRole').value,
+    stage:  document.getElementById('aprStage').value,
+    status: 'Pending',
+  });
+  saveApprovers();
+  renderApprovers();
+  closeAprModal();
+  showToast('✅ Approver added');
+}
+
+function aprRemoveSelected() {
+  const checked = [...document.querySelectorAll('#apr-tbody input[type="checkbox"]:checked')];
+  if (!checked.length) { showToast('Select at least one approver to remove'); return; }
+  const idxs = new Set(checked.map(cb => parseInt(cb.dataset.idx)));
+  approvers = approvers.filter((_, i) => !idxs.has(i));
+  saveApprovers();
+  renderApprovers();
+  showToast(idxs.size + ' approver(s) removed');
+}
+
+function aprToggleAll(cb) {
+  document.querySelectorAll('#apr-tbody input[type="checkbox"]').forEach(el => el.checked = cb.checked);
+}
+
+// ── RELATIONSHIPS ──
+const REL_KEY = 'dev_rel_' + DEV_NUM;
+let relationships = JSON.parse(localStorage.getItem(REL_KEY) || '[]');
+
+function saveRelationships() { localStorage.setItem(REL_KEY, JSON.stringify(relationships)); }
+
+function renderRelationships() {
+  const tbody = document.getElementById('rel-tbody');
+  const count = document.getElementById('rel-count');
+  if (!tbody) return;
+  count.textContent = relationships.length + ' record' + (relationships.length !== 1 ? 's' : '');
+  if (!relationships.length) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--text-muted);font-style:italic;">No relationships defined yet.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = relationships.map((r, i) => `
+    <tr>
+      <td class="ai-td-check"><input type="checkbox" data-idx="${i}"></td>
+      <td style="color:var(--accent);font-weight:600;">${escHtml(r.fromNum || '—')}</td>
+      <td>${escHtml(r.fromTitle || '—')}</td>
+      <td><span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;background:#dbeafe;color:#1e40af;">${escHtml(r.type)}</span></td>
+      <td style="color:var(--accent);font-weight:600;">${escHtml(r.toNum || '—')}</td>
+      <td>${escHtml(r.toTitle || '—')}</td>
+    </tr>`).join('');
+}
+
+function openRelModal() {
+  ['relFromNum','relFromTitle','relToNum','relToTitle'].forEach(id => { document.getElementById(id).value = ''; });
+  document.getElementById('relType').value = 'Follow-up DEV';
+  document.getElementById('relModalOverlay').classList.add('open');
+}
+function closeRelModal() { document.getElementById('relModalOverlay').classList.remove('open'); }
+
+function confirmAddRelationship() {
+  const fromNum = document.getElementById('relFromNum').value.trim();
+  const toNum   = document.getElementById('relToNum').value.trim();
+  if (!fromNum && !toNum) { showToast('⚠ Enter at least a From or To number'); return; }
+  relationships.push({
+    fromNum,
+    fromTitle: document.getElementById('relFromTitle').value.trim(),
+    type:      document.getElementById('relType').value,
+    toNum,
+    toTitle:   document.getElementById('relToTitle').value.trim(),
+  });
+  saveRelationships();
+  renderRelationships();
+  closeRelModal();
+  showToast('✅ Relationship added');
+}
+
+function relRemoveSelected() {
+  const checked = [...document.querySelectorAll('#rel-tbody input[type="checkbox"]:checked')];
+  if (!checked.length) { showToast('Select at least one relationship to remove'); return; }
+  const idxs = new Set(checked.map(cb => parseInt(cb.dataset.idx)));
+  relationships = relationships.filter((_, i) => !idxs.has(i));
+  saveRelationships();
+  renderRelationships();
+  showToast(idxs.size + ' relationship(s) removed');
+}
+
+function relToggleAll(cb) {
+  document.querySelectorAll('#rel-tbody input[type="checkbox"]').forEach(el => el.checked = cb.checked);
+}
+
+init();
+renderAI();
+</script>
+</body>
+</html>

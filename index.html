@@ -1183,12 +1183,12 @@
       </div>
       <div class="field-group">
         <label class="field-label"><span class="label-icon">📋</span> Description of Change <span style="color:#dc2626">*</span></label>
-        <textarea class="field-textarea" id="ecoChangeDesc" maxlength="150" style="resize:none !important;" oninput="document.getElementById('ecoChangeDesc-counter').textContent=this.value.length+'/150'"></textarea>
+        <textarea class="field-textarea" id="ecoChangeDesc" maxlength="150" style="resize:none !important;" placeholder="Describe the change in detail..." oninput="document.getElementById('ecoChangeDesc-counter').textContent=this.value.length+'/150'"></textarea>
         <div style="text-align:right;font-size:11px;color:#9faab5;margin-top:3px;"><span id="ecoChangeDesc-counter">0/150</span></div>
       </div>
       <div class="field-group">
         <label class="field-label"><span class="label-icon">ⓘ</span> Reason for Change</label>
-        <textarea class="field-textarea" id="ecoReason"></textarea>
+        <textarea class="field-textarea" id="ecoReason" style="resize:none;" placeholder="Provide justification or root cause..."></textarea>
       </div>
     </div>
     <div class="modal-footer">
@@ -1207,25 +1207,30 @@
     </div>
     <div class="modal-body">
       <div class="field-group">
-        <label class="field-label"><span class="label-icon">📦</span> Category</label>
-        <input class="field-select" id="mcoCategory" placeholder="Manufacturing Change Order (MCO)" />
+        <label class="field-label">Category <span style="color:#dc2626;">*</span></label>
+        <select class="field-select" id="mcoCategory">
+          <option value="">-- Select Category --</option>
+          <option value="NPI - MCO">NPI - MCO</option>
+          <option value="Sustaining - MCO">Sustaining - MCO</option>
+          <option value="Production - MCO">Production - MCO</option>
+        </select>
       </div>
       <div class="field-group">
-        <label class="field-label"><span class="label-icon">✏️</span> MCO Number</label>
-        <input class="field-input" type="text" placeholder=" MCO Number" id="mcoName" />
+        <label class="field-label">MCO Name <span style="color:#dc2626;">*</span></label>
+        <input class="field-input" type="text" placeholder="Enter MCO name or title" id="mcoName" />
       </div>
       <div class="field-group">
-        <label class="field-label"><span class="label-icon">⚙️</span> Description of Change</label>
-        <textarea class="field-textarea" id="mcoDesc"></textarea>
+        <label class="field-label">Description of Change</label>
+        <textarea class="field-textarea" id="mcoDesc" placeholder="Describe what is being altered..." style="resize:none;"></textarea>
       </div>
       <div class="field-group">
-        <label class="field-label"><span class="label-icon">ⓘ</span> Reason for Change</label>
-        <textarea class="field-textarea" id="mcoReason"></textarea>
+        <label class="field-label">Reason for Change</label>
+        <textarea class="field-textarea" id="mcoReason" placeholder="Provide justification or root cause..." style="resize:none;"></textarea>
       </div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="closeModal('mco')">Cancel</button>
-      <a href="./MCO.html"><button class="btn btn-primary" onclick="submitMco()">Create</button></a>
+      <a href="./MCO_Part.html"><button class="btn btn-primary" onclick="submitMco()">Create</button></a>
     </div>
   </div>
 </div>
@@ -1239,22 +1244,25 @@
     </div>
     <div class="modal-body">
       <div class="field-group">
-        <label class="field-label"><span class="label-icon">📦</span> Category</label>
-        <input class="field-select" id="devCategory"placeholder="DEVIATION (DEV)">
-          
-      </input>
+        <label class="field-label"><span class="label-icon">📦</span> Category <span style="color:#dc2626;">*</span></label>
+        <select class="field-select" id="devCategory">
+          <option value="" disabled selected>-- Select Category --</option>
+          <option value="Deviation">Deviation</option>
+          <option value="NPI - DEV">NPI - DEV</option>
+          <option value="Sustaining - DEV">Sustaining - DEV</option>
+        </select>
       </div>
       <div class="field-group">
         <label class="field-label"><span class="label-icon">✏️</span> DEV Number</label>
-        <input class="field-input" type="text" placeholder="DEV Number (e.g., DEV-001)" id="devName" />
+        <input class="field-input input-readonly" type="text" id="devName" disabled />
       </div>
       <div class="field-group">
-        <label class="field-label"><span class="label-icon">⚙️</span> Description of Change</label>
-        <textarea class="field-textarea" id="devDesc"></textarea>
+        <label class="field-label"><span class="label-icon">⚙️</span> Description of Change <span style="color:#dc2626;">*</span></label>
+        <textarea class="field-textarea" id="devDesc" placeholder="Describe the deviation..." style="resize:none;"></textarea>
       </div>
       <div class="field-group">
         <label class="field-label"><span class="label-icon">ⓘ</span> Reason for Change</label>
-        <textarea class="field-textarea" id="devReason"></textarea>
+        <textarea class="field-textarea" id="devReason" placeholder="Provide justification or root cause..." style="resize:none;"></textarea>
       </div>
     </div>
     <div class="modal-footer">
@@ -1273,26 +1281,30 @@
     </div>
     <div class="modal-body">
       <div class="field-group">
-        <label class="field-label"><span class="label-icon">📦</span> Category</label>
-        <input class="field-select" id="dcoCategory" placeholder="Document Change Order (DCO)" />
-        
+        <label class="field-label"><span class="label-icon">📦</span> Category <span style="color:#dc2626;">*</span></label>
+        <select class="field-select" id="dcoCategory">
+          <option value="" disabled selected>-- Select Category --</option>
+          <option value="Document Change Order - DCO">Document Change Order - DCO</option>
+          <option value="NPI - DCO">NPI - DCO</option>
+          <option value="Sustaining - DCO">Sustaining - DCO</option>
+        </select>
       </div>
       <div class="field-group">
         <label class="field-label"><span class="label-icon">✏️</span> DCO Number</label>
-        <input class="field-input" type="text" placeholder="DCO Number (e.g., DCO-001)" id="dcoName" />
+        <input class="field-input input-readonly" type="text" id="dcoName" disabled />
       </div>
       <div class="field-group">
-        <label class="field-label"><span class="label-icon">⚙️</span> Description of Change</label>
-        <textarea class="field-textarea" id="dcoDesc"></textarea>
+        <label class="field-label"><span class="label-icon">⚙️</span> Description of Change <span style="color:#dc2626;">*</span></label>
+        <textarea class="field-textarea" id="dcoDesc" placeholder="Describe the change..." style="resize:none;"></textarea>
       </div>
       <div class="field-group">
         <label class="field-label"><span class="label-icon">ⓘ</span> Reason for Change</label>
-        <textarea class="field-textarea" id="dcoReason"></textarea>
+        <textarea class="field-textarea" id="dcoReason" placeholder="Provide justification or root cause..." style="resize:none;"></textarea>
       </div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="closeModal('dco')">Cancel</button>
-      <button class="btn btn-primary" onclick="submitDco()">Create</button>
+      <a href="./DCO_Part.html"><button class="btn btn-primary" onclick="submitDco()">Create</button></a>
     </div>
   </div>
 </div>
@@ -1610,9 +1622,14 @@
 
   // ── CREATE DCO MODAL ──
   function openDcoModal() {
-    // Reset the form fields before showing the dialog.
+    const dcoNums = rows
+      .filter(r => r.id.startsWith('DCO-'))
+      .map(r => parseInt(r.id.replace('DCO-', ''), 10))
+      .filter(n => !isNaN(n));
+    const storedMax = parseInt(localStorage.getItem('plm_dco_last') || '10000', 10);
+    const nextNum = Math.max(storedMax, ...dcoNums) + 1;
+    document.getElementById('dcoName').value = 'DCO-' + String(nextNum).padStart(5, '0');
     document.getElementById('dcoCategory').selectedIndex = 0;
-    document.getElementById('dcoName').value = '';
     document.getElementById('dcoDesc').value = '';
     document.getElementById('dcoReason').value = '';
     document.getElementById('dcoModal').classList.add('open');
@@ -1620,18 +1637,25 @@
 
   function submitDco() {
     const category = document.getElementById('dcoCategory').value;
-    const name = document.getElementById('dcoName').value.trim();
-    // Category and DCO Name are required.
-    if (!category || !name) { showToast('⚠ Please fill in Category and DCO Name'); return; }
+    const name     = document.getElementById('dcoName').value.trim();
+    const desc     = document.getElementById('dcoDesc').value.trim();
+    if (!category) { showToast('⚠ Please select a Category'); return; }
+    if (!desc)     { showToast('⚠ Description of Change is required'); return; }
+    localStorage.setItem('plm_dco_last', String(parseInt(name.replace('DCO-', ''), 10)));
     closeModal('dco');
     showToast('✅ DCO created: ' + name);
   }
 
   // ── CREATE DEV MODAL ──
   function openDevModal() {
-    // Reset the form fields before showing the dialog.
+    const devNums = rows
+      .filter(r => r.id.startsWith('DEV-'))
+      .map(r => parseInt(r.id.replace('DEV-', ''), 10))
+      .filter(n => !isNaN(n));
+    const storedMax = parseInt(localStorage.getItem('plm_dev_last') || '11470', 10);
+    const nextNum = Math.max(storedMax, ...devNums) + 1;
+    document.getElementById('devName').value = 'DEV-' + String(nextNum).padStart(5, '0');
     document.getElementById('devCategory').selectedIndex = 0;
-    document.getElementById('devName').value = '';
     document.getElementById('devDesc').value = '';
     document.getElementById('devReason').value = '';
     document.getElementById('devModal').classList.add('open');
@@ -1639,17 +1663,19 @@
 
   function submitDev() {
     const category = document.getElementById('devCategory').value;
-    const name = document.getElementById('devName').value.trim();
-    // Category and DEV Name are required.
-    if (!category || !name) { showToast('⚠ Please fill in Category and DEV Name'); return; }
+    const name     = document.getElementById('devName').value.trim();
+    const desc     = document.getElementById('devDesc').value.trim();
+    if (!category) { showToast('⚠ Please select a Category'); return; }
+    if (!desc)     { showToast('⚠ Description of Change is required'); return; }
+    localStorage.setItem('plm_dev_last', String(parseInt(name.replace('DEV-', ''), 10)));
     closeModal('dev');
-    showToast('✅ Deviation created: ' + name);
+    const p = new URLSearchParams({ devNum: name, category, desc });
+    window.location.href = './DEV_Part.html?' + p.toString();
   }
 
   // ── CREATE MCO MODAL ──
   function openMcoModal() {
-    // Reset the form fields before showing the dialog.
-    document.getElementById('mcoCategory').selectedIndex = 0;
+    document.getElementById('mcoCategory').value = '';
     document.getElementById('mcoName').value = '';
     document.getElementById('mcoDesc').value = '';
     document.getElementById('mcoReason').value = '';

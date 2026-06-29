@@ -30,7 +30,7 @@ body { font-family: var(--font); background: var(--bg); color: var(--text-primar
 .brand-logo { width: 34px; height: 34px; background: linear-gradient(135deg,#2563eb,#7c3aed); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 15px; font-weight: 900; letter-spacing: -1px; }
 .brand-name { font-size: 13px; font-weight: 700; }
 .brand-sub { font-size: 10px; color: var(--text-secondary); }
-.breadcrumb { font-size: 13px; color: var(--text-secondary); display: flex; align-items: center; gap: 6px; }
+.breadcrumb { font-size: 13px; color: var(--text-secondary); display: flex; align-items: center; gap: 6px; padding: 10px 0 6px 24px; }
 .breadcrumb a { color: var(--accent); text-decoration: none; }
 .breadcrumb a:hover { text-decoration: underline; }
 .topbar-right { margin-left: auto; display: flex; align-items: center; gap: 4px; }
@@ -61,22 +61,25 @@ body { font-family: var(--font); background: var(--bg); color: var(--text-primar
 .meta-val.blue { color: var(--accent); font-weight: 600; }
 
 /* ── WORKFLOW STEPPER ── */
-.workflow-wrap { background: var(--white); border-bottom: 1px solid var(--border); padding: 8px 24px; display: flex; align-items: center; overflow-x: auto; gap: 3px; }
+.workflow-wrap { background: var(--white); border-bottom: 1px solid var(--border); padding: 10px 24px; display: flex; align-items: center; overflow-x: auto; gap: 0; }
 .wf-step {
   display: flex; align-items: center; justify-content: center;
-  padding: 8px 20px 8px 28px;
+  height: 36px; padding: 0 22px 0 30px; margin-right: 2px;
   font-size: 11.5px; font-weight: 600; cursor: pointer; white-space: nowrap;
-  background: #f3f4f6; color: var(--text-muted);
-  position: relative; min-width: 100px; border-radius: 0;
+  background: #eaecef; color: #9ca3af;
   clip-path: polygon(12px 0%, calc(100% - 12px) 0%, 100% 50%, calc(100% - 12px) 100%, 12px 100%, 0% 50%);
   transition: background 0.15s, color 0.15s;
   user-select: none;
 }
-.wf-step:first-child { clip-path: polygon(0% 0%, calc(100% - 12px) 0%, 100% 50%, calc(100% - 12px) 100%, 0% 100%); padding-left: 16px; }
-.wf-step:last-child  { clip-path: polygon(12px 0%, 100% 0%, 100% 100%, 12px 100%, 0% 50%); }
-.wf-step.done   { background: #16a34a; color: #fff; }
-.wf-step.active { background: #1a2340; color: #fff; }
-.wf-step:hover:not(.done):not(.active) { background: #e5e7eb; color: var(--text-primary); }
+.wf-step:first-child { padding-left: 18px; clip-path: polygon(0% 0%, calc(100% - 12px) 0%, 100% 50%, calc(100% - 12px) 100%, 0% 100%); }
+.wf-step:last-child  { margin-right: 0; clip-path: polygon(12px 0%, 100% 0%, 100% 100%, 12px 100%, 0% 50%); }
+.wf-step.done   { background: #22c55e; color: #fff; }
+.wf-step.active { background: #1e3a5f; color: #fff; }
+.wf-step.active + .wf-step:not(.done) { background: #d4d8de; }
+.wf-step:hover:not(.done):not(.active) { background: #d1d5db; color: #374151; }
+.wf-side-pill { height: 34px; padding: 0 16px; border-radius: 6px; font-size: 11.5px; font-weight: 700; margin-left: 20px; display: inline-flex; align-items: center; flex-shrink: 0; }
+.wf-side-cancelled { background: #fee2e2; color: #991b1b; }
+.wf-side-hold      { background: #fef9c3; color: #854d0e; }
 
 /* ── TAB BAR ── */
 .tab-bar { background: var(--white); border-bottom: 1px solid var(--border); display: flex; padding: 0 24px; }
@@ -97,6 +100,8 @@ body { font-family: var(--font); background: var(--bg); color: var(--text-primar
 .btn-primary:hover { background: var(--accent-dark); }
 .btn-blue-outline { color: var(--accent); border-color: var(--accent); background: var(--white); }
 .btn-blue-outline:hover { background: var(--accent-light); }
+.btn-secondary { color: var(--text-primary); border-color: var(--border); background: var(--white); }
+.btn-secondary:hover { background: #f3f4f6; }
 
 /* ── SECTION CARD ── */
 .sec-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 14px; overflow: hidden; box-shadow: var(--shadow); }
@@ -162,6 +167,105 @@ body { font-family: var(--font); background: var(--bg); color: var(--text-primar
 .empty-text { font-size: 13px; }
 .panel-toolbar { display: flex; align-items: center; justify-content: flex-end; padding: 10px 18px; border-bottom: 1px solid var(--border); background: #f8fafc; }
 
+/* ── AFFECTED ITEMS TABLE ── */
+.ai-wrap { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+.ai-toolbar { display: flex; align-items: center; gap: 4px; padding: 8px 14px; border-bottom: 1px solid var(--border); flex-wrap: wrap; background: var(--white); }
+.ai-btn { padding: 5px 10px; border: 1px solid var(--border); border-radius: 4px; background: var(--white); font-size: 12px; font-weight: 500; color: var(--text-primary); cursor: pointer; white-space: nowrap; transition: background 0.12s; }
+.ai-btn:hover { background: #f3f4f6; border-color: #c1c9d2; }
+.ai-btn.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+.ai-btn.primary:hover { background: var(--accent-dark); }
+.ai-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.ai-controls { display: flex; align-items: center; justify-content: space-between; padding: 7px 14px; background: #f8f9fa; border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 8px; }
+.ai-count { font-size: 12px; color: var(--text-secondary); font-weight: 500; }
+.ai-controls-right { display: flex; align-items: center; gap: 6px; }
+.ai-view-select { padding: 4px 8px; border: 1px solid var(--border); border-radius: 4px; font-size: 12px; background: var(--white); color: var(--text-primary); cursor: pointer; }
+.ai-search { padding: 5px 10px; border: 1px solid var(--border); border-radius: 4px; font-size: 12px; width: 180px; outline: none; }
+.ai-search:focus { border-color: var(--accent); }
+.ai-table-wrap { overflow-x: auto; }
+.ai-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.ai-table thead th { background: #f8f9fa; padding: 9px 12px; text-align: left; font-size: 11.5px; font-weight: 600; color: var(--text-secondary); border-bottom: 2px solid var(--border); white-space: nowrap; }
+.ai-table thead th.sortable { cursor: pointer; user-select: none; }
+.ai-table thead th.sortable:hover { color: var(--accent); }
+.ai-table tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
+.ai-table tbody tr:last-child { border-bottom: none; }
+.ai-table tbody tr:hover { background: #eff6ff; }
+.ai-table td { padding: 8px 12px; vertical-align: middle; }
+.ai-td-check, .ai-th-check { width: 34px; text-align: center; padding: 8px 6px; }
+.ai-td-num { width: 32px; text-align: center; color: var(--text-muted); font-size: 12px; }
+.ai-td-eye { width: 38px; text-align: center; cursor: pointer; color: var(--text-muted); font-size: 14px; }
+.ai-td-eye:hover { color: var(--accent); }
+.ai-td-item { color: var(--accent); font-weight: 600; cursor: pointer; white-space: nowrap; }
+.ai-td-item:hover { text-decoration: underline; }
+.ai-td-clip { width: 34px; text-align: center; color: var(--text-muted); }
+.lc-badge { display: inline-block; padding: 2px 9px; border-radius: 20px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+.lc-prototype   { background: #dbeafe; color: #1e40af; }
+.lc-preliminary { background: #fef9c3; color: #854d0e; }
+.lc-production  { background: #dcfce7; color: #166534; }
+.lc-obsolete    { background: #fee2e2; color: #991b1b; }
+.lc-default     { background: #f3f4f6; color: #374151; }
+.ai-empty-row td { text-align: center; padding: 40px; color: var(--text-muted); font-style: italic; font-size: 13px; }
+/* Add Item Modal */
+.ai-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 800; align-items: center; justify-content: center; }
+.ai-modal-overlay.open { display: flex; }
+.ai-modal { background: var(--white); border-radius: var(--radius); padding: 24px; width: 420px; max-width: 95vw; box-shadow: 0 12px 40px rgba(0,0,0,0.18); }
+.ai-modal h3 { font-size: 15px; font-weight: 700; margin-bottom: 16px; color: var(--text-primary); }
+.ai-modal-field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 12px; }
+.ai-modal-field label { font-size: 11px; font-weight: 600; color: var(--text-secondary); }
+.ai-modal-field input, .ai-modal-field select { padding: 7px 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; outline: none; font-family: inherit; }
+.ai-modal-field input:focus, .ai-modal-field select:focus { border-color: var(--accent); }
+.ai-modal-footer { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+
+/* ── APPROVERS ── */
+.apr-wrap { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); margin-bottom: 14px; }
+.apr-stage-head { display: flex; align-items: center; gap: 10px; padding: 10px 16px; background: #f8f9fa; border-bottom: 1px solid var(--border); cursor: pointer; user-select: none; }
+.apr-stage-caret { font-size: 11px; color: var(--text-secondary); transition: transform 0.2s; }
+.apr-stage-caret.closed { transform: rotate(-90deg); }
+.apr-stage-name { font-size: 13px; font-weight: 700; color: var(--text-primary); }
+.apr-stage-badge { margin-left: auto; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+.apr-badge-current  { background: #dcfce7; color: #166534; }
+.apr-badge-pending  { background: #dbeafe; color: #1e40af; }
+.apr-badge-done     { background: #f3f4f6; color: #374151; }
+.apr-sub-tabs { display: flex; border-bottom: 1px solid var(--border); padding: 0 16px; background: var(--white); }
+.apr-sub-tab { padding: 10px 14px; font-size: 12.5px; font-weight: 500; color: var(--text-secondary); cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; }
+.apr-sub-tab:hover { color: var(--accent); }
+.apr-sub-tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 700; }
+.apr-panel { display: none; }
+.apr-panel.active { display: block; }
+.apr-toolbar { display: flex; align-items: center; gap: 6px; padding: 10px 16px; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+.apr-type-badge { padding: 3px 10px; border-radius: 4px; font-size: 11px; font-weight: 700; }
+.apr-adhoc     { background: #dbeafe; color: #1e40af; }
+.apr-unanimous { background: #dcfce7; color: #166534; }
+.apr-tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
+.apr-tbl thead th { background: #f8f9fa; padding: 9px 14px; text-align: left; font-size: 11.5px; font-weight: 600; color: var(--text-secondary); border-bottom: 2px solid var(--border); white-space: nowrap; }
+.apr-tbl td { padding: 9px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+.apr-tbl tbody tr:last-child td { border-bottom: none; }
+.apr-tbl tbody tr:hover { background: #f9fafb; }
+.apr-name { color: var(--accent); font-weight: 500; }
+.apr-status-pending  { color: #ef4444; font-size: 16px; }
+.apr-status-approved { color: #16a34a; font-size: 16px; }
+.apr-status-rejected { color: #dc2626; font-size: 16px; }
+.apr-empty { text-align: center; padding: 32px; color: var(--text-muted); font-size: 13px; font-style: italic; }
+.apr-footer { display: flex; align-items: center; gap: 6px; padding: 10px 16px; border-top: 1px solid var(--border); background: #f8f9fa; }
+/* Add Approver Modal */
+.apr-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 900; align-items: center; justify-content: center; }
+.apr-modal-overlay.open { display: flex; }
+.apr-modal { background: var(--white); border-radius: var(--radius); padding: 24px; width: 400px; max-width: 95vw; box-shadow: 0 12px 40px rgba(0,0,0,0.18); }
+.apr-modal h3 { font-size: 15px; font-weight: 700; margin-bottom: 16px; }
+.apr-modal-field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 12px; }
+.apr-modal-field label { font-size: 11px; font-weight: 600; color: var(--text-secondary); }
+.apr-modal-field input, .apr-modal-field select { padding: 7px 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; outline: none; font-family: inherit; }
+.apr-modal-field input:focus, .apr-modal-field select:focus { border-color: var(--accent); }
+.apr-modal-footer { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+
+/* ── RELATIONSHIP TYPE BADGES ── */
+.rel-badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+.rel-eco     { background: #dbeafe; color: #1e40af; }
+.rel-mco     { background: #dcfce7; color: #166534; }
+.rel-pcn     { background: #fef9c3; color: #854d0e; }
+.rel-default { background: #f3f4f6; color: #374151; }
+.rel-num-link { color: var(--accent); font-weight: 600; text-decoration: none; cursor: pointer; }
+.rel-num-link:hover { text-decoration: underline; }
+
 /* ── HISTORY TABLE ── */
 .hist-wrap { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
 table { width: 100%; border-collapse: collapse; font-size: 13px; }
@@ -217,7 +321,7 @@ td { padding: 10px 14px; vertical-align: middle; color: var(--text-primary); }
 
 <!-- ══ BREADCRUMB ══ -->
 <div class="breadcrumb">
-  <a href="./index.html" style="padding-left:3px">Home</a>
+  <a href="./index.html">Home</a>
   <span>›</span>
   <a href="./index.html">Changes</a>
   <span>›</span>
@@ -236,10 +340,11 @@ td { padding: 10px 14px; vertical-align: middle; color: var(--text-primary); }
     </div>
     <div class="eco-actions">
       <button class="hdr-btn" onclick="showToast('Now following this ECO')">+ Follow</button>
-      <button class="hdr-btn" onclick="copyInfo()">📋 Copy to Clipboard</button>
-      <button class="hdr-btn" onclick="showToast('Cloning ECO…')">Clone</button>
-      <button class="hdr-btn" onclick="showToast('Share link copied')">Share</button>
-      <button class="hdr-btn approve-btn" id="approveBtn" onclick="advanceWorkflow()">Approve →</button>
+      <button class="hdr-btn" onclick="copyInfo()">Copy to Clipboard</button>
+      <!-- <button class="hdr-btn" onclick="showToast('Cloning ECO…')">Clone</button> -->
+      <button class="hdr-btn" onclick="showToast('Share link copied')">Share Record</button>
+
+      <!-- <button class="hdr-btn approve-btn" id="approveBtn" onclick="advanceWorkflow()">Submit →</button> -->
     </div>
   </div>
   <div class="eco-meta" id="ecoMeta"></div>
@@ -317,34 +422,212 @@ td { padding: 10px 14px; vertical-align: middle; color: var(--text-primary); }
 
   <!-- ── AFFECTED ITEMS ── -->
   <div class="tab-panel" id="panel-affected-items">
-    <div class="sec-card">
-      <div class="sec-head">
-        <span class="sec-title">Affected Items</span>
-        <button class="btn btn-primary" style="margin-left:auto;padding:5px 12px;font-size:12px;" onclick="showToast('Add Affected Item')">+ Add Item</button>
+    <div class="ai-wrap">
+
+      <!-- Toolbar -->
+      <div class="ai-toolbar">
+        <button class="ai-btn" onclick="showToast('Edit Affected Items')">✎ Edit</button>
+        <button class="ai-btn primary" onclick="openAiModal()">+ Add</button>
+        <button class="ai-btn" onclick="showToast('Add Unpublished Children')">Add Unpublished Children</button>
+        <button class="ai-btn" onclick="aiRemoveSelected()">Remove</button>
+        <button class="ai-btn" onclick="aiCopy()">Copy to Clipboard</button>
+        <button class="ai-btn" onclick="renderAI()">↻ Refresh</button>
+        <button class="ai-btn" onclick="showToast('View Sharing')">View Sharing</button>
       </div>
-      <div class="empty-state"><div class="empty-icon">📦</div><div class="empty-text">No affected items added yet.</div></div>
+
+      <!-- Controls row -->
+      <div class="ai-controls">
+        <span class="ai-count" id="ai-count">0 of 0 records</span>
+        <div class="ai-controls-right">
+          <select class="ai-view-select"><option>Default View</option></select>
+          <input type="text" class="ai-search" placeholder="🔍 Search Within Results" oninput="aiSearch(this.value)" />
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="ai-table-wrap">
+        <table class="ai-table">
+          <thead>
+            <tr>
+              <th class="ai-th-check"><input type="checkbox" id="ai-check-all" onchange="aiToggleAll(this)" /></th>
+              <th class="ai-td-num">#</th>
+              <th style="width:38px;">Inspect</th>
+              <th class="sortable" onclick="aiSort('itemNumber')">Item Number ↑</th>
+              <th class="sortable" onclick="aiSort('lifecycle')">Lifecycle Phase ▾</th>
+              <th class="ai-td-clip">📎</th>
+              <th class="sortable" onclick="aiSort('description')">Description ▾</th>
+              <th class="sortable" onclick="aiSort('revision')">Revision ▾</th>
+              <th style="text-align:center;">Has Item Attachments</th>
+            </tr>
+          </thead>
+          <tbody id="ai-tbody"></tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Add Item Modal -->
+  <div class="ai-modal-overlay" id="aiModalOverlay">
+    <div class="ai-modal">
+      <h3>Add Affected Item</h3>
+      <div class="ai-modal-field">
+        <label>Item Number</label>
+        <input type="text" id="ai-inp-num" placeholder="e.g. ASY-00001-01" />
+      </div>
+      <div class="ai-modal-field">
+        <label>Description</label>
+        <input type="text" id="ai-inp-desc" placeholder="Item description" />
+      </div>
+      <div class="ai-modal-field">
+        <label>Lifecycle Phase</label>
+        <select id="ai-inp-lc">
+          <option value="Prototype">Prototype</option>
+          <option value="Preliminary">Preliminary</option>
+          <option value="Production">Production</option>
+          <option value="Obsolete">Obsolete</option>
+        </select>
+      </div>
+      <div class="ai-modal-field">
+        <label>Revision</label>
+        <input type="text" id="ai-inp-rev" placeholder="e.g. A0" value="A0" />
+      </div>
+      <div class="ai-modal-footer">
+        <button class="btn" onclick="closeAiModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="aiConfirmAdd()">Add Item</button>
+      </div>
     </div>
   </div>
 
   <!-- ── APPROVERS ── -->
   <div class="tab-panel" id="panel-approvers">
-    <div class="sec-card">
-      <div class="sec-head">
-        <span class="sec-title">Approvers</span>
-        <button class="btn btn-primary" style="margin-left:auto;padding:5px 12px;font-size:12px;" onclick="showToast('Add Approver')">+ Add Approver</button>
+    <div class="ai-wrap">
+      <div class="ai-toolbar">
+        <button class="ai-btn primary" onclick="openAprModal()">+ Add</button>
+        <button class="ai-btn" onclick="aprRemoveSelected()">Remove</button>
       </div>
-      <div class="empty-state"><div class="empty-icon">👤</div><div class="empty-text">No approvers assigned.</div></div>
+      <div class="ai-controls">
+        <span class="ai-count" id="apr-count">0 records</span>
+      </div>
+      <div class="ai-table-wrap">
+        <table class="ai-table">
+          <thead>
+            <tr>
+              <th class="ai-th-check"><input type="checkbox" onchange="aprToggleAll(this)"></th>
+              <th>Name</th>
+              <th>Team</th>
+              <th>Role</th>
+              <th>Stage</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="apr-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Approver Modal -->
+  <div class="ai-modal-overlay" id="aprModalOverlay">
+    <div class="ai-modal">
+      <h3>Add Approver</h3>
+      <div class="ai-modal-field">
+        <label>Name *</label>
+        <input type="text" id="aprName" placeholder="Full name" />
+      </div>
+      <div class="ai-modal-field">
+        <label>Team</label>
+        <input type="text" id="aprTeam" placeholder="Product team or department" />
+      </div>
+      <div class="ai-modal-field">
+        <label>Role</label>
+        <select id="aprRole">
+          <option>Approver</option>
+          <option>Observer</option>
+        </select>
+      </div>
+      <div class="ai-modal-field">
+        <label>Stage</label>
+        <select id="aprStage">
+          <option>CCB</option>
+          <option>Final Review</option>
+          <option>Released</option>
+        </select>
+      </div>
+      <div class="ai-modal-footer">
+        <button class="btn btn-secondary" onclick="closeAprModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="confirmAddApprover()">Add Approver</button>
+      </div>
     </div>
   </div>
 
   <!-- ── RELATIONSHIPS ── -->
   <div class="tab-panel" id="panel-relationships">
-    <div class="sec-card">
-      <div class="sec-head">
-        <span class="sec-title">Relationships</span>
-        <button class="btn btn-primary" style="margin-left:auto;padding:5px 12px;font-size:12px;" onclick="showToast('Add Relationship')">+ Add</button>
+    <div class="ai-wrap">
+      <div class="ai-toolbar">
+        <button class="ai-btn primary" onclick="openRelModal()">+ Add</button>
+        <button class="ai-btn" onclick="relRemoveSelected()">Remove</button>
       </div>
-      <div class="empty-state"><div class="empty-icon">🔗</div><div class="empty-text">No relationships defined.</div></div>
+      <div class="ai-controls">
+        <span class="ai-count" id="rel-count">0 records</span>
+      </div>
+      <div class="ai-table-wrap">
+        <table class="ai-table">
+          <thead>
+            <tr>
+              <th class="ai-th-check"><input type="checkbox" onchange="relToggleAll(this)"></th>
+              <th>From Number</th>
+              <th>From Title</th>
+              <th>Type</th>
+              <th>To Number</th>
+              <th>To Title</th>
+            </tr>
+          </thead>
+          <tbody id="rel-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Relationship Modal -->
+  <div class="ai-modal-overlay" id="relModalOverlay">
+    <div class="ai-modal">
+      <h3>Add Relationship</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div class="ai-modal-field">
+          <label>From Number</label>
+          <input type="text" id="relFromNum" placeholder="e.g. ECO-00123" />
+        </div>
+        <div class="ai-modal-field">
+          <label>From Title</label>
+          <input type="text" id="relFromTitle" placeholder="Title" />
+        </div>
+      </div>
+      <div class="ai-modal-field">
+        <label>Type</label>
+        <select id="relType">
+          <option>Follow-up ECO</option>
+          <option>Related MCO</option>
+          <option>PCN</option>
+          <option>Supersedes</option>
+          <option>Superseded By</option>
+          <option>References</option>
+        </select>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div class="ai-modal-field">
+          <label>To Number</label>
+          <input type="text" id="relToNum" placeholder="e.g. MCO-00456" />
+        </div>
+        <div class="ai-modal-field">
+          <label>To Title</label>
+          <input type="text" id="relToTitle" placeholder="Title" />
+        </div>
+      </div>
+      <div class="ai-modal-footer">
+        <button class="btn btn-secondary" onclick="closeRelModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="confirmAddRelationship()">Add Relationship</button>
+      </div>
     </div>
   </div>
 
@@ -388,20 +671,20 @@ td { padding: 10px 14px; vertical-align: middle; color: var(--text-primary); }
 
 <script>
 // ── WORKFLOW STEPS ──
-const WORKFLOW = ['Pending','Submitted','CCB','Final Review','Released','Closed','Canceled','Hold'];
+const WORKFLOW      = ['Pending','Submitted','CCB','Final Review','Released','Closed'];
+const WORKFLOW_SIDE = ['Cancelled','Hold'];
 
 // ── FIELD SCHEMA ──
 const SECTIONS = [
   { id: 'info', label: 'Information', fields: [
     { key: 'category',          label: 'Category',              type: 'select',   options: ['NPI - ECO','Sustaining - ECO','Production - ECO'] },
-    { key: 'ecoNum',            label: 'Change Number',         type: 'readonly' },
-    { key: 'title',             label: 'Change Order Title',    type: 'textarea', maxlength: 50,  noresize: true, req: true },
-    { key: 'description',       label: 'Description of Change', type: 'textarea', maxlength: 500, noresize: true, req: true },
+    { key: 'ecoNum',            label: 'Change Order Number',         type: 'readonly' },
+    { key: 'title',             label: 'Change Order Title',    type: 'textarea', maxlength: 50,  noresize: true, req: true, half: true },
+    { key: 'description',       label: 'Description of Change', type: 'textarea', maxlength: 500, noresize: true, req: true, half: true },
     { key: 'changeSubcategory', label: 'Change Subcategory',    type: 'select',   options: ['','Cut-in','Documentation','Phase-In'] },
-    { key: 'workflowStatus',    label: 'Change Status',         type: 'select',   options: ['Pending','Submitted','CCB','Final Review','Released','Closed','Canceled','Hold'] },
+    { key: 'workflowStatus',    label: 'Change Status',         type: 'select',   options: ['Pending','Submitted','CCB','Final Review','Released','Closed','Cancelled','Hold'] },
     { key: 'reasonForChange',   label: 'Reason for Change',     type: 'textarea', maxlength: 150, noresize: true },
     { key: 'reasonCode',        label: 'Reason Code',           type: 'select',   options: ['','Cost Reduction','Improvement','Issue Resolution','Other','Supplier Driven'] },
-    { key: 'disposition',       label: 'Disposition',           type: 'select',   options: ['N/A','Use As Is','Scrap','Rework'] },
     { key: 'productLines',      label: 'Product Lines',         type: 'text' },
     { key: 'originator',        label: 'Originator',            type: 'text' },
     { key: 'changeAnalyst',     label: 'Change Analyst',        type: 'text' },
@@ -469,7 +752,6 @@ function makeDefault() {
 const stored = localStorage.getItem(STORE_K);
 let data      = stored ? JSON.parse(stored) : makeDefault();
 let history   = JSON.parse(localStorage.getItem(HIST_K) || '[]');
-let isEdit    = false;
 let snap      = null;
 
 // First load from URL — record Created only when arriving from the creation modal (has 'desc' param)
@@ -493,6 +775,9 @@ function init() {
   renderWorkflow();
   renderAllSections();
   renderHistory();
+  renderAI();
+  renderApprovers();
+  renderRelationships();
 }
 
 // ── META ROW ──
@@ -503,43 +788,197 @@ function renderMeta() {
     <div class="meta-cell"><div class="meta-lbl">Category</div><div class="meta-val blue">${data.category}</div></div>
     <div class="meta-cell"><div class="meta-lbl">In Approval Process</div><div class="meta-val" style="color:#16a34a;font-size:18px;line-height:1;">✓</div></div>
     <div class="meta-cell"><div class="meta-lbl">Approved Date Time</div><div class="meta-val">${data.workflowStatus === 'Released' ? (data.releasedDate||'—') : '—'}</div></div>
-    <div class="meta-cell"><div class="meta-lbl">Has Attachments</div><div class="meta-val">📎</div></div>
+    <div class="meta-cell"><div class="meta-lbl">Has Attachments</div><div class="meta-val"><input type="checkbox" id="metaHasAttach" ${data.hasAttachments ? 'checked' : ''} onchange="data.hasAttachments=this.checked;save()" style="width:16px;height:16px;cursor:pointer;accent-color:var(--accent);"></div></div>
     <div class="meta-cell"><div class="meta-lbl">Status</div><div class="meta-val"><span class="wf-badge ${sc}">${data.workflowStatus}</span></div></div>
   `;
-  // update approve button label
+  // update header action buttons
   const idx = WORKFLOW.indexOf(data.workflowStatus);
   const btn = document.getElementById('approveBtn');
-  if (idx >= WORKFLOW.length - 1) { btn.textContent = '✓ Final'; btn.disabled = true; }
-  else { btn.textContent = 'Approve →'; btn.disabled = false; }
+  const isPending    = data.workflowStatus === 'Pending';
+  const isSideState  = WORKFLOW_SIDE.includes(data.workflowStatus);
+  if (btn) {
+    if (idx >= WORKFLOW.length - 1 || isSideState) { btn.textContent = isSideState ? '↩ Reopen' : '✓ Released'; btn.disabled = isSideState ? false : true; }
+    else { btn.textContent = idx === 0 ? 'Submit →' : 'Approve →'; btn.disabled = false; }
+    if (isSideState) { btn.onclick = () => setWorkflowStep('Pending'); }
+    else { btn.onclick = advanceWorkflow; }
+  }
 }
 
 // ── WORKFLOW ──
 function renderWorkflow() {
-  const cur = WORKFLOW.indexOf(data.workflowStatus);
-  document.getElementById('workflowBar').innerHTML = WORKFLOW.map((s, i) => {
-    const cls = i < cur ? 'done' : i === cur ? 'active' : '';
-    return `<div class="wf-step ${cls}" onclick="setStep(${i})" title="Set to ${s}">${s}</div>`;
+  const cur    = WORKFLOW.indexOf(data.workflowStatus);
+  const isSide = WORKFLOW_SIDE.includes(data.workflowStatus);
+  const bar    = document.getElementById('workflowBar');
+
+  // All steps: main steps + side states rendered as chevron steps in the bar
+  const allSteps = [...WORKFLOW, ...WORKFLOW_SIDE];
+  const steps = allSteps.map((s, i) => {
+    let cls = '';
+    if (isSide) {
+      cls = (s === data.workflowStatus) ? 'active' : (i === 0 ? 'done' : '');
+    } else {
+      cls = i < cur ? 'done' : i === cur ? 'active' : '';
+    }
+    // Side state steps get a muted color when inactive
+    const sideInactive = WORKFLOW_SIDE.includes(s) && cls === ''
+      ? 'style="background:#f3e8ff;color:#7c3aed;"' : '';
+    return `<div class="wf-step ${cls}" onclick="setWorkflowStep('${s}')" title="Set to ${s}" ${sideInactive}>${s}</div>`;
   }).join('');
+
+  bar.innerHTML = steps;
 }
 
-function setStep(idx) {
+function setWorkflowStep(status) {
   const now = new Date().toLocaleString('en-US',{month:'numeric',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit',hour12:true});
   const old = data.workflowStatus;
-  data.workflowStatus = WORKFLOW[idx];
-  if (data.workflowStatus === 'Released' && !data.releasedDate) data.releasedDate = now;
-  if (data.workflowStatus === 'Closed'   && !data.closedDate)   data.closedDate   = now;
-  history.unshift({ ts: now, user: 'Karkuvel V', action: 'workflow', field: 'Change Status', oldVal: old, newVal: data.workflowStatus });
+  data.workflowStatus = status;
+  if (status === 'Released' && !data.releasedDate) data.releasedDate = now;
+  history.unshift({ ts: now, user: 'Karkuvel V', action: 'workflow', field: 'Change Status', oldVal: old, newVal: status });
   save();
-  renderMeta();
-  renderWorkflow();
-  renderAllSections();
-  renderHistory();
-  showToast('Status → ' + data.workflowStatus);
+  renderMeta(); renderWorkflow(); renderAllSections(); renderHistory();
+  showToast('Status → ' + status);
 }
 
 function advanceWorkflow() {
   const idx = WORKFLOW.indexOf(data.workflowStatus);
-  if (idx < WORKFLOW.length - 1) setStep(idx + 1);
+  if (idx >= 0 && idx < WORKFLOW.length - 1) setWorkflowStep(WORKFLOW[idx + 1]);
+}
+
+
+function escHtml(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── APPROVERS ──
+const APR_KEY = 'eco_apr_' + ECO_NUM;
+let approvers = JSON.parse(localStorage.getItem(APR_KEY) || '[]');
+
+function saveApprovers() { localStorage.setItem(APR_KEY, JSON.stringify(approvers)); }
+
+function renderApprovers() {
+  const tbody = document.getElementById('apr-tbody');
+  const count = document.getElementById('apr-count');
+  if (!tbody) return;
+  count.textContent = approvers.length + ' record' + (approvers.length !== 1 ? 's' : '');
+  if (!approvers.length) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--text-muted);font-style:italic;">No approvers added yet.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = approvers.map((a, i) => `
+    <tr>
+      <td class="ai-td-check"><input type="checkbox" data-idx="${i}"></td>
+      <td style="color:var(--accent);font-weight:500;">${escHtml(a.name)}</td>
+      <td>${escHtml(a.team || '—')}</td>
+      <td>${escHtml(a.role)}</td>
+      <td>${escHtml(a.stage)}</td>
+      <td style="color:${a.status==='Approved'?'var(--green)':'var(--text-muted)'}">
+        ${a.status === 'Approved' ? '✓ Approved' : '○ Pending'}
+      </td>
+    </tr>`).join('');
+}
+
+function openAprModal() {
+  document.getElementById('aprName').value  = '';
+  document.getElementById('aprTeam').value  = '';
+  document.getElementById('aprRole').value  = 'Approver';
+  document.getElementById('aprStage').value = 'CCB';
+  document.getElementById('aprModalOverlay').classList.add('open');
+  document.getElementById('aprName').focus();
+}
+function closeAprModal() { document.getElementById('aprModalOverlay').classList.remove('open'); }
+
+function confirmAddApprover() {
+  const name = document.getElementById('aprName').value.trim();
+  if (!name) { showToast('⚠ Name is required'); return; }
+  approvers.push({
+    name,
+    team:   document.getElementById('aprTeam').value.trim(),
+    role:   document.getElementById('aprRole').value,
+    stage:  document.getElementById('aprStage').value,
+    status: 'Pending',
+  });
+  saveApprovers();
+  renderApprovers();
+  closeAprModal();
+  showToast('✅ Approver added');
+}
+
+function aprRemoveSelected() {
+  const checked = [...document.querySelectorAll('#apr-tbody input[type="checkbox"]:checked')];
+  if (!checked.length) { showToast('Select at least one approver to remove'); return; }
+  const idxs = new Set(checked.map(cb => parseInt(cb.dataset.idx)));
+  approvers = approvers.filter((_, i) => !idxs.has(i));
+  saveApprovers();
+  renderApprovers();
+  showToast(idxs.size + ' approver(s) removed');
+}
+
+function aprToggleAll(cb) {
+  document.querySelectorAll('#apr-tbody input[type="checkbox"]').forEach(el => el.checked = cb.checked);
+}
+
+// ── RELATIONSHIPS ──
+const REL_KEY = 'eco_rel_' + ECO_NUM;
+let relationships = JSON.parse(localStorage.getItem(REL_KEY) || '[]');
+
+function saveRelationships() { localStorage.setItem(REL_KEY, JSON.stringify(relationships)); }
+
+function renderRelationships() {
+  const tbody = document.getElementById('rel-tbody');
+  const count = document.getElementById('rel-count');
+  if (!tbody) return;
+  count.textContent = relationships.length + ' record' + (relationships.length !== 1 ? 's' : '');
+  if (!relationships.length) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--text-muted);font-style:italic;">No relationships defined yet.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = relationships.map((r, i) => `
+    <tr>
+      <td class="ai-td-check"><input type="checkbox" data-idx="${i}"></td>
+      <td style="color:var(--accent);font-weight:600;">${escHtml(r.fromNum || '—')}</td>
+      <td>${escHtml(r.fromTitle || '—')}</td>
+      <td><span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;background:#dbeafe;color:#1e40af;">${escHtml(r.type)}</span></td>
+      <td style="color:var(--accent);font-weight:600;">${escHtml(r.toNum || '—')}</td>
+      <td>${escHtml(r.toTitle || '—')}</td>
+    </tr>`).join('');
+}
+
+function openRelModal() {
+  ['relFromNum','relFromTitle','relToNum','relToTitle'].forEach(id => { document.getElementById(id).value = ''; });
+  document.getElementById('relType').value = 'Follow-up ECO';
+  document.getElementById('relModalOverlay').classList.add('open');
+}
+function closeRelModal() { document.getElementById('relModalOverlay').classList.remove('open'); }
+
+function confirmAddRelationship() {
+  const fromNum = document.getElementById('relFromNum').value.trim();
+  const toNum   = document.getElementById('relToNum').value.trim();
+  if (!fromNum && !toNum) { showToast('⚠ Enter at least a From or To number'); return; }
+  relationships.push({
+    fromNum,
+    fromTitle: document.getElementById('relFromTitle').value.trim(),
+    type:      document.getElementById('relType').value,
+    toNum,
+    toTitle:   document.getElementById('relToTitle').value.trim(),
+  });
+  saveRelationships();
+  renderRelationships();
+  closeRelModal();
+  showToast('✅ Relationship added');
+}
+
+function relRemoveSelected() {
+  const checked = [...document.querySelectorAll('#rel-tbody input[type="checkbox"]:checked')];
+  if (!checked.length) { showToast('Select at least one relationship to remove'); return; }
+  const idxs = new Set(checked.map(cb => parseInt(cb.dataset.idx)));
+  relationships = relationships.filter((_, i) => !idxs.has(i));
+  saveRelationships();
+  renderRelationships();
+  showToast(idxs.size + ' relationship(s) removed');
+}
+
+function relToggleAll(cb) {
+  document.querySelectorAll('#rel-tbody input[type="checkbox"]').forEach(el => el.checked = cb.checked);
 }
 
 // ── RENDER SECTIONS ──
@@ -552,7 +991,7 @@ function renderAllSections() {
 }
 
 function renderField(f) {
-  // Readonly fields: display as styled text (badge for status, plain otherwise)
+  const isFull = f.type === 'textarea' && !f.half;
   if (f.type === 'readonly') {
     const raw = data[f.key] || '';
     let display;
@@ -560,15 +999,14 @@ function renderField(f) {
       const sc = 'wf-' + (raw || 'Pending').replace(/\s+/g,'-');
       display = `<span class="wf-badge ${sc}">${raw || 'Pending'}</span>`;
     } else {
-      display = raw ? raw.replace(/</g,'&lt;') : '<span style="color:var(--text-muted);font-style:italic;">—</span>';
+      display = raw ? raw.replace(/</g,'&lt;').replace(/\n/g,'<br>') : '<span style="color:var(--text-muted);font-style:italic;">—</span>';
     }
-    return `<div class="field-cell">
-      <div class="f-lbl">${f.label}</div>
+    return `<div class="field-cell${isFull ? ' full-width' : ''}">
+      <div class="f-lbl">${f.label}${f.req ? '<span class="req">*</span>' : ''}</div>
       <div class="f-val">${display}</div>
     </div>`;
   }
-  // Editable fields: always rendered as inputs, disabled in view mode
-  return `<div class="field-cell${f.type==='textarea'?' full-width':''}">
+  return `<div class="field-cell${isFull ? ' full-width' : ''}">
     <div class="f-lbl">${f.label}${f.req ? '<span class="req">*</span>' : ''}</div>
     ${buildInput(f)}
   </div>`;
@@ -576,10 +1014,9 @@ function renderField(f) {
 
 function buildInput(f) {
   const val = (data[f.key] || '').replace(/"/g,'&quot;').replace(/</g,'&lt;');
-  // Always disabled initially — enterEdit() will enable them
   if (f.type === 'select') {
     const opts = f.options.map(o => `<option value="${o}"${o===data[f.key]?' selected':''}>${o||'-- Select --'}</option>`).join('');
-    return `<select class="f-select" data-key="${f.key}" disabled>${opts}</select>`;
+    return `<select class="f-select" data-key="${f.key}">${opts}</select>`;
   }
   if (f.type === 'textarea') {
     const ml  = f.maxlength ? `maxlength="${f.maxlength}"` : '';
@@ -587,13 +1024,13 @@ function buildInput(f) {
     const onInput = f.maxlength ? `oninput="updateCounter('${f.key}',this)"` : '';
     const counter = f.maxlength
       ? `<div class="f-char-count" id="cc-${f.key}">${(data[f.key]||'').length}/${f.maxlength}</div>` : '';
-    return `<textarea class="f-textarea" data-key="${f.key}" ${ml} ${onInput}${style} disabled>${val}</textarea>${counter}`;
+    return `<textarea class="f-textarea" data-key="${f.key}" ${ml} ${onInput}${style}>${val}</textarea>${counter}`;
   }
   const ml = f.maxlength ? `maxlength="${f.maxlength}"` : '';
   const counter = f.maxlength
     ? `<div class="f-char-count" id="cc-${f.key}">${(data[f.key]||'').length}/${f.maxlength}</div>` : '';
   const onInput = f.maxlength ? `oninput="updateCounter('${f.key}',this)"` : '';
-  return `<input class="f-input" type="text" data-key="${f.key}" value="${val}" ${ml} ${onInput} disabled />` + counter;
+  return `<input class="f-input" type="text" data-key="${f.key}" value="${val}" ${ml} ${onInput} />` + counter;
 }
 
 function updateCounter(key, el) {
@@ -602,56 +1039,45 @@ function updateCounter(key, el) {
 }
 
 // ── EDIT / SAVE ──
+function _editFields() {
+  return document.querySelectorAll('#panel-details [data-key]');
+}
+
 function enterEdit() {
-  if (isEdit) { showToast('Already in edit mode'); return; }
-  isEdit = true;
-  snap   = { ...data };
-  document.getElementById('btn-edit').style.opacity = '0.45';
-  document.getElementById('btn-edit').disabled = true;
-  // Enable all editable inputs in-place — no re-render needed
-  document.querySelectorAll('#panel-details [data-key]').forEach(el => { el.disabled = false; });
-  showToast('Edit mode — make changes then click Save');
+  snap = { ...data };
+  document.querySelectorAll('#panel-details [data-key]').forEach(el => {
+    el.style.outline = '2px solid var(--accent)';
+  });
+  showToast('✎ Editing — make changes then click Save');
 }
 
 function saveEdit() {
-  if (!isEdit) { showToast('Click Edit first to make changes'); return; }
-
-  // collect values from all editable inputs
-  document.querySelectorAll('[data-key]').forEach(el => { data[el.dataset.key] = el.value; });
-
-  // validate required fields
+  _editFields().forEach(el => { data[el.dataset.key] = el.value; });
   if (!data.title.trim())       { showToast('⚠ Change Order Title is required'); return; }
   if (!data.description.trim()) { showToast('⚠ Description of Change is required'); return; }
-
-  // sync categoryControl with category
   data.categoryControl = data.category;
-
-  // diff and record history
   const now = new Date().toLocaleString('en-US',{month:'numeric',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit',hour12:true});
   let changed = 0;
-  SECTIONS.forEach(sec => {
-    sec.fields.forEach(f => {
-      if (f.type === 'readonly') return;
-      const ov = (snap[f.key]  || '').toString().trim();
-      const nv = (data[f.key] || '').toString().trim();
-      if (ov !== nv) {
-        history.unshift({ ts: now, user: 'Karkuvel V', action: 'edit', field: f.label, oldVal: ov || '—', newVal: nv || '—' });
-        changed++;
-      }
+  if (snap) {
+    SECTIONS.forEach(sec => {
+      sec.fields.forEach(f => {
+        if (f.type === 'readonly') return;
+        const ov = (snap[f.key]  || '').toString().trim();
+        const nv = (data[f.key] || '').toString().trim();
+        if (ov !== nv) {
+          history.unshift({ ts: now, user: 'Karkuvel V', action: 'edit', field: f.label, oldVal: ov || '—', newVal: nv || '—' });
+          changed++;
+        }
+      });
     });
-  });
-
+  }
+  snap = null;
   save();
-  isEdit = false;
-  snap   = null;
-  document.getElementById('btn-edit').style.opacity = '';
-  document.getElementById('btn-edit').disabled = false;
-  // Re-render sections (refreshes values + returns all inputs to disabled/view state)
+  document.querySelectorAll('#panel-details [data-key]').forEach(el => { el.style.outline = ''; });
   renderMeta();
   renderWorkflow();
-  renderAllSections();
   renderHistory();
-  showToast(changed ? `✅ ${changed} change(s) saved` : 'No changes to save');
+  showToast(changed ? `✅ ${changed} change(s) saved` : '✓ Details saved');
 }
 
 // ── HISTORY ──
@@ -681,6 +1107,8 @@ function switchTab(name, el) {
   el.classList.add('active');
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   document.getElementById('panel-' + name).classList.add('active');
+  if (name === 'approvers') renderApprovers();
+  if (name === 'relationships') renderRelationships();
 }
 
 // ── SECTION COLLAPSE ──
@@ -729,6 +1157,102 @@ function showToast(msg) {
   clearTimeout(_tt);
   _tt = setTimeout(() => t.classList.remove('show'), 2600);
 }
+
+// ── AFFECTED ITEMS ──
+const AI_KEY = 'eco_ai_' + ECO_NUM;
+let affectedItems = JSON.parse(localStorage.getItem(AI_KEY) || '[]');
+
+function saveAI() { localStorage.setItem(AI_KEY, JSON.stringify(affectedItems)); }
+
+function lcClass(lc) {
+  const m = { prototype:'lc-prototype', preliminary:'lc-preliminary', production:'lc-production', obsolete:'lc-obsolete' };
+  return m[(lc||'').toLowerCase()] || 'lc-default';
+}
+
+function renderAI(filtered) {
+  const list = filtered || affectedItems;
+  const tbody = document.getElementById('ai-tbody');
+  const count = document.getElementById('ai-count');
+  count.textContent = `${list.length} of ${affectedItems.length} records`;
+  if (!list.length) {
+    tbody.innerHTML = '<tr class="ai-empty-row"><td colspan="9">No affected items added yet. Click + Add to begin.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = list.map((item, i) => `
+    <tr data-idx="${affectedItems.indexOf(item)}">
+      <td class="ai-td-check"><input type="checkbox" /></td>
+      <td class="ai-td-num">${i + 1}</td>
+      <td class="ai-td-eye" title="Inspect" onclick="showToast('Inspecting ${item.itemNumber}')">👁</td>
+      <td><span class="ai-td-item" onclick="showToast('Opening ${item.itemNumber}')">${item.itemNumber}</span></td>
+      <td><span class="lc-badge ${lcClass(item.lifecycle)}">${item.lifecycle}</span></td>
+      <td class="ai-td-clip">📎</td>
+      <td style="max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${item.description || '—'}</td>
+      <td>${item.revision || 'A0'}</td>
+      <td style="text-align:center;color:var(--green);font-size:15px;">✓</td>
+    </tr>`).join('');
+}
+
+function openAiModal() {
+  document.getElementById('ai-inp-num').value  = '';
+  document.getElementById('ai-inp-desc').value = '';
+  document.getElementById('ai-inp-rev').value  = 'A0';
+  document.getElementById('ai-inp-lc').value   = 'Prototype';
+  document.getElementById('aiModalOverlay').classList.add('open');
+  document.getElementById('ai-inp-num').focus();
+}
+function closeAiModal() { document.getElementById('aiModalOverlay').classList.remove('open'); }
+
+function aiConfirmAdd() {
+  const num  = document.getElementById('ai-inp-num').value.trim();
+  if (!num) { showToast('⚠ Item Number is required'); return; }
+  affectedItems.push({
+    itemNumber:  num,
+    description: document.getElementById('ai-inp-desc').value.trim(),
+    lifecycle:   document.getElementById('ai-inp-lc').value,
+    revision:    document.getElementById('ai-inp-rev').value.trim() || 'A0',
+  });
+  saveAI();
+  renderAI();
+  closeAiModal();
+  showToast('✅ Item added');
+}
+
+function aiRemoveSelected() {
+  const checked = [...document.querySelectorAll('#ai-tbody input[type="checkbox"]:checked')];
+  if (!checked.length) { showToast('Select items to remove'); return; }
+  const idxs = checked.map(cb => parseInt(cb.closest('tr').dataset.idx));
+  affectedItems = affectedItems.filter((_, i) => !idxs.includes(i));
+  saveAI(); renderAI();
+  showToast(`${idxs.length} item(s) removed`);
+}
+
+function aiToggleAll(cb) {
+  document.querySelectorAll('#ai-tbody input[type="checkbox"]').forEach(el => el.checked = cb.checked);
+}
+
+function aiSearch(val) {
+  if (!val.trim()) { renderAI(); return; }
+  const q = val.toLowerCase();
+  renderAI(affectedItems.filter(item =>
+    (item.itemNumber + item.description + item.lifecycle + item.revision).toLowerCase().includes(q)));
+}
+
+function aiSort(key) {
+  affectedItems.sort((a, b) => (a[key] || '').localeCompare(b[key] || ''));
+  renderAI();
+}
+
+function aiCopy() {
+  const txt = affectedItems.map(i => `${i.itemNumber}\t${i.lifecycle}\t${i.description}\t${i.revision}`).join('\n');
+  navigator.clipboard.writeText(txt).then(() => showToast('Copied to clipboard')).catch(() => showToast('Copy failed'));
+}
+
+// close modal on overlay click
+document.addEventListener('click', e => {
+  if (e.target.id === 'aiModalOverlay')  closeAiModal();
+  if (e.target.id === 'aprModalOverlay') closeAprModal();
+  if (e.target.id === 'relModalOverlay') closeRelModal();
+});
 
 // ── BOOT ──
 init();

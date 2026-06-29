@@ -64,22 +64,22 @@ body { font-family: var(--font); background: var(--bg); color: var(--text-primar
 .meta-val.link { color: var(--accent); font-weight: 500; text-decoration: underline; cursor: pointer; }
 
 /* ── WORKFLOW STEPPER ── */
-.workflow-wrap { background: var(--white); border-bottom: 1px solid var(--border); padding: 8px 24px; display: flex; align-items: center; overflow-x: auto; gap: 0; }
+.workflow-wrap { background: var(--white); border-bottom: 1px solid var(--border); padding: 10px 24px; display: flex; align-items: center; overflow-x: auto; gap: 0; }
 .wf-step {
   display: flex; align-items: center; justify-content: center;
-  padding: 8px 20px 8px 28px;
+  height: 36px; padding: 0 22px 0 30px; margin-right: 2px;
   font-size: 11.5px; font-weight: 600; cursor: pointer; white-space: nowrap;
-  background: #f3f4f6; color: var(--text-muted);
-  position: relative; min-width: 100px; border-radius: 0;
+  background: #eaecef; color: #9ca3af;
   clip-path: polygon(12px 0%, calc(100% - 12px) 0%, 100% 50%, calc(100% - 12px) 100%, 12px 100%, 0% 50%);
   transition: background 0.15s, color 0.15s;
-  user-select: none; margin-right: 2px;
+  user-select: none;
 }
-.wf-step:first-child { clip-path: polygon(0% 0%, calc(100% - 12px) 0%, 100% 50%, calc(100% - 12px) 100%, 0% 100%); padding-left: 16px; }
-.wf-step:last-child  { clip-path: polygon(12px 0%, 100% 0%, 100% 100%, 12px 100%, 0% 50%); }
-.wf-step.done   { background: #16a34a; color: #fff; }
-.wf-step.active { background: #1a2340; color: #fff; }
-.wf-step:hover:not(.done):not(.active) { background: #e5e7eb; color: var(--text-primary); }
+.wf-step:first-child { padding-left: 18px; clip-path: polygon(0% 0%, calc(100% - 12px) 0%, 100% 50%, calc(100% - 12px) 100%, 0% 100%); }
+.wf-step:last-child  { margin-right: 0; clip-path: polygon(12px 0%, 100% 0%, 100% 100%, 12px 100%, 0% 50%); }
+.wf-step.done   { background: #22c55e; color: #fff; }
+.wf-step.active { background: #1e3a5f; color: #fff; }
+.wf-step.active + .wf-step:not(.done) { background: #d4d8de; }
+.wf-step:hover:not(.done):not(.active) { background: #d1d5db; color: #374151; }
 
 /* ── TAB BAR (boxed — matches screenshot) ── */
 .tab-section { padding: 10px 24px 0; background: var(--bg); }
@@ -93,8 +93,10 @@ body { font-family: var(--font); background: var(--bg); color: var(--text-primar
 .tab-panel { display: none; }
 .tab-panel.active { display: block; }
 
-/* ── EDIT BAR (left-aligned) ── */
-.edit-bar { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+/* ── EDIT BAR ── */
+.edit-bar { display: flex; align-items: center; justify-content: flex-end; gap: 8px; margin-bottom: 16px; }
+.btn-secondary { color: var(--text-primary); border-color: var(--border); background: var(--white); }
+.btn-secondary:hover { background: #f3f4f6; }
 .btn { padding: 6px 14px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; border: 1px solid var(--border); background: var(--white); color: var(--text-primary); display: inline-flex; align-items: center; gap: 4px; transition: background 0.15s, border-color 0.15s; white-space: nowrap; }
 .btn:hover { background: var(--bg); border-color: var(--text-muted); }
 .btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
@@ -145,6 +147,7 @@ body { font-family: var(--font); background: var(--bg); color: var(--text-primar
 .f-input:focus, .f-select:focus, .f-textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
 .f-textarea { resize: none; min-height: 72px; }
 .f-input.f-readonly { background: #f3f4f6; cursor: not-allowed; font-weight: 600; color: #374151; }
+.f-input:disabled, .f-select:disabled, .f-textarea:disabled { background: #f9fafb; color: var(--text-primary); cursor: default; border-color: transparent; }
 .f-char-count { font-size: 11px; color: var(--text-muted); text-align: right; }
 
 /* ── HISTORY ── */
@@ -192,6 +195,53 @@ td { padding: 10px 14px; vertical-align: middle; color: var(--text-primary); }
   .field-cell:nth-child(odd) { border-right: none; }
   .field-cell.full-width { grid-column: span 1; }
 }
+
+/* ── AFFECTED ITEMS TABLE ── */
+.ai-wrap { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+.ai-toolbar { display: flex; align-items: center; gap: 4px; padding: 8px 14px; border-bottom: 1px solid var(--border); flex-wrap: wrap; background: var(--white); }
+.ai-btn { padding: 5px 10px; border: 1px solid var(--border); border-radius: 4px; background: var(--white); font-size: 12px; font-weight: 500; color: var(--text-primary); cursor: pointer; white-space: nowrap; transition: background 0.12s; }
+.ai-btn:hover { background: #f3f4f6; border-color: #c1c9d2; }
+.ai-btn.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+.ai-btn.primary:hover { background: var(--accent-dark); }
+.ai-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.ai-controls { display: flex; align-items: center; justify-content: space-between; padding: 7px 14px; background: #f8f9fa; border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 8px; }
+.ai-count { font-size: 12px; color: var(--text-secondary); font-weight: 500; }
+.ai-controls-right { display: flex; align-items: center; gap: 6px; }
+.ai-view-select { padding: 4px 8px; border: 1px solid var(--border); border-radius: 4px; font-size: 12px; background: var(--white); color: var(--text-primary); cursor: pointer; }
+.ai-search { padding: 5px 10px; border: 1px solid var(--border); border-radius: 4px; font-size: 12px; width: 180px; outline: none; }
+.ai-search:focus { border-color: var(--accent); }
+.ai-table-wrap { overflow-x: auto; }
+.ai-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.ai-table thead th { background: #f8f9fa; padding: 9px 12px; text-align: left; font-size: 11.5px; font-weight: 600; color: var(--text-secondary); border-bottom: 2px solid var(--border); white-space: nowrap; }
+.ai-table thead th.sortable { cursor: pointer; user-select: none; }
+.ai-table thead th.sortable:hover { color: var(--accent); }
+.ai-table tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
+.ai-table tbody tr:last-child { border-bottom: none; }
+.ai-table tbody tr:hover { background: #eff6ff; }
+.ai-table td { padding: 8px 12px; vertical-align: middle; }
+.ai-td-check, .ai-th-check { width: 34px; text-align: center; padding: 8px 6px; }
+.ai-td-num { width: 32px; text-align: center; color: var(--text-muted); font-size: 12px; }
+.ai-td-eye { width: 38px; text-align: center; cursor: pointer; color: var(--text-muted); font-size: 14px; }
+.ai-td-eye:hover { color: var(--accent); }
+.ai-td-item { color: var(--accent); font-weight: 600; cursor: pointer; white-space: nowrap; }
+.ai-td-item:hover { text-decoration: underline; }
+.ai-td-clip { width: 34px; text-align: center; color: var(--text-muted); }
+.lc-badge { display: inline-block; padding: 2px 9px; border-radius: 20px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+.lc-prototype   { background: #dbeafe; color: #1e40af; }
+.lc-preliminary { background: #fef9c3; color: #854d0e; }
+.lc-production  { background: #dcfce7; color: #166534; }
+.lc-obsolete    { background: #fee2e2; color: #991b1b; }
+.lc-default     { background: #f3f4f6; color: #374151; }
+.ai-empty-row td { text-align: center; padding: 40px; color: var(--text-muted); font-style: italic; font-size: 13px; }
+.ai-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 800; align-items: center; justify-content: center; }
+.ai-modal-overlay.open { display: flex; }
+.ai-modal { background: var(--white); border-radius: var(--radius); padding: 24px; width: 420px; max-width: 95vw; box-shadow: 0 12px 40px rgba(0,0,0,0.18); }
+.ai-modal h3 { font-size: 15px; font-weight: 700; margin-bottom: 16px; color: var(--text-primary); }
+.ai-modal-field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 12px; }
+.ai-modal-field label { font-size: 11px; font-weight: 600; color: var(--text-secondary); }
+.ai-modal-field input, .ai-modal-field select { padding: 7px 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; outline: none; font-family: inherit; }
+.ai-modal-field input:focus, .ai-modal-field select:focus { border-color: var(--accent); }
+.ai-modal-footer { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
 </style>
 </head>
 <body>
@@ -219,9 +269,9 @@ td { padding: 10px 14px; vertical-align: middle; color: var(--text-primary); }
     <div class="mco-actions">
       <button class="hdr-btn" onclick="showToast('Now following this MCO')">+ Follow</button>
       <button class="hdr-btn" onclick="showToast('Change Owner')">Change Owner</button>
-      <button class="hdr-btn" onclick="copyInfo()">📋 Copy to Clipboard</button>
-      <button class="hdr-btn" onclick="showToast('Share link copied')">Share</button>
-      <button class="hdr-btn approve-btn" id="approveBtn" onclick="advanceWorkflow()">Approve →</button>
+      <button class="hdr-btn" onclick="copyInfo()">Copy to Clipboard</button>
+      <button class="hdr-btn" onclick="showToast('Share link copied')">Share Record</button>
+      <!-- <button class="hdr-btn approve-btn" id="approveBtn" onclick="advanceWorkflow()">Approve →</button> -->
     </div>
   </div>
   <div class="mco-meta" id="mcoMeta"></div>
@@ -297,34 +347,214 @@ td { padding: 10px 14px; vertical-align: middle; color: var(--text-primary); }
 
   <!-- ── AFFECTED ITEMS ── -->
   <div class="tab-panel" id="panel-affected-items">
-    <div class="sec-card">
-      <div class="sec-head">
-        <span class="sec-title">Affected Items</span>
-        <button class="btn btn-primary" style="margin-left:auto;padding:5px 12px;font-size:12px;" onclick="showToast('Add Affected Item')">+ Add Item</button>
+    <div class="ai-wrap">
+
+      <!-- Toolbar -->
+      <div class="ai-toolbar">
+        <button class="ai-btn" onclick="showToast('Edit Affected Items')">✎ Edit</button>
+        <button class="ai-btn primary" onclick="openAiModal()">+ Add</button>
+        <button class="ai-btn" onclick="showToast('Add Unpublished Children')">Add Unpublished Children</button>
+        <button class="ai-btn" onclick="aiRemoveSelected()">Remove</button>
+        <button class="ai-btn" onclick="aiCopy()">Copy to Clipboard</button>
+        <button class="ai-btn" onclick="renderAI()">↻ Refresh</button>
+        <button class="ai-btn" onclick="showToast('View Sharing')">View Sharing</button>
       </div>
-      <div class="empty-state"><div class="empty-icon">📦</div><div class="empty-text">No affected items added yet.</div></div>
+
+      <!-- Controls row -->
+      <div class="ai-controls">
+        <span class="ai-count" id="ai-count">0 of 0 records</span>
+        <div class="ai-controls-right">
+          <select class="ai-view-select"><option>Default View</option></select>
+          <input type="text" class="ai-search" placeholder="🔍 Search Within Results" oninput="aiSearch(this.value)" />
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="ai-table-wrap">
+        <table class="ai-table">
+          <thead>
+            <tr>
+              <th class="ai-th-check"><input type="checkbox" id="ai-check-all" onchange="aiToggleAll(this)" /></th>
+              <th class="ai-td-num">#</th>
+              <th style="width:38px;">Inspect</th>
+              <th class="sortable" onclick="aiSort('itemNumber')">Item Number ↑</th>
+              <th class="sortable" onclick="aiSort('lifecycle')">Lifecycle Phase ▾</th>
+              <th class="ai-td-clip">📎</th>
+              <th class="sortable" onclick="aiSort('description')">Description ▾</th>
+              <th class="sortable" onclick="aiSort('revision')">Revision ▾</th>
+              <th style="text-align:center;">Has Item Attachments</th>
+            </tr>
+          </thead>
+          <tbody id="ai-tbody"></tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Add Item Modal -->
+  <div class="ai-modal-overlay" id="aiModalOverlay">
+    <div class="ai-modal">
+      <h3>Add Affected Item</h3>
+      <div class="ai-modal-field">
+        <label>Item Number</label>
+        <input type="text" id="ai-inp-num" placeholder="e.g. ASY-00001-01" />
+      </div>
+      <div class="ai-modal-field">
+        <label>Description</label>
+        <input type="text" id="ai-inp-desc" placeholder="Item description" />
+      </div>
+      <div class="ai-modal-field">
+        <label>Lifecycle Phase</label>
+        <select id="ai-inp-lc">
+          <option value="Prototype">Prototype</option>
+          <option value="Preliminary">Preliminary</option>
+          <option value="Production">Production</option>
+          <option value="Obsolete">Obsolete</option>
+        </select>
+      </div>
+      <div class="ai-modal-field">
+        <label>Revision</label>
+        <input type="text" id="ai-inp-rev" placeholder="e.g. A0" value="A0" />
+      </div>
+      <div class="ai-modal-footer">
+        <button class="btn" onclick="closeAiModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="aiConfirmAdd()">Add Item</button>
+      </div>
     </div>
   </div>
 
   <!-- ── APPROVERS ── -->
   <div class="tab-panel" id="panel-approvers">
-    <div class="sec-card">
-      <div class="sec-head">
-        <span class="sec-title">Approvers</span>
-        <button class="btn btn-primary" style="margin-left:auto;padding:5px 12px;font-size:12px;" onclick="showToast('Add Approver')">+ Add Approver</button>
+    <div class="ai-wrap">
+      <div class="ai-toolbar">
+        <button class="ai-btn primary" onclick="openAprModal()">+ Add</button>
+        <button class="ai-btn" onclick="aprRemoveSelected()">Remove</button>
       </div>
-      <div class="empty-state"><div class="empty-icon">👤</div><div class="empty-text">No approvers assigned.</div></div>
+      <div class="ai-controls">
+        <span class="ai-count" id="apr-count">0 records</span>
+        <div class="ai-controls-right">
+          <input type="checkbox" id="apr-check-all" onchange="aprToggleAll(this)" style="margin-right:6px;">
+          <label for="apr-check-all" style="font-size:12px;color:var(--text-secondary);cursor:pointer;">Select All</label>
+        </div>
+      </div>
+      <div class="ai-table-wrap">
+        <table class="ai-table">
+          <thead>
+            <tr>
+              <th class="ai-th-check"></th>
+              <th>Name</th>
+              <th>Product Team</th>
+              <th>Role</th>
+              <th>Stage</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="apr-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Approver Modal -->
+  <div class="ai-modal-overlay" id="aprModalOverlay">
+    <div class="ai-modal">
+      <h3>Add Approver</h3>
+      <div class="ai-modal-field">
+        <label>Name <span style="color:var(--red)">*</span></label>
+        <input type="text" id="aprName" placeholder="Full name" />
+      </div>
+      <div class="ai-modal-field">
+        <label>Product Team</label>
+        <input type="text" id="aprTeam" placeholder="e.g. Engineering, Quality..." />
+      </div>
+      <div class="ai-modal-field">
+        <label>Role</label>
+        <select id="aprRole">
+          <option value="Approver">Approver</option>
+          <option value="Observer">Observer</option>
+        </select>
+      </div>
+      <div class="ai-modal-field">
+        <label>Stage</label>
+        <select id="aprStage">
+          <option value="CCB">CCB</option>
+          <option value="Final Review">Final Review</option>
+          <option value="Released">Released</option>
+        </select>
+      </div>
+      <div class="ai-modal-footer">
+        <button class="btn" onclick="closeAprModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="confirmAddApprover()">Add</button>
+      </div>
     </div>
   </div>
 
   <!-- ── RELATIONSHIPS ── -->
   <div class="tab-panel" id="panel-relationships">
-    <div class="sec-card">
-      <div class="sec-head">
-        <span class="sec-title">Relationships</span>
-        <button class="btn btn-primary" style="margin-left:auto;padding:5px 12px;font-size:12px;" onclick="showToast('Add Relationship')">+ Add</button>
+    <div class="ai-wrap">
+      <div class="ai-toolbar">
+        <button class="ai-btn primary" onclick="openRelModal()">+ Add</button>
+        <button class="ai-btn" onclick="relRemoveSelected()">Remove</button>
       </div>
-      <div class="empty-state"><div class="empty-icon">🔗</div><div class="empty-text">No relationships defined.</div></div>
+      <div class="ai-controls">
+        <span class="ai-count" id="rel-count">0 records</span>
+      </div>
+      <div class="ai-table-wrap">
+        <table class="ai-table">
+          <thead>
+            <tr>
+              <th class="ai-th-check"><input type="checkbox" id="rel-check-all" onchange="relToggleAll(this)"></th>
+              <th>From</th>
+              <th>From Title</th>
+              <th>Type</th>
+              <th>To</th>
+              <th>To Title</th>
+            </tr>
+          </thead>
+          <tbody id="rel-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Relationship Modal -->
+  <div class="ai-modal-overlay" id="relModalOverlay">
+    <div class="ai-modal" style="width:460px;max-width:95vw;">
+      <h3>Add Relationship</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div class="ai-modal-field">
+          <label>From (Number)</label>
+          <input type="text" id="relFromNum" placeholder="e.g. MCO-00123" />
+        </div>
+        <div class="ai-modal-field">
+          <label>From Title</label>
+          <input type="text" id="relFromTitle" placeholder="Title" />
+        </div>
+        <div class="ai-modal-field" style="grid-column:1/-1;">
+          <label>Relationship Type</label>
+          <select id="relType">
+            <option value="Follow-up MCO">Follow-up MCO</option>
+            <option value="Related ECO">Related ECO</option>
+            <option value="PCN">PCN</option>
+            <option value="Supersedes">Supersedes</option>
+            <option value="Superseded By">Superseded By</option>
+            <option value="References">References</option>
+          </select>
+        </div>
+        <div class="ai-modal-field">
+          <label>To (Number)</label>
+          <input type="text" id="relToNum" placeholder="e.g. ECO-00456" />
+        </div>
+        <div class="ai-modal-field">
+          <label>To Title</label>
+          <input type="text" id="relToTitle" placeholder="Title" />
+        </div>
+      </div>
+      <div class="ai-modal-footer">
+        <button class="btn" onclick="closeRelModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="confirmAddRelationship()">Add</button>
+      </div>
     </div>
   </div>
 
@@ -368,8 +598,8 @@ const SECTIONS = [
   { id: 'info', label: 'Information', fields: [
     { key: 'category',          label: 'Category',              type: 'select',   options: ['Manufacturer Order - MCO','NPI - MCO','Sustaining - MCO'] },
     { key: 'mcoNum',            label: 'Change Number',         type: 'readonly' },
-    { key: 'title',             label: 'Title',                 type: 'textarea', req: true },
-    { key: 'description',       label: 'Description',           type: 'textarea', req: true },
+    { key: 'title',             label: 'Title',                 type: 'textarea', req: true, half: true, noresize: true },
+    { key: 'description',       label: 'Description',           type: 'textarea', req: true, half: true, noresize: true },
     { key: 'workflowStatus',    label: 'Change Status',         type: 'readonly' },
     { key: 'changeSubcategory', label: 'Change Subcategory',    type: 'select',   options: ['','Cut-in','Documentation','Phase-In'] },
     { key: 'reasonForChange',   label: 'Reason for Change',     type: 'textarea' },
@@ -445,7 +675,6 @@ function makeDefault() {
 const stored = localStorage.getItem(STORE_K);
 let data    = stored ? JSON.parse(stored) : makeDefault();
 let history = JSON.parse(localStorage.getItem(HIST_K) || '[]');
-let isEdit  = false;
 let snap    = null;
 
 if (!stored) {
@@ -467,6 +696,7 @@ function init() {
   renderWorkflow();
   renderAllSections();
   renderHistory();
+  renderApprovers();
 }
 
 function renderMeta() {
@@ -476,13 +706,15 @@ function renderMeta() {
     <div class="meta-cell"><div class="meta-lbl">Category</div><div class="meta-val link">${data.category}</div></div>
     <div class="meta-cell"><div class="meta-lbl">In Approval Process</div><div class="meta-val" style="font-size:18px;line-height:1;color:#16a34a;">✓</div></div>
     <div class="meta-cell"><div class="meta-lbl">Approved Date Time</div><div class="meta-val">${data.workflowStatus === 'Released' ? (data.releasedDate||'—') : '—'}</div></div>
-    <div class="meta-cell"><div class="meta-lbl">Has Attachments</div><div class="meta-val">📎</div></div>
+    <div class="meta-cell"><div class="meta-lbl">Has Attachments</div><div class="meta-val"><input type="checkbox" id="metaHasAttach" ${data.hasAttachments ? 'checked' : ''} onchange="data.hasAttachments=this.checked;save()" style="width:16px;height:16px;cursor:pointer;accent-color:var(--accent);"></div></div>
     <div class="meta-cell"><div class="meta-lbl">Status</div><div class="meta-val"><span class="wf-badge ${sc}">${data.workflowStatus}</span></div></div>
   `;
   const idx = WORKFLOW.indexOf(data.workflowStatus);
   const btn = document.getElementById('approveBtn');
-  if (idx >= WORKFLOW.length - 1) { btn.textContent = '✓ Final'; btn.disabled = true; }
-  else { btn.textContent = 'Approve →'; btn.disabled = false; }
+  if (btn) {
+    if (idx >= WORKFLOW.length - 1) { btn.textContent = '✓ Final'; btn.disabled = true; }
+    else { btn.textContent = 'Approve →'; btn.disabled = false; }
+  }
 }
 
 function renderWorkflow() {
@@ -519,28 +751,24 @@ function renderAllSections() {
 }
 
 function renderField(f) {
-  if (isEdit && f.type !== 'readonly') {
-    return `<div class="field-cell${f.type==='textarea'?' full-width':''}">
-      <div class="f-lbl">${f.label}${f.req ? '<span class="req">*</span>' : ''}</div>
-      ${buildInput(f)}
+  if (f.type === 'readonly') {
+    const raw = data[f.key] || '';
+    let display;
+    if (f.key === 'workflowStatus') {
+      const sc = 'wf-' + raw.replace(/\s+/g,'-');
+      display = raw ? `<span class="wf-badge ${sc}">${raw}</span>` : '—';
+    } else {
+      display = raw ? raw.replace(/</g,'&lt;') : '<span style="color:var(--text-muted);font-style:italic;">—</span>';
+    }
+    return `<div class="field-cell">
+      <div class="f-lbl">${f.label}</div>
+      <div class="f-val">${display}</div>
     </div>`;
   }
-  const raw = data[f.key] || '';
-  let display, cls = '';
-  if (!raw) {
-    display = '—'; cls = 'empty';
-  } else if (f.key === 'workflowStatus') {
-    const sc = 'wf-' + raw.replace(/\s+/g,'-');
-    display = `<span class="wf-badge ${sc}">${raw}</span>`;
-  } else if (f.key === 'originator' || f.key === 'changeAnalyst' || f.key === 'createdBy') {
-    display = raw; cls = 'link-val';
-  } else {
-    display = raw.replace(/</g,'&lt;').replace(/\n/g,'<br>');
-  }
-  const pencil = f.type !== 'readonly' ? '<span class="pencil-icon">✎ </span>' : '';
-  return `<div class="field-cell${f.type==='textarea'?' full-width':''}">
-    <div class="f-lbl">${f.label}</div>
-    <div class="f-val ${cls}">${pencil}${display}</div>
+  const isFull = f.type === 'textarea' && !f.half;
+  return `<div class="field-cell${isFull ? ' full-width' : ''}">
+    <div class="f-lbl">${f.label}${f.req ? '<span class="req">*</span>' : ''}</div>
+    ${buildInput(f)}
   </div>`;
 }
 
@@ -551,7 +779,8 @@ function buildInput(f) {
     return `<select class="f-select" data-key="${f.key}">${opts}</select>`;
   }
   if (f.type === 'textarea') {
-    return `<textarea class="f-textarea" data-key="${f.key}">${val}</textarea>`;
+    const style = f.noresize ? ' style="resize:none"' : '';
+    return `<textarea class="f-textarea" data-key="${f.key}"${style}>${val}</textarea>`;
   }
   const ml = f.maxlength ? `maxlength="${f.maxlength}"` : '';
   const counter = f.maxlength ? `<div class="f-char-count" id="cc-${f.key}">${(data[f.key]||'').length}/${f.maxlength}</div>` : '';
@@ -564,39 +793,44 @@ function updateCounter(key, el) {
   if (c) c.textContent = el.value.length + '/' + (el.getAttribute('maxlength') || '');
 }
 
+function _editFields() {
+  return document.querySelectorAll('#panel-details [data-key]');
+}
+
 function enterEdit() {
-  if (isEdit) { showToast('Already in edit mode'); return; }
-  isEdit = true; snap = { ...data };
-  document.getElementById('btn-edit').style.opacity = '0.45';
-  document.getElementById('btn-edit').disabled = true;
-  renderAllSections();
-  showToast('Edit mode — make changes then click Save');
+  snap = { ...data };
+  document.querySelectorAll('#panel-details [data-key]').forEach(el => {
+    el.style.outline = '2px solid var(--accent)';
+  });
+  showToast('✎ Editing — make changes then click Save');
 }
 
 function saveEdit() {
-  if (!isEdit) { showToast('Click Edit first to make changes'); return; }
-  document.querySelectorAll('[data-key]').forEach(el => { data[el.dataset.key] = el.value; });
+  _editFields().forEach(el => { data[el.dataset.key] = el.value; });
   if (!data.title.trim())       { showToast('⚠ Title is required'); return; }
   if (!data.description.trim()) { showToast('⚠ Description is required'); return; }
   data.categoryControl = data.category;
   const now = new Date().toLocaleString('en-US',{month:'numeric',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit',hour12:true});
   let changed = 0;
-  SECTIONS.forEach(sec => {
-    sec.fields.forEach(f => {
-      if (f.type === 'readonly') return;
-      const ov = (snap[f.key]  || '').toString().trim();
-      const nv = (data[f.key] || '').toString().trim();
-      if (ov !== nv) {
-        history.unshift({ ts: now, user: 'Karkuvel V', action: 'edit', field: f.label, oldVal: ov||'—', newVal: nv||'—' });
-        changed++;
-      }
+  if (snap) {
+    SECTIONS.forEach(sec => {
+      sec.fields.forEach(f => {
+        if (f.type === 'readonly') return;
+        const ov = (snap[f.key]  || '').toString().trim();
+        const nv = (data[f.key] || '').toString().trim();
+        if (ov !== nv) {
+          history.unshift({ ts: now, user: 'Karkuvel V', action: 'edit', field: f.label, oldVal: ov||'—', newVal: nv||'—' });
+          changed++;
+        }
+      });
     });
-  });
-  save(); isEdit = false; snap = null;
-  document.getElementById('btn-edit').style.opacity = '';
-  document.getElementById('btn-edit').disabled = false;
-  renderMeta(); renderAllSections(); renderHistory();
-  showToast(changed ? `✅ ${changed} change(s) saved` : 'No changes to save');
+  }
+  snap = null;
+  save();
+  document.querySelectorAll('#panel-details [data-key]').forEach(el => { el.style.outline = ''; });
+  renderMeta();
+  renderHistory();
+  showToast(changed ? `✅ ${changed} change(s) saved` : '✓ Details saved');
 }
 
 function renderHistory() {
@@ -624,6 +858,153 @@ function switchTab(name, el) {
   el.classList.add('active');
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   document.getElementById('panel-' + name).classList.add('active');
+  if (name === 'approvers') renderApprovers();
+  if (name === 'relationships') renderRelationships();
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── APPROVERS ──
+const APR_KEY = 'mco_apr_' + MCO_NUM;
+let approvers = JSON.parse(localStorage.getItem(APR_KEY) || '[]');
+
+function saveApprovers() { localStorage.setItem(APR_KEY, JSON.stringify(approvers)); }
+
+function renderApprovers() {
+  const tbody = document.getElementById('apr-tbody');
+  const count = document.getElementById('apr-count');
+  if (!tbody) return;
+  count.textContent = approvers.length + ' record' + (approvers.length !== 1 ? 's' : '');
+  if (!approvers.length) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--text-muted);font-style:italic;">No approvers added yet.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = approvers.map((a, i) => `
+    <tr>
+      <td class="ai-td-check"><input type="checkbox" data-idx="${i}"></td>
+      <td style="color:var(--accent);font-weight:500;">${escHtml(a.name)}</td>
+      <td>${escHtml(a.team || '—')}</td>
+      <td>${escHtml(a.role)}</td>
+      <td>${escHtml(a.stage)}</td>
+      <td style="color:${a.status==='Approved'?'var(--green)':'var(--text-muted)'}">
+        ${a.status === 'Approved' ? '✓ Approved' : '○ Pending'}
+      </td>
+    </tr>`).join('');
+}
+
+function openAprModal() {
+  document.getElementById('aprName').value  = '';
+  document.getElementById('aprTeam').value  = '';
+  document.getElementById('aprRole').value  = 'Approver';
+  document.getElementById('aprStage').value = 'CCB';
+  document.getElementById('aprModalOverlay').classList.add('open');
+  document.getElementById('aprName').focus();
+}
+
+function closeAprModal() { document.getElementById('aprModalOverlay').classList.remove('open'); }
+
+function confirmAddApprover() {
+  const name = document.getElementById('aprName').value.trim();
+  if (!name) { showToast('⚠ Name is required'); return; }
+  approvers.push({
+    name,
+    team:   document.getElementById('aprTeam').value.trim(),
+    role:   document.getElementById('aprRole').value,
+    stage:  document.getElementById('aprStage').value,
+    status: 'Pending',
+  });
+  saveApprovers();
+  renderApprovers();
+  closeAprModal();
+  showToast('✅ Approver added');
+}
+
+function aprRemoveSelected() {
+  const checked = [...document.querySelectorAll('#apr-tbody input[type="checkbox"]:checked')];
+  if (!checked.length) { showToast('Select at least one approver to remove'); return; }
+  const idxs = new Set(checked.map(cb => parseInt(cb.dataset.idx)));
+  approvers = approvers.filter((_, i) => !idxs.has(i));
+  saveApprovers();
+  renderApprovers();
+  showToast(idxs.size + ' approver(s) removed');
+}
+
+function aprToggleAll(cb) {
+  document.querySelectorAll('#apr-tbody input[type="checkbox"]').forEach(el => el.checked = cb.checked);
+}
+
+document.addEventListener('click', e => {
+  if (e.target.id === 'aprModalOverlay') closeAprModal();
+  if (e.target.id === 'relModalOverlay') closeRelModal();
+});
+
+// ── RELATIONSHIPS ──
+const REL_KEY = 'mco_rel_' + MCO_NUM;
+let relationships = JSON.parse(localStorage.getItem(REL_KEY) || '[]');
+
+function saveRelationships() { localStorage.setItem(REL_KEY, JSON.stringify(relationships)); }
+
+function renderRelationships() {
+  const tbody = document.getElementById('rel-tbody');
+  const count = document.getElementById('rel-count');
+  if (!tbody) return;
+  count.textContent = relationships.length + ' record' + (relationships.length !== 1 ? 's' : '');
+  if (!relationships.length) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--text-muted);font-style:italic;">No relationships defined yet.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = relationships.map((r, i) => `
+    <tr>
+      <td class="ai-td-check"><input type="checkbox" data-idx="${i}"></td>
+      <td style="color:var(--accent);font-weight:600;">${escHtml(r.fromNum || '—')}</td>
+      <td>${escHtml(r.fromTitle || '—')}</td>
+      <td><span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;background:#dbeafe;color:#1e40af;">${escHtml(r.type)}</span></td>
+      <td style="color:var(--accent);font-weight:600;">${escHtml(r.toNum || '—')}</td>
+      <td>${escHtml(r.toTitle || '—')}</td>
+    </tr>`).join('');
+}
+
+function openRelModal() {
+  ['relFromNum','relFromTitle','relToNum','relToTitle'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  document.getElementById('relType').value = 'Follow-up MCO';
+  document.getElementById('relModalOverlay').classList.add('open');
+}
+
+function closeRelModal() { document.getElementById('relModalOverlay').classList.remove('open'); }
+
+function confirmAddRelationship() {
+  const fromNum = document.getElementById('relFromNum').value.trim();
+  const toNum   = document.getElementById('relToNum').value.trim();
+  if (!fromNum && !toNum) { showToast('⚠ Enter at least a From or To number'); return; }
+  relationships.push({
+    fromNum,
+    fromTitle: document.getElementById('relFromTitle').value.trim(),
+    type:      document.getElementById('relType').value,
+    toNum,
+    toTitle:   document.getElementById('relToTitle').value.trim(),
+  });
+  saveRelationships();
+  renderRelationships();
+  closeRelModal();
+  showToast('✅ Relationship added');
+}
+
+function relRemoveSelected() {
+  const checked = [...document.querySelectorAll('#rel-tbody input[type="checkbox"]:checked')];
+  if (!checked.length) { showToast('Select at least one relationship to remove'); return; }
+  const idxs = new Set(checked.map(cb => parseInt(cb.dataset.idx)));
+  relationships = relationships.filter((_, i) => !idxs.has(i));
+  saveRelationships();
+  renderRelationships();
+  showToast(idxs.size + ' relationship(s) removed');
+}
+
+function relToggleAll(cb) {
+  document.querySelectorAll('#rel-tbody input[type="checkbox"]').forEach(el => el.checked = cb.checked);
 }
 
 function toggleSection(id) {
@@ -662,7 +1043,101 @@ function showToast(msg) {
   clearTimeout(_tt); _tt = setTimeout(() => t.classList.remove('show'), 2600);
 }
 
+// ── AFFECTED ITEMS ──
+const AI_KEY = 'mco_ai_' + MCO_NUM;
+let affectedItems = JSON.parse(localStorage.getItem(AI_KEY) || '[]');
+
+function saveAI() { localStorage.setItem(AI_KEY, JSON.stringify(affectedItems)); }
+
+function lcClass(lc) {
+  const m = { prototype:'lc-prototype', preliminary:'lc-preliminary', production:'lc-production', obsolete:'lc-obsolete' };
+  return m[(lc||'').toLowerCase()] || 'lc-default';
+}
+
+function renderAI(filtered) {
+  const list = filtered || affectedItems;
+  const tbody = document.getElementById('ai-tbody');
+  const count = document.getElementById('ai-count');
+  count.textContent = `${list.length} of ${affectedItems.length} records`;
+  if (!list.length) {
+    tbody.innerHTML = '<tr class="ai-empty-row"><td colspan="9">No affected items added yet. Click + Add to begin.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = list.map((item, i) => `
+    <tr data-idx="${affectedItems.indexOf(item)}">
+      <td class="ai-td-check"><input type="checkbox" /></td>
+      <td class="ai-td-num">${i + 1}</td>
+      <td class="ai-td-eye" title="Inspect" onclick="showToast('Inspecting ${item.itemNumber}')">👁</td>
+      <td><span class="ai-td-item" onclick="showToast('Opening ${item.itemNumber}')">${item.itemNumber}</span></td>
+      <td><span class="lc-badge ${lcClass(item.lifecycle)}">${item.lifecycle}</span></td>
+      <td class="ai-td-clip">📎</td>
+      <td style="max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${item.description || '—'}</td>
+      <td>${item.revision || 'A0'}</td>
+      <td style="text-align:center;color:var(--green);font-size:15px;">✓</td>
+    </tr>`).join('');
+}
+
+function openAiModal() {
+  document.getElementById('ai-inp-num').value  = '';
+  document.getElementById('ai-inp-desc').value = '';
+  document.getElementById('ai-inp-rev').value  = 'A0';
+  document.getElementById('ai-inp-lc').value   = 'Prototype';
+  document.getElementById('aiModalOverlay').classList.add('open');
+  document.getElementById('ai-inp-num').focus();
+}
+function closeAiModal() { document.getElementById('aiModalOverlay').classList.remove('open'); }
+
+function aiConfirmAdd() {
+  const num = document.getElementById('ai-inp-num').value.trim();
+  if (!num) { showToast('⚠ Item Number is required'); return; }
+  affectedItems.push({
+    itemNumber:  num,
+    description: document.getElementById('ai-inp-desc').value.trim(),
+    lifecycle:   document.getElementById('ai-inp-lc').value,
+    revision:    document.getElementById('ai-inp-rev').value.trim() || 'A0',
+  });
+  saveAI();
+  renderAI();
+  closeAiModal();
+  showToast('✅ Item added');
+}
+
+function aiRemoveSelected() {
+  const checked = [...document.querySelectorAll('#ai-tbody input[type="checkbox"]:checked')];
+  if (!checked.length) { showToast('Select items to remove'); return; }
+  const idxs = checked.map(cb => parseInt(cb.closest('tr').dataset.idx));
+  affectedItems = affectedItems.filter((_, i) => !idxs.includes(i));
+  saveAI(); renderAI();
+  showToast(`${idxs.length} item(s) removed`);
+}
+
+function aiToggleAll(cb) {
+  document.querySelectorAll('#ai-tbody input[type="checkbox"]').forEach(el => el.checked = cb.checked);
+}
+
+function aiSearch(val) {
+  if (!val.trim()) { renderAI(); return; }
+  const q = val.toLowerCase();
+  renderAI(affectedItems.filter(item =>
+    (item.itemNumber + item.description + item.lifecycle + item.revision).toLowerCase().includes(q)));
+}
+
+function aiSort(key) {
+  affectedItems.sort((a, b) => (a[key] || '').localeCompare(b[key] || ''));
+  renderAI();
+}
+
+function aiCopy() {
+  const txt = affectedItems.map(i => `${i.itemNumber}\t${i.lifecycle}\t${i.description}\t${i.revision}`).join('\n');
+  navigator.clipboard.writeText(txt).then(() => showToast('Copied to clipboard')).catch(() => showToast('Copy failed'));
+}
+
+document.addEventListener('click', e => {
+  if (e.target.id === 'aiModalOverlay') closeAiModal();
+});
+
 init();
+renderAI();
 </script>
 </body>
 </html>
