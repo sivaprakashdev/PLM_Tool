@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ECO Detail — NEXTGEN PLM</title>
+<style>
+:root {
+  --bg: #f0f2f5;
+  --white: #ffffff;
+  --accent: #2563eb;
+  --accent-dark: #1d4ed8;
+  --accent-light: #dbeafe;
+  --text-primary: #111827;
+  --text-secondary: #6b7280;
+  --text-muted: #9ca3af;
+  --border: #e5e7eb;
+  --green: #16a34a;
+  --red: #dc2626;
+  --shadow: 0 1px 4px rgba(0,0,0,0.08);
+  --radius: 8px;
+  --font: 'Segoe UI', system-ui, sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font); background: var(--bg); color: var(--text-primary); min-height: 100vh; display: flex; flex-direction: column; }
+
+/* ── TOPBAR ── */
+.topbar { background: var(--white); border-bottom: 1px solid var(--border); height: 52px; display: flex; align-items: center; padding: 0 16px; gap: 12px; flex-shrink: 0; box-shadow: var(--shadow); }
+.brand-wrap { display: flex; align-items: center; gap: 10px; }
+.brand-logo { width: 34px; height: 34px; background: linear-gradient(135deg,#2563eb,#7c3aed); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 15px; font-weight: 900; letter-spacing: -1px; }
+.brand-name { font-size: 13px; font-weight: 700; }
+.brand-sub { font-size: 10px; color: var(--text-secondary); }
+.breadcrumb { font-size: 13px; color: var(--text-secondary); display: flex; align-items: center; gap: 6px; }
+.breadcrumb a { color: var(--accent); text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.topbar-right { margin-left: auto; display: flex; align-items: center; gap: 4px; }
+.icon-btn { width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; border-radius: 8px; cursor: pointer; color: var(--text-secondary); font-size: 16px; border: none; background: transparent; transition: background 0.15s; }
+.icon-btn:hover { background: var(--bg); color: var(--accent); }
+.avatar-btn { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg,#2563eb,#7c3aed); color: #fff; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 2px solid var(--border); }
+
+/* ── ECO HEADER ── */
+.eco-header { background: var(--white); border-bottom: 1px solid var(--border); padding: 14px 24px 0; }
+.eco-header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; gap: 12px; flex-wrap: wrap; }
+.eco-id-wrap { display: flex; align-items: center; gap: 12px; }
+.eco-icon { width: 40px; height: 40px; background: #fff7ed; border: 2px solid #fb923c; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+.eco-label-sm { font-size: 10.5px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+.eco-number { font-size: 22px; font-weight: 800; color: var(--text-primary); line-height: 1.1; }
+.eco-actions { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.hdr-btn { padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; border: 1px solid var(--border); background: var(--white); color: var(--text-primary); display: inline-flex; align-items: center; gap: 4px; transition: background 0.15s, border-color 0.15s; white-space: nowrap; }
+.hdr-btn:hover { background: var(--bg); border-color: #c1c9d2; }
+.hdr-btn.approve-btn { background: var(--green); color: #fff; border-color: var(--green); }
+.hdr-btn.approve-btn:hover { background: #15803d; }
+.hdr-btn.approve-btn:disabled { background: #6b7280; border-color: #6b7280; cursor: not-allowed; }
+
+/* ── META ROW ── */
+.eco-meta { display: flex; border-top: 1px solid var(--border); flex-wrap: wrap; }
+.meta-cell { flex: 1; padding: 10px 18px; display: flex; flex-direction: column; gap: 3px; border-right: 1px solid var(--border); min-width: 0; }
+.meta-cell:last-child { border-right: none; }
+.meta-lbl { font-size: 10px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.4px; }
+.meta-val { font-size: 13px; color: var(--text-primary); font-weight: 500; }
+.meta-val.blue { color: var(--accent); font-weight: 600; }
+
+/* ── WORKFLOW STEPPER ── */
+.workflow-wrap { background: var(--white); border-bottom: 1px solid var(--border); padding: 8px 24px; display: flex; align-items: center; overflow-x: auto; gap: 3px; }
+.wf-step {
+  display: flex; align-items: center; justify-content: center;
+  padding: 8px 20px 8px 28px;
+  font-size: 11.5px; font-weight: 600; cursor: pointer; white-space: nowrap;
+  background: #f3f4f6; color: var(--text-muted);
+  position: relative; min-width: 100px; border-radius: 0;
+  clip-path: polygon(12px 0%, calc(100% - 12px) 0%, 100% 50%, calc(100% - 12px) 100%, 12px 100%, 0% 50%);
+  transition: background 0.15s, color 0.15s;
+  user-select: none;
+}
+.wf-step:first-child { clip-path: polygon(0% 0%, calc(100% - 12px) 0%, 100% 50%, calc(100% - 12px) 100%, 0% 100%); padding-left: 16px; }
+.wf-step:last-child  { clip-path: polygon(12px 0%, 100% 0%, 100% 100%, 12px 100%, 0% 50%); }
+.wf-step.done   { background: #16a34a; color: #fff; }
+.wf-step.active { background: #1a2340; color: #fff; }
+.wf-step:hover:not(.done):not(.active) { background: #e5e7eb; color: var(--text-primary); }
+
+/* ── TAB BAR ── */
+.tab-bar { background: var(--white); border-bottom: 1px solid var(--border); display: flex; padding: 0 24px; }
+.tab { padding: 12px 16px; font-size: 13px; font-weight: 500; color: var(--text-secondary); cursor: pointer; border-bottom: 2px solid transparent; transition: color 0.15s; white-space: nowrap; }
+.tab:hover { color: var(--accent); }
+.tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 600; }
+
+/* ── PAGE BODY ── */
+.page-body { flex: 1; overflow-y: auto; padding: 20px 24px; }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* ── EDIT BAR ── */
+.edit-bar { display: flex; align-items: center; justify-content: flex-end; gap: 8px; margin-bottom: 12px; }
+.btn { padding: 6px 14px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; border: 1px solid var(--border); background: var(--white); color: var(--text-primary); display: inline-flex; align-items: center; gap: 4px; transition: background 0.15s, border-color 0.15s; white-space: nowrap; }
+.btn:hover { background: var(--bg); border-color: var(--text-muted); }
+.btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+.btn-primary:hover { background: var(--accent-dark); }
+.btn-blue-outline { color: var(--accent); border-color: var(--accent); background: var(--white); }
+.btn-blue-outline:hover { background: var(--accent-light); }
+
+/* ── SECTION CARD ── */
+.sec-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 14px; overflow: hidden; box-shadow: var(--shadow); }
+.sec-head { padding: 10px 20px; background: var(--white); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none; }
+.sec-head:hover { background: #f9fafb; }
+.sec-caret { font-size: 11px; color: var(--text-secondary); display: inline-block; transition: transform 0.2s; }
+.sec-caret.closed { transform: rotate(-90deg); }
+.sec-title { font-size: 11px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.7px; }
+.sec-body { padding: 0; }
+.sec-body.collapsed { display: none; }
+
+/* ── FIELDS 2-COL GRID ── */
+.fields-grid { display: grid; grid-template-columns: 1fr 1fr; }
+.field-cell { padding: 14px 20px; border-bottom: 1px solid #f0f2f5; display: flex; flex-direction: column; gap: 6px; }
+.field-cell:nth-child(odd)  { border-right: 1px solid #f0f2f5; }
+.field-cell.full-width { grid-column: span 2; border-right: none; }
+.field-cell:last-child, .field-cell:nth-last-child(2):nth-child(odd) { border-bottom: none; }
+.f-lbl { font-size: 10.5px; font-weight: 600; color: var(--text-secondary); text-transform: none; letter-spacing: 0px; display: flex; align-items: center; gap: 4px; }
+.f-lbl .req { color: var(--red); font-size: 12px; }
+.f-val { font-size: 13px; color: var(--text-primary); line-height: 1.6; min-height: 20px; }
+.f-val.empty { color: var(--text-muted); font-style: italic; }
+.f-val.link-val { color: var(--accent); font-weight: 500; }
+.pencil-icon { font-size: 11px; color: var(--text-muted); }
+
+/* ── STATUS BADGE ── */
+.wf-badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+.wf-Pending       { background: #fef9c3; color: #854d0e; }
+.wf-Submitted     { background: #dbeafe; color: #1e40af; }
+.wf-CCB           { background: #1a2340; color: #fff; }
+.wf-Final-Review  { background: #e0e7ff; color: #3730a3; }
+.wf-Released      { background: #dcfce7; color: #166534; }
+.wf-Closed        { background: #f3f4f6; color: #374151; }
+.wf-Canceled      { background: #fee2e2; color: #991b1b; }
+.wf-Hold          { background: #fef3c7; color: #92400e; }
+
+/* ── INPUTS ── */
+.f-input, .f-select, .f-textarea {
+  padding: 7px 10px; border: 1px solid var(--border); border-radius: 6px;
+  font-size: 13px; color: var(--text-primary); font-family: var(--font);
+  outline: none; width: 100%; background: var(--white);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+/* View mode — disabled looks like plain read-only text */
+.f-input:disabled, .f-select:disabled, .f-textarea:disabled {
+  background: #f8f9fa; cursor: default; color: var(--text-primary);
+  border-color: var(--border); opacity: 1;
+}
+/* Edit mode — focused */
+.f-input:not(:disabled):focus, .f-select:not(:disabled):focus, .f-textarea:not(:disabled):focus {
+  border-color: var(--accent); box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+}
+/* Enabled (edit mode) highlight */
+.f-input:not(:disabled), .f-select:not(:disabled), .f-textarea:not(:disabled) {
+  background: var(--white); border-color: #94a3b8;
+}
+.f-textarea { resize: none; min-height: 64px; }
+.f-input.f-readonly { background: #f3f4f6; cursor: not-allowed; color: #374151; }
+.f-char-count { font-size: 11px; color: var(--text-muted); text-align: right; }
+
+/* ── TABS: OTHER PANELS ── */
+.empty-state { text-align: center; padding: 48px 24px; color: var(--text-muted); }
+.empty-icon { font-size: 36px; margin-bottom: 10px; }
+.empty-text { font-size: 13px; }
+.panel-toolbar { display: flex; align-items: center; justify-content: flex-end; padding: 10px 18px; border-bottom: 1px solid var(--border); background: #f8fafc; }
+
+/* ── HISTORY TABLE ── */
+.hist-wrap { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+thead th { background: #f8fafc; padding: 10px 14px; text-align: left; font-size: 11px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.4px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+tbody tr { border-bottom: 1px solid var(--border); transition: background 0.12s; }
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: #f9fafb; }
+td { padding: 10px 14px; vertical-align: middle; color: var(--text-primary); }
+.hist-empty { text-align: center; padding: 32px; color: var(--text-muted); font-style: italic; font-size: 13px; }
+.action-badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; background: #dbeafe; color: #1e40af; }
+.action-badge.created { background: #dcfce7; color: #166534; }
+.action-badge.workflow { background: #e0e7ff; color: #3730a3; }
+.old-val { color: var(--text-secondary); max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block; }
+.new-val { max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block; }
+
+/* ── ATTACHMENTS ── */
+.attach-label { font-size: 12px; font-weight: 600; color: var(--text-secondary); margin-bottom: 8px; }
+.drop-zone {
+  border: 2px dashed var(--border); border-radius: 8px;
+  padding: 28px 20px; display: flex; align-items: center; gap: 14px;
+  background: var(--white); cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+.drop-zone:hover, .drop-zone.drag-over { border-color: var(--accent); background: var(--accent-light); }
+.drop-zone input[type="file"] { display: none; }
+.attach-file-list { margin-top: 14px; display: flex; flex-direction: column; gap: 6px; }
+.attach-file-item {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: 6px; padding: 8px 12px; font-size: 13px;
+}
+.attach-file-name { flex: 1; color: var(--text-primary); }
+.attach-file-size { font-size: 12px; color: var(--text-muted); }
+.attach-remove { background: none; border: none; cursor: pointer; color: var(--text-muted); font-size: 15px; line-height: 1; padding: 0 2px; transition: color 0.12s; }
+.attach-remove:hover { color: var(--red); }
+
+/* ── TOAST ── */
+.toast { position: fixed; bottom: 24px; right: 24px; background: #111827; color: #fff; padding: 12px 20px; border-radius: 8px; font-size: 13px; font-weight: 500; box-shadow: 0 8px 24px rgba(0,0,0,0.2); z-index: 999; opacity: 0; transform: translateY(10px); transition: opacity 0.25s, transform 0.25s; pointer-events: none; }
+.toast.show { opacity: 1; transform: translateY(0); }
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+
+@media (max-width: 700px) {
+  .fields-grid { grid-template-columns: 1fr; }
+  .field-cell:nth-child(odd) { border-right: none; }
+  .field-cell.full-width { grid-column: span 1; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══ BREADCRUMB ══ -->
+<div class="breadcrumb">
+  <a href="./index.html" style="padding-left:3px">Home</a>
+  <span>›</span>
+  <a href="./index.html">Changes</a>
+  <span>›</span>
+  <span id="bcNum">—</span>
+</div>
+
+<!-- ══ ECO HEADER ══ -->
+<div class="eco-header">
+  <div class="eco-header-top">
+    <div class="eco-id-wrap">
+      <div class="eco-icon">⚡</div>
+      <div>
+        <div class="eco-label-sm">Change</div>
+        <div class="eco-number" id="hdrNum">—</div>
+      </div>
+    </div>
+    <div class="eco-actions">
+      <button class="hdr-btn" onclick="showToast('Now following this ECO')">+ Follow</button>
+      <button class="hdr-btn" onclick="copyInfo()">📋 Copy to Clipboard</button>
+      <button class="hdr-btn" onclick="showToast('Cloning ECO…')">Clone</button>
+      <button class="hdr-btn" onclick="showToast('Share link copied')">Share</button>
+      <button class="hdr-btn approve-btn" id="approveBtn" onclick="advanceWorkflow()">Approve →</button>
+    </div>
+  </div>
+  <div class="eco-meta" id="ecoMeta"></div>
+</div>
+
+<!-- ══ WORKFLOW STEPPER ══ -->
+<div class="workflow-wrap" id="workflowBar"></div>
+
+<!-- ══ TAB BAR ══ -->
+<div class="tab-bar">
+  <div class="tab active" onclick="switchTab('details',this)">Details</div>
+  <div class="tab" onclick="switchTab('affected-items',this)">Affected Items</div>
+  <div class="tab" onclick="switchTab('approvers',this)">Approvers</div>
+  <div class="tab" onclick="switchTab('relationships',this)">Relationships</div>
+  <div class="tab" onclick="switchTab('attachments',this)">Attachments</div>
+  <div class="tab" onclick="switchTab('history',this)">History</div>
+</div>
+
+<!-- ══ PAGE BODY ══ -->
+<div class="page-body">
+
+  <!-- ── DETAILS TAB ── -->
+  <div class="tab-panel active" id="panel-details">
+
+    <div class="edit-bar">
+      <button class="btn btn-blue-outline" id="btn-edit" onclick="enterEdit()">&#9998; Edit</button>
+      <button class="btn btn-primary"      id="btn-save" onclick="saveEdit()">&#10003; Save</button>
+    </div>
+
+    <!-- INFORMATION -->
+    <div class="sec-card">
+      <div class="sec-head" onclick="toggleSection('s-info')">
+        <span class="sec-caret" id="c-s-info">▼</span>
+        <span class="sec-title">Information</span>
+      </div>
+      <div class="sec-body" id="s-info">
+        <div class="fields-grid" id="g-info"></div>
+      </div>
+    </div>
+
+    <!-- ECO DETAILS -->
+    <div class="sec-card">
+      <div class="sec-head" onclick="toggleSection('s-eco')">
+        <span class="sec-caret" id="c-s-eco">▼</span>
+        <span class="sec-title">ECO Details</span>
+      </div>
+      <div class="sec-body" id="s-eco">
+        <div class="fields-grid" id="g-eco"></div>
+      </div>
+    </div>
+
+    <!-- SUPPLIER ACCESS -->
+    <div class="sec-card">
+      <div class="sec-head" onclick="toggleSection('s-supplier')">
+        <span class="sec-caret" id="c-s-supplier">▼</span>
+        <span class="sec-title">Supplier Access (Internal Only)</span>
+      </div>
+      <div class="sec-body" id="s-supplier">
+        <div class="fields-grid" id="g-supplier"></div>
+      </div>
+    </div>
+
+    <!-- SYSTEM FIELDS -->
+    <div class="sec-card">
+      <div class="sec-head" onclick="toggleSection('s-system')">
+        <span class="sec-caret" id="c-s-system">▼</span>
+        <span class="sec-title">System Fields</span>
+      </div>
+      <div class="sec-body" id="s-system">
+        <div class="fields-grid" id="g-system"></div>
+      </div>
+    </div>
+
+  </div><!-- /details -->
+
+  <!-- ── AFFECTED ITEMS ── -->
+  <div class="tab-panel" id="panel-affected-items">
+    <div class="sec-card">
+      <div class="sec-head">
+        <span class="sec-title">Affected Items</span>
+        <button class="btn btn-primary" style="margin-left:auto;padding:5px 12px;font-size:12px;" onclick="showToast('Add Affected Item')">+ Add Item</button>
+      </div>
+      <div class="empty-state"><div class="empty-icon">📦</div><div class="empty-text">No affected items added yet.</div></div>
+    </div>
+  </div>
+
+  <!-- ── APPROVERS ── -->
+  <div class="tab-panel" id="panel-approvers">
+    <div class="sec-card">
+      <div class="sec-head">
+        <span class="sec-title">Approvers</span>
+        <button class="btn btn-primary" style="margin-left:auto;padding:5px 12px;font-size:12px;" onclick="showToast('Add Approver')">+ Add Approver</button>
+      </div>
+      <div class="empty-state"><div class="empty-icon">👤</div><div class="empty-text">No approvers assigned.</div></div>
+    </div>
+  </div>
+
+  <!-- ── RELATIONSHIPS ── -->
+  <div class="tab-panel" id="panel-relationships">
+    <div class="sec-card">
+      <div class="sec-head">
+        <span class="sec-title">Relationships</span>
+        <button class="btn btn-primary" style="margin-left:auto;padding:5px 12px;font-size:12px;" onclick="showToast('Add Relationship')">+ Add</button>
+      </div>
+      <div class="empty-state"><div class="empty-icon">🔗</div><div class="empty-text">No relationships defined.</div></div>
+    </div>
+  </div>
+
+  <!-- ── ATTACHMENTS ── -->
+  <div class="tab-panel" id="panel-attachments">
+    <p class="attach-label">Attachment</p>
+    <div class="drop-zone" id="ecoDropZone"
+         onclick="document.getElementById('ecoFileInput').click()"
+         ondragover="event.preventDefault();this.classList.add('drag-over')"
+         ondragleave="this.classList.remove('drag-over')"
+         ondrop="handleDrop(event)">
+      <input type="file" id="ecoFileInput" multiple onchange="handleFiles(this.files)" />
+      <button class="btn btn-blue-outline" onclick="event.stopPropagation();document.getElementById('ecoFileInput').click()">&#8679; Upload Files</button>
+      <span style="font-size:13px;color:var(--text-muted)">Or drop files here</span>
+    </div>
+    <div class="attach-file-list" id="attachFileList"></div>
+  </div>
+
+  <!-- ── HISTORY ── -->
+  <div class="tab-panel" id="panel-history">
+    <div class="hist-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Date / Time</th>
+            <th>User</th>
+            <th>Action</th>
+            <th>Field</th>
+            <th>Previous Value</th>
+            <th>New Value</th>
+          </tr>
+        </thead>
+        <tbody id="histBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+</div><!-- /page-body -->
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── WORKFLOW STEPS ──
+const WORKFLOW = ['Pending','Submitted','CCB','Final Review','Released','Closed','Canceled','Hold'];
+
+// ── FIELD SCHEMA ──
+const SECTIONS = [
+  { id: 'info', label: 'Information', fields: [
+    { key: 'category',          label: 'Category',              type: 'select',   options: ['NPI - ECO','Sustaining - ECO','Production - ECO'] },
+    { key: 'ecoNum',            label: 'Change Number',         type: 'readonly' },
+    { key: 'title',             label: 'Change Order Title',    type: 'textarea', maxlength: 50,  noresize: true, req: true },
+    { key: 'description',       label: 'Description of Change', type: 'textarea', maxlength: 500, noresize: true, req: true },
+    { key: 'changeSubcategory', label: 'Change Subcategory',    type: 'select',   options: ['','Cut-in','Documentation','Phase-In'] },
+    { key: 'workflowStatus',    label: 'Change Status',         type: 'select',   options: ['Pending','Submitted','CCB','Final Review','Released','Closed','Canceled','Hold'] },
+    { key: 'reasonForChange',   label: 'Reason for Change',     type: 'textarea', maxlength: 150, noresize: true },
+    { key: 'reasonCode',        label: 'Reason Code',           type: 'select',   options: ['','Cost Reduction','Improvement','Issue Resolution','Other','Supplier Driven'] },
+    { key: 'disposition',       label: 'Disposition',           type: 'select',   options: ['N/A','Use As Is','Scrap','Rework'] },
+    { key: 'productLines',      label: 'Product Lines',         type: 'text' },
+    { key: 'originator',        label: 'Originator',            type: 'text' },
+    { key: 'changeAnalyst',     label: 'Change Analyst',        type: 'text' },
+    { key: 'functionalTeams',   label: 'Functional Teams',      type: 'text' },
+  ]},
+  { id: 'eco', label: 'ECO Details', fields: [
+    { key: 'ecoClassification', label: 'ECO Classification',   type: 'select',   options: ['','A','B','C','D','E'] },
+    { key: 'dfImpact',          label: 'DF Impact',             type: 'select',   options: ['N/A','Yes','No'] },
+    { key: 'repairImpact',      label: 'Repair Impact',         type: 'select',   options: ['N/A','Yes','No'] },
+    { key: 'serviceDepotImpact',label: 'Service Depot Impact',  type: 'select',   options: ['N/A','Yes','No'] },
+    { key: 'mfgImpact',         label: 'MFG Impact',            type: 'select',   options: ['N/A','Yes','No'] },
+  ]},
+  { id: 'supplier', label: 'Supplier Access', fields: [
+    { key: 'accessibleBy',   label: 'Accessible By',  type: 'textarea' },
+    { key: 'internalNotes',  label: 'Internal Notes', type: 'textarea' },
+  ]},
+  { id: 'system', label: 'System Fields', fields: [
+    { key: 'categoryControl', label: 'Category Control', type: 'readonly' },
+    { key: 'createdDate',     label: 'Created Date',     type: 'readonly' },
+    { key: 'createdBy',       label: 'Created By',       type: 'readonly' },
+    { key: 'closedDate',      label: 'Closed Date',      type: 'readonly' },
+    { key: 'releasedDate',    label: 'Released Date',    type: 'readonly' },
+    { key: 'legacyCreateBy',  label: 'Legacy Create By', type: 'text' },
+  ]},
+];
+
+// ── LOAD DATA ──
+const qp       = new URLSearchParams(location.search);
+const ECO_NUM  = qp.get('ecoNum') || 'ECO-26220';
+const STORE_K  = 'eco_' + ECO_NUM;
+const HIST_K   = 'ecoh_' + ECO_NUM;
+
+function makeDefault() {
+  const now = new Date().toLocaleString('en-US',{month:'numeric',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit',hour12:true});
+  return {
+    ecoNum:             ECO_NUM,
+    category:           qp.get('category')  || 'NPI - ECO',
+    title:              qp.get('title')     || '',
+    description:        qp.get('desc')      || '',
+    changeSubcategory:  '',
+    workflowStatus:     qp.get('workflowStatus') || 'Pending',
+    reasonForChange:    qp.get('reason')    || '',
+    reasonCode:         '',
+    disposition:        'N/A',
+    productLines:       '',
+    originator:         'Karkuvel V',
+    changeAnalyst:      '',
+    functionalTeams:    '',
+    ecoClassification:  '',
+    dfImpact:           'N/A',
+    repairImpact:       'N/A',
+    serviceDepotImpact: 'N/A',
+    mfgImpact:          'N/A',
+    accessibleBy:       '',
+    internalNotes:      '',
+    categoryControl:    qp.get('category')  || 'NPI - ECO',
+    createdBy:          'Karkuvel V',
+    createdDate:        qp.get('createdDate') || now,
+    releasedDate:       '',
+    closedDate:         '',
+    legacyCreateBy:     '',
+  };
+}
+
+const stored = localStorage.getItem(STORE_K);
+let data      = stored ? JSON.parse(stored) : makeDefault();
+let history   = JSON.parse(localStorage.getItem(HIST_K) || '[]');
+let isEdit    = false;
+let snap      = null;
+
+// First load from URL — record Created only when arriving from the creation modal (has 'desc' param)
+if (!stored) {
+  if (qp.has('desc')) {
+    history.unshift({ ts: data.createdDate, user: 'Karkuvel V', action: 'created', field: 'ECO', oldVal: '', newVal: ECO_NUM });
+  }
+  save();
+}
+
+function save() {
+  localStorage.setItem(STORE_K, JSON.stringify(data));
+  localStorage.setItem(HIST_K, JSON.stringify(history));
+}
+
+// ── INIT ──
+function init() {
+  document.getElementById('hdrNum').textContent = data.ecoNum;
+  document.getElementById('bcNum').textContent  = data.ecoNum;
+  renderMeta();
+  renderWorkflow();
+  renderAllSections();
+  renderHistory();
+}
+
+// ── META ROW ──
+function renderMeta() {
+  const sc = 'wf-' + (data.workflowStatus || 'Pending').replace(/\s+/g,'-');
+  document.getElementById('ecoMeta').innerHTML = `
+    <div class="meta-cell"><div class="meta-lbl">Title</div><div class="meta-val">${data.title || '—'}</div></div>
+    <div class="meta-cell"><div class="meta-lbl">Category</div><div class="meta-val blue">${data.category}</div></div>
+    <div class="meta-cell"><div class="meta-lbl">In Approval Process</div><div class="meta-val" style="color:#16a34a;font-size:18px;line-height:1;">✓</div></div>
+    <div class="meta-cell"><div class="meta-lbl">Approved Date Time</div><div class="meta-val">${data.workflowStatus === 'Released' ? (data.releasedDate||'—') : '—'}</div></div>
+    <div class="meta-cell"><div class="meta-lbl">Has Attachments</div><div class="meta-val">📎</div></div>
+    <div class="meta-cell"><div class="meta-lbl">Status</div><div class="meta-val"><span class="wf-badge ${sc}">${data.workflowStatus}</span></div></div>
+  `;
+  // update approve button label
+  const idx = WORKFLOW.indexOf(data.workflowStatus);
+  const btn = document.getElementById('approveBtn');
+  if (idx >= WORKFLOW.length - 1) { btn.textContent = '✓ Final'; btn.disabled = true; }
+  else { btn.textContent = 'Approve →'; btn.disabled = false; }
+}
+
+// ── WORKFLOW ──
+function renderWorkflow() {
+  const cur = WORKFLOW.indexOf(data.workflowStatus);
+  document.getElementById('workflowBar').innerHTML = WORKFLOW.map((s, i) => {
+    const cls = i < cur ? 'done' : i === cur ? 'active' : '';
+    return `<div class="wf-step ${cls}" onclick="setStep(${i})" title="Set to ${s}">${s}</div>`;
+  }).join('');
+}
+
+function setStep(idx) {
+  const now = new Date().toLocaleString('en-US',{month:'numeric',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit',hour12:true});
+  const old = data.workflowStatus;
+  data.workflowStatus = WORKFLOW[idx];
+  if (data.workflowStatus === 'Released' && !data.releasedDate) data.releasedDate = now;
+  if (data.workflowStatus === 'Closed'   && !data.closedDate)   data.closedDate   = now;
+  history.unshift({ ts: now, user: 'Karkuvel V', action: 'workflow', field: 'Change Status', oldVal: old, newVal: data.workflowStatus });
+  save();
+  renderMeta();
+  renderWorkflow();
+  renderAllSections();
+  renderHistory();
+  showToast('Status → ' + data.workflowStatus);
+}
+
+function advanceWorkflow() {
+  const idx = WORKFLOW.indexOf(data.workflowStatus);
+  if (idx < WORKFLOW.length - 1) setStep(idx + 1);
+}
+
+// ── RENDER SECTIONS ──
+function renderAllSections() {
+  SECTIONS.forEach(sec => {
+    const g = document.getElementById('g-' + sec.id);
+    if (!g) return;
+    g.innerHTML = sec.fields.map(f => renderField(f)).join('');
+  });
+}
+
+function renderField(f) {
+  // Readonly fields: display as styled text (badge for status, plain otherwise)
+  if (f.type === 'readonly') {
+    const raw = data[f.key] || '';
+    let display;
+    if (f.key === 'workflowStatus') {
+      const sc = 'wf-' + (raw || 'Pending').replace(/\s+/g,'-');
+      display = `<span class="wf-badge ${sc}">${raw || 'Pending'}</span>`;
+    } else {
+      display = raw ? raw.replace(/</g,'&lt;') : '<span style="color:var(--text-muted);font-style:italic;">—</span>';
+    }
+    return `<div class="field-cell">
+      <div class="f-lbl">${f.label}</div>
+      <div class="f-val">${display}</div>
+    </div>`;
+  }
+  // Editable fields: always rendered as inputs, disabled in view mode
+  return `<div class="field-cell${f.type==='textarea'?' full-width':''}">
+    <div class="f-lbl">${f.label}${f.req ? '<span class="req">*</span>' : ''}</div>
+    ${buildInput(f)}
+  </div>`;
+}
+
+function buildInput(f) {
+  const val = (data[f.key] || '').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+  // Always disabled initially — enterEdit() will enable them
+  if (f.type === 'select') {
+    const opts = f.options.map(o => `<option value="${o}"${o===data[f.key]?' selected':''}>${o||'-- Select --'}</option>`).join('');
+    return `<select class="f-select" data-key="${f.key}" disabled>${opts}</select>`;
+  }
+  if (f.type === 'textarea') {
+    const ml  = f.maxlength ? `maxlength="${f.maxlength}"` : '';
+    const style = f.noresize ? ' style="resize:none"' : '';
+    const onInput = f.maxlength ? `oninput="updateCounter('${f.key}',this)"` : '';
+    const counter = f.maxlength
+      ? `<div class="f-char-count" id="cc-${f.key}">${(data[f.key]||'').length}/${f.maxlength}</div>` : '';
+    return `<textarea class="f-textarea" data-key="${f.key}" ${ml} ${onInput}${style} disabled>${val}</textarea>${counter}`;
+  }
+  const ml = f.maxlength ? `maxlength="${f.maxlength}"` : '';
+  const counter = f.maxlength
+    ? `<div class="f-char-count" id="cc-${f.key}">${(data[f.key]||'').length}/${f.maxlength}</div>` : '';
+  const onInput = f.maxlength ? `oninput="updateCounter('${f.key}',this)"` : '';
+  return `<input class="f-input" type="text" data-key="${f.key}" value="${val}" ${ml} ${onInput} disabled />` + counter;
+}
+
+function updateCounter(key, el) {
+  const c = document.getElementById('cc-' + key);
+  if (c) c.textContent = el.value.length + '/' + (el.getAttribute('maxlength') || '');
+}
+
+// ── EDIT / SAVE ──
+function enterEdit() {
+  if (isEdit) { showToast('Already in edit mode'); return; }
+  isEdit = true;
+  snap   = { ...data };
+  document.getElementById('btn-edit').style.opacity = '0.45';
+  document.getElementById('btn-edit').disabled = true;
+  // Enable all editable inputs in-place — no re-render needed
+  document.querySelectorAll('#panel-details [data-key]').forEach(el => { el.disabled = false; });
+  showToast('Edit mode — make changes then click Save');
+}
+
+function saveEdit() {
+  if (!isEdit) { showToast('Click Edit first to make changes'); return; }
+
+  // collect values from all editable inputs
+  document.querySelectorAll('[data-key]').forEach(el => { data[el.dataset.key] = el.value; });
+
+  // validate required fields
+  if (!data.title.trim())       { showToast('⚠ Change Order Title is required'); return; }
+  if (!data.description.trim()) { showToast('⚠ Description of Change is required'); return; }
+
+  // sync categoryControl with category
+  data.categoryControl = data.category;
+
+  // diff and record history
+  const now = new Date().toLocaleString('en-US',{month:'numeric',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit',hour12:true});
+  let changed = 0;
+  SECTIONS.forEach(sec => {
+    sec.fields.forEach(f => {
+      if (f.type === 'readonly') return;
+      const ov = (snap[f.key]  || '').toString().trim();
+      const nv = (data[f.key] || '').toString().trim();
+      if (ov !== nv) {
+        history.unshift({ ts: now, user: 'Karkuvel V', action: 'edit', field: f.label, oldVal: ov || '—', newVal: nv || '—' });
+        changed++;
+      }
+    });
+  });
+
+  save();
+  isEdit = false;
+  snap   = null;
+  document.getElementById('btn-edit').style.opacity = '';
+  document.getElementById('btn-edit').disabled = false;
+  // Re-render sections (refreshes values + returns all inputs to disabled/view state)
+  renderMeta();
+  renderWorkflow();
+  renderAllSections();
+  renderHistory();
+  showToast(changed ? `✅ ${changed} change(s) saved` : 'No changes to save');
+}
+
+// ── HISTORY ──
+function renderHistory() {
+  const tb = document.getElementById('histBody');
+  if (!history.length) {
+    tb.innerHTML = `<tr><td colspan="6" class="hist-empty">No history yet. Edit and save to record changes.</td></tr>`;
+    return;
+  }
+  tb.innerHTML = history.map(h => {
+    const aC = h.action === 'created' ? 'created' : h.action === 'workflow' ? 'workflow' : '';
+    const aL = h.action === 'created' ? 'Created' : h.action === 'workflow' ? 'Workflow' : 'Edit';
+    return `<tr>
+      <td style="color:var(--text-muted);font-size:12px;white-space:nowrap;">${h.ts}</td>
+      <td style="color:var(--accent);font-weight:500;">${h.user}</td>
+      <td><span class="action-badge ${aC}">${aL}</span></td>
+      <td style="font-weight:500;">${h.field}</td>
+      <td><span class="old-val">${h.oldVal}</span></td>
+      <td><span class="new-val">${h.newVal}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+// ── TABS ──
+function switchTab(name, el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+}
+
+// ── SECTION COLLAPSE ──
+function toggleSection(id) {
+  const body  = document.getElementById(id);
+  const caret = document.getElementById('c-' + id);
+  const open  = !body.classList.contains('collapsed');
+  body.classList.toggle('collapsed', open);
+  caret.classList.toggle('closed', open);
+}
+
+// ── CLIPBOARD ──
+function copyInfo() {
+  const txt = `${data.ecoNum} | ${data.category} | ${data.workflowStatus} | ${data.title || 'No title'}`;
+  navigator.clipboard.writeText(txt).then(() => showToast('Copied to clipboard')).catch(() => showToast('Copy failed'));
+}
+
+// ── ATTACHMENTS ──
+function handleFiles(files) {
+  const list = document.getElementById('attachFileList');
+  Array.from(files).forEach(f => {
+    const size = f.size > 1048576
+      ? (f.size / 1048576).toFixed(1) + ' MB'
+      : (f.size / 1024).toFixed(0) + ' KB';
+    const item = document.createElement('div');
+    item.className = 'attach-file-item';
+    item.innerHTML = `<span class="attach-file-name">📄 ${f.name}</span>
+      <span class="attach-file-size">${size}</span>
+      <button class="attach-remove" title="Remove" onclick="this.parentElement.remove()">✕</button>`;
+    list.appendChild(item);
+  });
+  document.getElementById('ecoDropZone').classList.remove('drag-over');
+}
+
+function handleDrop(e) {
+  e.preventDefault();
+  handleFiles(e.dataTransfer.files);
+}
+
+// ── TOAST ──
+let _tt;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(_tt);
+  _tt = setTimeout(() => t.classList.remove('show'), 2600);
+}
+
+// ── BOOT ──
+init();
+</script>
+</body>
+</html>

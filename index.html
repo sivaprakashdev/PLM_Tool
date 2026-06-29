@@ -947,7 +947,7 @@
       <div class="field-group">
         <label class="field-label">Category</label>
         <select class="field-select" id="newCategory">
-          <option value="">Select category…</option>
+          <option value="">--Select Category--</option>
           <option>Quality Alert (LA/LS/SS)</option>
           <option>NPI Change Order - ECO</option>
           <option>Engineering Change Order</option>
@@ -991,7 +991,7 @@
       <div class="field-group">
         <label class="field-label">Category</label>
         <select class="field-select" id="itemCategory" onchange="updateSubCategory()">
-          <option value="">Select category…</option>
+          <option value="">--Select Category--</option>
           <option value="Electrical">Electrical</option>
           <option value="Mechanical">Mechanical</option>
           <option value="Software">Software</option>
@@ -1179,11 +1179,12 @@
       </div>
       <div class="field-group">
         <label class="field-label"><span class="label-icon">📝</span> ECO Number</label>
-        <input class="field-input" type="text" placeholder="ECO Number" id="ecoName" />
+        <input class="field-input input-readonly" type="text" id="ecoName" disabled />
       </div>
       <div class="field-group">
-        <label class="field-label"><span class="label-icon">📋</span> Description of Change</label>
-        <textarea class="field-textarea" id="ecoDesc"></textarea>
+        <label class="field-label"><span class="label-icon">📋</span> Description of Change <span style="color:#dc2626">*</span></label>
+        <textarea class="field-textarea" id="ecoChangeDesc" maxlength="150" style="resize:none !important;" oninput="document.getElementById('ecoChangeDesc-counter').textContent=this.value.length+'/150'"></textarea>
+        <div style="text-align:right;font-size:11px;color:#9faab5;margin-top:3px;"><span id="ecoChangeDesc-counter">0/150</span></div>
       </div>
       <div class="field-group">
         <label class="field-label"><span class="label-icon">ⓘ</span> Reason for Change</label>
@@ -1224,7 +1225,7 @@
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="closeModal('mco')">Cancel</button>
-      <button class="btn btn-primary" onclick="submitMco()">Create</button>
+      <a href="./MCO.html"><button class="btn btn-primary" onclick="submitMco()">Create</button></a>
     </div>
   </div>
 </div>
@@ -1666,21 +1667,29 @@
 
   // ── CREATE ECO MODAL ──
   function openEcoModal() {
-    // Reset the form fields before showing the dialog.
     document.getElementById('ecoCategory').selectedIndex = 0;
-    document.getElementById('ecoName').value = '';
-    document.getElementById('ecoDesc').value = '';
+    const ecoNums = rows
+      .filter(r => r.id.startsWith('ECO-'))
+      .map(r => parseInt(r.id.replace('ECO-', ''), 10))
+      .filter(n => !isNaN(n));
+    const nextNum = ecoNums.length ? Math.max(...ecoNums) + 1 : 26220;
+    document.getElementById('ecoName').value = 'ECO-' + String(nextNum).padStart(5, '0');
+    document.getElementById('ecoChangeDesc').value = '';
+    document.getElementById('ecoChangeDesc-counter').textContent = '0/150';
     document.getElementById('ecoReason').value = '';
     document.getElementById('ecoModal').classList.add('open');
   }
 
   function submitEco() {
     const category = document.getElementById('ecoCategory').value;
-    const name = document.getElementById('ecoName').value.trim();
-    // Category and ECO Name are required.
-    if (!category || !name) { showToast('⚠ Please fill in Category and ECO Name'); return; }
+    const name     = document.getElementById('ecoName').value.trim();
+    const desc     = document.getElementById('ecoChangeDesc').value.trim();
+    const reason   = document.getElementById('ecoReason').value.trim();
+    if (!category) { showToast('⚠ Please select a Category'); return; }
+    if (!desc)     { showToast('⚠ Description of Change is required'); return; }
     closeModal('eco');
-    showToast('✅ ECO created: ' + name);
+    const p = new URLSearchParams({ ecoNum: name, category, desc, reason });
+    window.location.href = './ECO_Number.html?' + p.toString();
   }
 
   // ── CREATE NEW MFR MODAL ──
@@ -1815,6 +1824,19 @@
   function openDetail(id) {
     const r = rows.find(x => x.id === id);
     if (!r) return;
+    // ECO rows → navigate to ECO detail page with all available data
+    if (r.id.startsWith('ECO-')) {
+      const p = new URLSearchParams({
+        ecoNum:         r.id,
+        category:       r.category,
+        title:          r.title,
+        workflowStatus: r.status,
+        createdDate:    r.created
+      });
+      window.location.href = './ECO_Number.html?' + p.toString();
+      return;
+    }
+    // Other change types → modal
     document.getElementById('detailTitle').textContent = r.id + ' — Detail';
     document.getElementById('detailBody').innerHTML = `
       <div class="field-group">
