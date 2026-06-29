@@ -30,6 +30,7 @@
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
+  .icon { display: inline-block; width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; overflow: visible; vertical-align: middle; flex-shrink: 0; }
 
   body {
     font-family: var(--font);
@@ -119,7 +120,8 @@
     color: var(--accent);
   }
 
-  .nav-item svg { width: 12px; height: 12px; opacity: 0.6; }
+  .nav-chevron { opacity: 0.7; }
+  .nav-chevron .icon { width: 14px; height: 14px; }
 
   /* DROPDOWN */
   .nav-item .dropdown {
@@ -605,7 +607,8 @@
 
   .field-group { display: flex; flex-direction: column; gap: 5px; }
   .field-label { font-size: 12px; font-weight: 600; color: var(--text-secondary); display: flex; align-items: center; gap: 6px; }
-  .label-icon { font-size: 14px; opacity: 0.8; }
+  .label-icon { opacity: 0.8; }
+  .label-icon.icon { width: 16px; height: 16px; }
 
   /* TWO-COLUMN REPORT ROW (label left, field right) */
   .report-row {
@@ -645,10 +648,13 @@
     position: absolute;
     right: 12px;
     color: var(--text-muted);
-    font-size: 15px;
+    font-size: 18px;
     pointer-events: none;
+    line-height: 1;
+    top: 50%;
+    transform: translateY(-50%);
   }
-  .input-icon-wrap .field-textarea ~ .field-icon { top: 10px; }
+  .input-icon-wrap .field-textarea ~ .field-icon { top: 10px; transform: none; }
 
   .field-input, .field-select, .field-textarea {
     padding: 8px 12px;
@@ -774,9 +780,150 @@
   /* detail modal injected content */
   .detail-change-num { font-size: 14px; font-weight: 700; color: var(--accent); }
   .detail-title-text { font-size: 13px; }
+
+  /* ── WHERE-USED REPORT MODAL ── */
+  .wu-modal { width: 580px; max-height: 88vh; overflow-y: auto; }
+
+  .wu-header {
+    padding: 20px 24px 18px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: flex-start; gap: 14px;
+    background: linear-gradient(135deg, #eff6ff 0%, #fff 70%);
+    border-radius: 12px 12px 0 0;
+  }
+  .wu-header-icon {
+    width: 42px; height: 42px; flex-shrink: 0;
+    background: linear-gradient(135deg, var(--accent), #7c3aed);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center; color: #fff;
+  }
+  .wu-header-icon .icon { width: 22px; height: 22px; }
+  .wu-header-text { flex: 1; }
+  .wu-title { font-size: 15px; font-weight: 700; color: var(--text-primary); }
+  .wu-subtitle { font-size: 12px; color: var(--text-secondary); margin-top: 3px; }
+
+  .wu-body { padding: 20px 24px; display: flex; flex-direction: column; gap: 20px; }
+
+  .wu-section { display: flex; flex-direction: column; gap: 8px; }
+
+  .wu-section-label {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.5px; color: var(--text-secondary);
+    display: flex; align-items: center; gap: 7px;
+  }
+  .wu-step {
+    width: 19px; height: 19px; border-radius: 50%; flex-shrink: 0;
+    background: var(--accent); color: #fff;
+    font-size: 10px; font-weight: 800;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .wu-req { color: var(--red); font-size: 14px; line-height: 1; }
+  .wu-optional {
+    font-size: 10px; background: #f3f4f6; color: var(--text-muted);
+    padding: 1px 7px; border-radius: 10px; font-weight: 500;
+    text-transform: none; letter-spacing: 0;
+  }
+
+  .wu-search-wrap { position: relative; display: flex; align-items: center; }
+  .wu-search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--text-muted); pointer-events: none; stroke: currentColor; fill: none; }
+  .wu-input {
+    width: 100%; padding: 9px 12px 9px 34px;
+    border: 1.5px solid var(--border); border-radius: 8px;
+    font-size: 13px; color: var(--text-primary);
+    outline: none; background: var(--white); font-family: var(--font);
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .wu-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+  .wu-hint { font-size: 11px; color: var(--text-muted); }
+
+  .wu-level-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .wu-level-card {
+    display: flex; flex-direction: column; gap: 3px;
+    padding: 13px 14px; border: 1.5px solid var(--border); border-radius: 8px;
+    cursor: pointer; background: var(--white);
+    transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+  }
+  .wu-level-card:hover { border-color: var(--accent); background: #f0f6ff; }
+  .wu-level-active { border-color: var(--accent) !important; background: #eff6ff !important; box-shadow: 0 0 0 2px rgba(37,99,235,0.12); }
+  .wu-level-icon { font-size: 20px; margin-bottom: 2px; }
+  .wu-level-name { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+  .wu-level-desc { font-size: 11px; color: var(--text-muted); }
+
+  .wu-select {
+    width: 100%; padding: 9px 12px;
+    border: 1.5px solid var(--border); border-radius: 8px;
+    font-size: 13px; color: var(--text-primary); background: var(--white);
+    font-family: var(--font); outline: none; cursor: pointer;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .wu-select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+
+  .wu-format-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .wu-format-card {
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    padding: 14px 10px 12px; border: 1.5px solid var(--border); border-radius: 8px;
+    cursor: pointer; background: var(--white); text-align: center;
+    transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+  }
+  .wu-format-card:hover { border-color: var(--accent); background: #f0f6ff; }
+  .wu-format-active { border-color: var(--accent) !important; background: #eff6ff !important; box-shadow: 0 0 0 2px rgba(37,99,235,0.12); }
+  .wu-fmt-icon {
+    width: 38px; height: 38px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 800; letter-spacing: 0.5px;
+  }
+  .wu-fmt-pdf  { background: #fee2e2; color: #dc2626; }
+  .wu-fmt-xlsx { background: #dcfce7; color: #16a34a; }
+  .wu-fmt-csv  { background: #fef9c3; color: #854d0e; }
+  .wu-fmt-name { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+  .wu-fmt-desc { font-size: 11px; color: var(--text-muted); }
+
+  .wu-footer {
+    padding: 14px 24px 20px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-top: 1px solid var(--border);
+  }
+  .wu-footer-note { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text-muted); }
+  .wu-footer-actions { display: flex; gap: 8px; }
+  .wu-generate-btn {
+    background: var(--accent); color: #fff; border: none;
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 18px; border-radius: 6px;
+    font-size: 13px; font-weight: 600; cursor: pointer;
+    transition: background 0.15s, box-shadow 0.15s;
+  }
+  .wu-generate-btn:hover { background: var(--accent-dark); box-shadow: 0 4px 12px rgba(37,99,235,0.3); }
+  .wu-generate-btn .icon { width: 16px; height: 16px; }
 </style>
 </head>
 <body>
+
+<!-- SVG icon sprite -->
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="ico-search"        viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></symbol>
+  <symbol id="ico-grade"         viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></symbol>
+  <symbol id="ico-notifications" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></symbol>
+  <symbol id="ico-settings"      viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></symbol>
+  <symbol id="ico-help_outline"  viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></symbol>
+  <symbol id="ico-expand_more"   viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></symbol>
+  <symbol id="ico-refresh"       viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></symbol>
+  <symbol id="ico-download"      viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></symbol>
+  <symbol id="ico-close"         viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></symbol>
+  <symbol id="ico-business"      viewBox="0 0 24 24"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/></symbol>
+  <symbol id="ico-location_on"   viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></symbol>
+  <symbol id="ico-phone"         viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.64 1h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></symbol>
+  <symbol id="ico-fax"           viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></symbol>
+  <symbol id="ico-email"         viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></symbol>
+  <symbol id="ico-info_outline"  viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></symbol>
+  <symbol id="ico-check"         viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></symbol>
+  <symbol id="ico-layers"        viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></symbol>
+  <symbol id="ico-account_tree"  viewBox="0 0 24 24"><line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></symbol>
+  <symbol id="ico-hub"           viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></symbol>
+  <symbol id="ico-inventory"     viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></symbol>
+  <symbol id="ico-factory"       viewBox="0 0 24 24"><path d="M2 20V9l7-4v4l7-4v4l4-2v13H2z"/><line x1="2" y1="20" x2="22" y2="20"/></symbol>
+  <symbol id="ico-home_work"     viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></symbol>
+  <symbol id="ico-send"          viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></symbol>
+</svg>
 
 <!-- ══ TOP BAR ══ -->
 <div class="topbar">
@@ -793,7 +940,7 @@
       Home
     </div>
     <div class="nav-item">
-      Create ▾
+      Create <svg class="icon nav-chevron"><use href="#ico-expand_more"/></svg>
       <div class="dropdown">
         <div class="dropdown-item" onclick="openItemModal()">Create New Item Number</div>
         <div class="dropdown-item" onclick="openMpnModal()">Create New MFR Part Number</div>
@@ -801,7 +948,7 @@
       </div>
     </div>
     <div class="nav-item">
-      Changes ▾
+      Changes <svg class="icon nav-chevron"><use href="#ico-expand_more"/></svg>
       <div class="dropdown">
         <div class="dropdown-item" onclick="openEcoModal()">Create ECO</div>
         <div class="dropdown-item" onclick="openMcoModal()">Create MCO</div>
@@ -810,7 +957,7 @@
       </div>
     </div>
     <div class="nav-item">
-      Reports ▾
+      Reports <svg class="icon nav-chevron"><use href="#ico-expand_more"/></svg>
       <div class="dropdown">
         <div class="dropdown-item" onclick="openWhereUsedModal()">Where-Used Report</div>
         <div class="dropdown-item" onclick="openMpnReportModal()">MPN Associated Item Number</div>
@@ -822,18 +969,18 @@
   </nav>
 
   <div class="topbar-search">
-    <span class="search-icon">🔍</span>
+    <svg class="icon search-icon"><use href="#ico-search"/></svg>
     <input type="text" placeholder="Search…" />
   </div>
 
   <div class="topbar-actions">
-    <button class="icon-btn" title="Starred" onclick="showToast('Starred items')">★</button>
+    <button class="icon-btn" title="Starred" onclick="showToast('Starred items')"><svg class="icon"><use href="#ico-grade"/></svg></button>
     <button class="icon-btn" title="Notifications" onclick="showToast('Notifications panel')">
-      🔔
+      <svg class="icon"><use href="#ico-notifications"/></svg>
       <span class="badge">20+</span>
     </button>
-    <button class="icon-btn" title="Settings" onclick="showToast('Settings')">⚙️</button>
-    <button class="icon-btn" title="Help" onclick="showToast('Help center')">❓</button>
+    <button class="icon-btn" title="Settings" onclick="showToast('Settings')"><svg class="icon"><use href="#ico-settings"/></svg></button>
+    <button class="icon-btn" title="Help" onclick="showToast('Help center')"><svg class="icon"><use href="#ico-help_outline"/></svg></button>
     <div class="avatar-btn" title="Karkuvel V" onclick="toggleUserPanel()">KV</div>
   </div>
 </div>
@@ -902,9 +1049,9 @@
           </div>
           <div class="filter-actions">
             <span class="record-count">3 of 3 records</span>
-            <button class="btn-icon" title="Refresh" onclick="showToast('Refreshed')">⟳</button>
-            <button class="btn-icon" title="Export" onclick="showToast('Exporting…')">⬇</button>
-            <div class="search-within">🔍 Search within results</div>
+            <button class="btn-icon" title="Refresh" onclick="showToast('Refreshed')"><svg class="icon"><use href="#ico-refresh"/></svg></button>
+            <button class="btn-icon" title="Export" onclick="showToast('Exporting…')"><svg class="icon"><use href="#ico-download"/></svg></button>
+            <div class="search-within"><svg class="icon" style="width:14px;height:14px"><use href="#ico-search"/></svg> Search within results</div>
           </div>
         </div>
 
@@ -937,7 +1084,7 @@
   <div class="modal">
     <div class="modal-header">
       <span class="modal-title">Create New Change</span>
-      <button class="modal-close" onclick="closeModal('create')">✕</button>
+      <button class="modal-close" onclick="closeModal('create')"><svg class="icon"><use href="#ico-close"/></svg></button>
     </div>
     <div class="modal-body">
       <div class="field-group">
@@ -984,7 +1131,7 @@
   <div class="modal">
     <div class="modal-header">
       <span class="modal-title">Create New Item Number</span>
-      <button class="modal-close" onclick="closeModal('item')">✕</button>
+      <button class="modal-close" onclick="closeModal('item')"><svg class="icon"><use href="#ico-close"/></svg></button>
     </div>
     <div class="modal-body">
 
@@ -1072,7 +1219,7 @@
   <div class="modal">
     <div class="modal-header">
       <span class="modal-title">New MFR Part Number</span>
-      <button class="modal-close" onclick="closeModal('mpn')">✕</button>
+      <button class="modal-close" onclick="closeModal('mpn')"><svg class="icon"><use href="#ico-close"/></svg></button>
     </div>
     <div class="modal-body">
       <div class="field-group">
@@ -1114,42 +1261,42 @@
   <div class="modal">
     <div class="modal-header">
       <span class="modal-title">New MFR Creation</span>
-      <button class="modal-close" onclick="closeModal('mfr')">✕</button>
+      <button class="modal-close" onclick="closeModal('mfr')"><svg class="icon"><use href="#ico-close"/></svg></button>
     </div>
     <div class="modal-body">
       <div class="field-group">
         <label class="field-label">Manufacturer Official Name</label>
         <div class="input-icon-wrap">
           <input class="field-input" type="text" placeholder="e.g., Texas Instruments" id="mfrName" />
-          <span class="field-icon">🏢</span>
+          <svg class="icon field-icon"><use href="#ico-business"/></svg>
         </div>
       </div>
       <div class="field-group">
         <label class="field-label">MFR Address</label>
         <div class="input-icon-wrap">
           <textarea class="field-textarea" placeholder="Enter full corporate address" id="mfrAddress"></textarea>
-          <span class="field-icon">📍</span>
+          <svg class="icon field-icon"><use href="#ico-location_on"/></svg>
         </div>
       </div>
       <div class="field-group">
         <label class="field-label">Contact Number</label>
         <div class="input-icon-wrap">
           <input class="field-input" type="tel" id="mfrContact"/>
-          <span class="field-icon">📞</span>
+          <svg class="icon field-icon"><use href="#ico-phone"/></svg>
         </div>
       </div>
       <div class="field-group">
         <label class="field-label">Fax Number</label>
         <div class="input-icon-wrap">
           <input class="field-input" type="tel" id="mfrFax"/>
-          <span class="field-icon">📠</span>
+          <svg class="icon field-icon"><use href="#ico-fax"/></svg>
         </div>
       </div>
       <div class="field-group">
         <label class="field-label">Official Email</label>
         <div class="input-icon-wrap">
           <input class="field-input" type="email" placeholder="e.g., contact@manufacturer.com" id="mfrEmail" />
-          <span class="field-icon">✉️</span>
+          <svg class="icon field-icon"><use href="#ico-email"/></svg>
         </div>
       </div>
     </div>
@@ -1165,11 +1312,11 @@
   <div class="modal">
     <div class="modal-header">
       <span class="modal-title">New Engineering Change Order (ECO)</span>
-      <button class="modal-close" onclick="closeModal('eco')">✕</button>
+      <button class="modal-close" onclick="closeModal('eco')"><svg class="icon"><use href="#ico-close"/></svg></button>
     </div>
     <div class="modal-body">
       <div class="field-group">
-        <label class="field-label"><span class="label-icon">📦</span> Category</label>
+        <label class="field-label">Category</label>
         <select class="field-select" id="ecoCategory">
           <option value="" disabled selected>Select Category</option>
           <option>Sustaining - ECO</option>
@@ -1178,16 +1325,16 @@
         </select>
       </div>
       <div class="field-group">
-        <label class="field-label"><span class="label-icon">📝</span> ECO Number</label>
+        <label class="field-label">ECO Number</label>
         <input class="field-input input-readonly" type="text" id="ecoName" disabled />
       </div>
       <div class="field-group">
-        <label class="field-label"><span class="label-icon">📋</span> Description of Change <span style="color:#dc2626">*</span></label>
+        <label class="field-label">Description of Change <span style="color:#dc2626">*</span></label>
         <textarea class="field-textarea" id="ecoChangeDesc" maxlength="150" style="resize:none !important;" placeholder="Describe the change in detail..." oninput="document.getElementById('ecoChangeDesc-counter').textContent=this.value.length+'/150'"></textarea>
         <div style="text-align:right;font-size:11px;color:#9faab5;margin-top:3px;"><span id="ecoChangeDesc-counter">0/150</span></div>
       </div>
       <div class="field-group">
-        <label class="field-label"><span class="label-icon">ⓘ</span> Reason for Change</label>
+        <label class="field-label"><svg class="icon label-icon"><use href="#ico-info_outline"/></svg> Reason for Change</label>
         <textarea class="field-textarea" id="ecoReason" style="resize:none;" placeholder="Provide justification or root cause..."></textarea>
       </div>
     </div>
@@ -1203,7 +1350,7 @@
   <div class="modal">
     <div class="modal-header">
       <span class="modal-title">New Manufacturing Change Order (MCO)</span>
-      <button class="modal-close" onclick="closeModal('mco')">✕</button>
+      <button class="modal-close" onclick="closeModal('mco')"><svg class="icon"><use href="#ico-close"/></svg></button>
     </div>
     <div class="modal-body">
       <div class="field-group">
@@ -1224,7 +1371,7 @@
         <input class="field-input" type="text" placeholder="Enter change order title" id="mcoTitle" required />
       </div>
       <div class="field-group">
-        <label class="field-label">Description of Change</label>
+        <label class="field-label">Description of Change <span style="color:#dc2626;">*</span></label>
         <textarea class="field-textarea" id="mcoDesc" placeholder="Describe what is being altered..." style="resize:none;"></textarea>
       </div>
       <div class="field-group">
@@ -1244,11 +1391,11 @@
   <div class="modal">
     <div class="modal-header">
       <span class="modal-title">New Deviation (DEV)</span>
-      <button class="modal-close" onclick="closeModal('dev')">✕</button>
+      <button class="modal-close" onclick="closeModal('dev')"><svg class="icon"><use href="#ico-close"/></svg></button>
     </div>
     <div class="modal-body">
       <div class="field-group">
-        <label class="field-label"><span class="label-icon">📦</span> Category <span style="color:#dc2626;">*</span></label>
+        <label class="field-label">Category <span style="color:#dc2626;">*</span></label>
         <select class="field-select" id="devCategory">
           <option value="" disabled selected>-- Select Category --</option>
           <option value="Deviation">Deviation</option>
@@ -1257,7 +1404,7 @@
         </select>
       </div>
       <div class="field-group">
-        <label class="field-label"><span class="label-icon">✏️</span> DEV Number</label>
+        <label class="field-label">DEV Number</label>
         <input class="field-input input-readonly" type="text" id="devName" disabled />
       </div>
       <div class="field-group">
@@ -1265,11 +1412,11 @@
         <input class="field-input" type="text" placeholder="Enter deviation title" id="devTitle" required />
       </div>
       <div class="field-group">
-        <label class="field-label"><span class="label-icon">⚙️</span> Description of Change <span style="color:#dc2626;">*</span></label>
+        <label class="field-label">Description of Change <span style="color:#dc2626;">*</span></label>
         <textarea class="field-textarea" id="devDesc" placeholder="Describe the deviation..." style="resize:none;"></textarea>
       </div>
       <div class="field-group">
-        <label class="field-label"><span class="label-icon">ⓘ</span> Reason for Change</label>
+        <label class="field-label"><svg class="icon label-icon"><use href="#ico-info_outline"/></svg> Reason for Change</label>
         <textarea class="field-textarea" id="devReason" placeholder="Provide justification or root cause..." style="resize:none;"></textarea>
       </div>
     </div>
@@ -1285,11 +1432,11 @@
   <div class="modal">
     <div class="modal-header">
       <span class="modal-title">New Document Change Order (DCO)</span>
-      <button class="modal-close" onclick="closeModal('dco')">✕</button>
+      <button class="modal-close" onclick="closeModal('dco')"><svg class="icon"><use href="#ico-close"/></svg></button>
     </div>
     <div class="modal-body">
       <div class="field-group">
-        <label class="field-label"><span class="label-icon">📦</span> Category <span style="color:#dc2626;">*</span></label>
+        <label class="field-label">Category <span style="color:#dc2626;">*</span></label>
         <select class="field-select" id="dcoCategory">
           <option value="" disabled selected>-- Select Category --</option>
           <option value="Document Change Order - DCO">Document Change Order - DCO</option>
@@ -1298,7 +1445,7 @@
         </select>
       </div>
       <div class="field-group">
-        <label class="field-label"><span class="label-icon">✏️</span> DCO Number</label>
+        <label class="field-label">DCO Number</label>
         <input class="field-input input-readonly" type="text" id="dcoName" disabled />
       </div>
       <div class="field-group">
@@ -1306,11 +1453,11 @@
         <input class="field-input" type="text" placeholder="Enter change order title" id="dcoTitle" required />
       </div>
       <div class="field-group">
-        <label class="field-label"><span class="label-icon">⚙️</span> Description of Change <span style="color:#dc2626;">*</span></label>
+        <label class="field-label">Description of Change <span style="color:#dc2626;">*</span></label>
         <textarea class="field-textarea" id="dcoDesc" placeholder="Describe the change..." style="resize:none;"></textarea>
       </div>
       <div class="field-group">
-        <label class="field-label"><span class="label-icon">ⓘ</span> Reason for Change</label>
+        <label class="field-label"><svg class="icon label-icon"><use href="#ico-info_outline"/></svg> Reason for Change</label>
         <textarea class="field-textarea" id="dcoReason" placeholder="Provide justification or root cause..." style="resize:none;"></textarea>
       </div>
     </div>
@@ -1323,36 +1470,69 @@
 
 <!-- ══ WHERE-USED REPORT MODAL ══ -->
 <div class="modal-overlay" id="whereUsedModal" onclick="handleOverlayClick(event, 'whereUsed')">
-  <div class="modal">
-    <div class="modal-header">
-      <span class="modal-title">Generate Where-Used Report</span>
-      <button class="modal-close" onclick="closeModal('whereUsed')">✕</button>
+  <div class="modal wu-modal">
+
+    <!-- Header -->
+    <div class="wu-header">
+      <div class="wu-header-icon"><svg class="icon"><use href="#ico-hub"/></svg></div>
+      <div class="wu-header-text">
+        <div class="wu-title">Generate Where-Used Report</div>
+        <div class="wu-subtitle">Trace all assemblies and products that reference a specific item number</div>
+      </div>
+      <button class="modal-close" onclick="closeModal('whereUsed')"><svg class="icon"><use href="#ico-close"/></svg></button>
     </div>
-    <div class="modal-body">
-      <div class="report-row">
-        <span class="report-label">Item Number</span>
-        <div class="input-icon-wrap">
-          <input class="field-input" type="text" list="wuItemOptions" placeholder="Search item number…" id="wuItemNumber" />
-          <span class="field-icon">🔍</span>
+
+    <div class="wu-body">
+
+      <!-- Step 1: Item Number -->
+      <div class="wu-section">
+        <div class="wu-section-label">
+          <span class="wu-step">1</span>
+          Item Number <span class="wu-req">*</span>
+        </div>
+        <div class="wu-search-wrap">
+          <svg class="icon wu-search-icon"><use href="#ico-search"/></svg>
+          <input class="wu-input" type="text" list="wuItemOptions" placeholder="Search or enter item number…" id="wuItemNumber" />
           <datalist id="wuItemOptions">
             <option value="RPT-0034-7B"></option>
             <option value="RPT-0034-7A"></option>
             <option value="ITM-100245"></option>
           </datalist>
         </div>
+        <div class="wu-hint">Enter a valid item number to trace its usage across all assemblies</div>
       </div>
-      <div class="report-row">
-        <span class="report-label">Level</span>
-        <select class="field-select" id="wuLevel">
-          <option>Single Level </option>
-          <option>All Levels (Exploded)</option>
-          
-        </select>
+
+      <!-- Step 2: BOM Level -->
+      <div class="wu-section">
+        <div class="wu-section-label">
+          <span class="wu-step">2</span>
+          BOM Level
+        </div>
+        <div class="wu-level-cards">
+          <label class="wu-level-card wu-level-active" id="wuLvl-single" onclick="selectWuLevel(this)">
+            <input type="radio" name="wuLevel" value="Single Level" checked hidden />
+            <div class="wu-level-icon"><svg class="icon" style="width:22px;height:22px"><use href="#ico-layers"/></svg></div>
+            <div class="wu-level-name">Single Level</div>
+            <div class="wu-level-desc">Direct parent assemblies only</div>
+          </label>
+          <label class="wu-level-card" id="wuLvl-all" onclick="selectWuLevel(this)">
+            <input type="radio" name="wuLevel" value="All Levels (Exploded)" hidden />
+            <div class="wu-level-icon"><svg class="icon" style="width:22px;height:22px"><use href="#ico-account_tree"/></svg></div>
+            <div class="wu-level-name">All Levels</div>
+            <div class="wu-level-desc">Full exploded BOM hierarchy</div>
+          </label>
+        </div>
       </div>
-      <div class="report-row">
-        <span class="report-label">Item Number Lifecycle</span>
-        <select class="field-select" id="wuLifecycle">
-          <option value="" disabled selected>Select lifecycle…</option>
+
+      <!-- Step 3: Lifecycle Filter -->
+      <div class="wu-section">
+        <div class="wu-section-label">
+          <span class="wu-step">3</span>
+          Lifecycle Filter
+          <span class="wu-optional">optional</span>
+        </div>
+        <select class="wu-select" id="wuLifecycle">
+          <option value="">All lifecycles</option>
           <option>Preliminary</option>
           <option>Prototype</option>
           <option>Inactive</option>
@@ -1360,50 +1540,110 @@
           <option>Obsolete</option>
         </select>
       </div>
-      <div class="report-row">
-        <span class="report-label">Export Format</span>
-        <select class="field-select" id="wuFormat">
-          <option>PDF</option>
-          <option>Excel (.xlsx)</option>
-          <option>CSV</option>
-        </select>
+
+      <!-- Step 4: Export Format -->
+      <div class="wu-section">
+        <div class="wu-section-label">
+          <span class="wu-step">4</span>
+          Export Format
+        </div>
+        <div class="wu-format-cards">
+          <label class="wu-format-card" id="wuFmt-pdf" onclick="selectWuFormat(this)">
+            <input type="radio" name="wuFormat" value="PDF" hidden />
+            <div class="wu-fmt-icon wu-fmt-pdf">PDF</div>
+            <div class="wu-fmt-name">PDF</div>
+            <div class="wu-fmt-desc">Printable report</div>
+          </label>
+          <label class="wu-format-card wu-format-active" id="wuFmt-xlsx" onclick="selectWuFormat(this)">
+            <input type="radio" name="wuFormat" value="Excel (.xlsx)" checked hidden />
+            <div class="wu-fmt-icon wu-fmt-xlsx">XLS</div>
+            <div class="wu-fmt-name">Excel</div>
+            <div class="wu-fmt-desc">.xlsx spreadsheet</div>
+          </label>
+          <label class="wu-format-card" id="wuFmt-csv" onclick="selectWuFormat(this)">
+            <input type="radio" name="wuFormat" value="CSV" hidden />
+            <div class="wu-fmt-icon wu-fmt-csv">CSV</div>
+            <div class="wu-fmt-name">CSV</div>
+            <div class="wu-fmt-desc">Raw data export</div>
+          </label>
+        </div>
+      </div>
+
+    </div><!-- /wu-body -->
+
+    <div class="wu-footer">
+      <div class="wu-footer-note">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        Item Number is required to generate
+      </div>
+      <div class="wu-footer-actions">
+        <button class="btn btn-secondary" onclick="closeModal('whereUsed')">Cancel</button>
+        <button class="wu-generate-btn" onclick="submitWhereUsed()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="13" height="13">
+            <polyline points="22 2 11 13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+          </svg>
+          Generate Report
+        </button>
       </div>
     </div>
-    <div class="modal-footer">
-      <button class="btn btn-primary" onclick="submitWhereUsed()">Generate Report</button>
-      <button class="btn btn-secondary" onclick="closeModal('whereUsed')">Cancel</button>
-    </div>
+
   </div>
 </div>
 
-<!-- ══ MPN ASSOCIATED REPORT MODAL ══ -->
+<!-- ══ MPN ASSOCIATED ITEM NUMBER REPORT MODAL ══ -->
 <div class="modal-overlay" id="mpnReportModal" onclick="handleOverlayClick(event, 'mpnReport')">
-  <div class="modal">
-    <div class="modal-header">
-      <span class="modal-title">Generate MPN Associated Item Number Report</span>
-      <button class="modal-close" onclick="closeModal('mpnReport')">✕</button>
+  <div class="modal wu-modal">
+
+    <div class="wu-header">
+      <div class="wu-header-icon"><svg class="icon"><use href="#ico-inventory"/></svg></div>
+      <div class="wu-header-text">
+        <div class="wu-title">MPN Associated Item Number Report</div>
+        <div class="wu-subtitle">Find all internal item numbers linked to a specific manufacturer part number</div>
+      </div>
+      <button class="modal-close" onclick="closeModal('mpnReport')"><svg class="icon"><use href="#ico-close"/></svg></button>
     </div>
-    <div class="modal-body">
-      <div class="report-row">
-        <span class="report-label">MPN <span class="label-sub">(Mandatory)</span><span class="req">*</span></span>
-        <div class="input-icon-wrap">
-          <input class="field-input" type="text" list="mpnReportOptions" placeholder="Search MPN…" id="mpnReportMpn" />
-          <span class="field-icon">🔍</span>
+
+    <div class="wu-body">
+
+      <div class="wu-section">
+        <div class="wu-section-label">
+          <span class="wu-step">1</span>
+          Manufacturer Part Number (MPN) <span class="wu-req">*</span>
+        </div>
+        <div class="wu-search-wrap">
+          <svg class="icon wu-search-icon"><use href="#ico-search"/></svg>
+          <input class="wu-input" type="text" list="mpnReportOptions" placeholder="Search or enter MPN…" id="mpnReportMpn" />
           <datalist id="mpnReportOptions">
             <option value="123-ABC-456"></option>
             <option value="456-DEF-789"></option>
             <option value="789-GHI-123"></option>
           </datalist>
         </div>
+        <div class="wu-hint">Enter the exact manufacturer part number to retrieve associated item numbers</div>
       </div>
-      <div class="report-row">
-        <span class="report-label">Manufacture Name <span class="label-sub">(Optional)</span></span>
-        <input class="field-input" type="text" placeholder="e.g., Acme Corp." id="mpnReportMfr" />
+
+      <div class="wu-section">
+        <div class="wu-section-label">
+          <span class="wu-step">2</span>
+          Manufacturer Name
+          <span class="wu-optional">optional</span>
+        </div>
+        <div class="wu-search-wrap">
+          <svg class="wu-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+          </svg>
+          <input class="wu-input" type="text" placeholder="e.g., Texas Instruments" id="mpnReportMfr" />
+        </div>
       </div>
-      <div class="report-row">
-        <span class="report-label">Item Number Lifecycle</span>
-        <select class="field-select" id="mpnReportLifecycle">
-          <option value="" disabled selected>Select lifecycle…</option>
+
+      <div class="wu-section">
+        <div class="wu-section-label">
+          <span class="wu-step">3</span>
+          Item Number Lifecycle
+          <span class="wu-optional">optional</span>
+        </div>
+        <select class="wu-select" id="mpnReportLifecycle">
+          <option value="">All lifecycles</option>
           <option>Preliminary</option>
           <option>Prototype</option>
           <option>Inactive</option>
@@ -1411,78 +1651,163 @@
           <option>Obsolete</option>
         </select>
       </div>
-      <div class="report-row">
-        <span class="report-label">Export Format</span>
-        <select class="field-select" id="mpnReportFormat">
-          <option>PDF</option>
-          <option>Excel (.xlsx)</option>
-          <option>CSV</option>
-          
-        </select>
+
+      <div class="wu-section">
+        <div class="wu-section-label">
+          <span class="wu-step">4</span>
+          Export Format
+        </div>
+        <div class="wu-format-cards">
+          <label class="wu-format-card" id="mpnFmt-pdf" onclick="selectMpnFormat(this)">
+            <input type="radio" name="mpnReportFormat" value="PDF" hidden />
+            <div class="wu-fmt-icon wu-fmt-pdf">PDF</div>
+            <div class="wu-fmt-name">PDF</div>
+            <div class="wu-fmt-desc">Printable report</div>
+          </label>
+          <label class="wu-format-card wu-format-active" id="mpnFmt-xlsx" onclick="selectMpnFormat(this)">
+            <input type="radio" name="mpnReportFormat" value="Excel (.xlsx)" checked hidden />
+            <div class="wu-fmt-icon wu-fmt-xlsx">XLS</div>
+            <div class="wu-fmt-name">Excel</div>
+            <div class="wu-fmt-desc">.xlsx spreadsheet</div>
+          </label>
+          <label class="wu-format-card" id="mpnFmt-csv" onclick="selectMpnFormat(this)">
+            <input type="radio" name="mpnReportFormat" value="CSV" hidden />
+            <div class="wu-fmt-icon wu-fmt-csv">CSV</div>
+            <div class="wu-fmt-name">CSV</div>
+            <div class="wu-fmt-desc">Raw data export</div>
+          </label>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="wu-footer">
+      <div class="wu-footer-note">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        MPN is required to generate
+      </div>
+      <div class="wu-footer-actions">
+        <button class="btn btn-secondary" onclick="closeModal('mpnReport')">Cancel</button>
+        <button class="wu-generate-btn" onclick="submitMpnReport()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="13" height="13">
+            <polyline points="22 2 11 13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+          </svg>
+          Generate Report
+        </button>
       </div>
     </div>
-    <div class="modal-footer">
-      <button class="btn btn-primary" onclick="submitMpnReport()">Generate Report</button>
-      <button class="btn btn-secondary" onclick="closeModal('mpnReport')">Cancel</button>
-    </div>
+
   </div>
 </div>
 
 <!-- ══ MPN ASSOCIATED MFR REPORT MODAL ══ -->
 <div class="modal-overlay" id="mfrReportModal" onclick="handleOverlayClick(event, 'mfrReport')">
-  <div class="modal">
-    <div class="modal-header">
-      <span class="modal-title">Generate MPN Associated MFR Report</span>
-      <button class="modal-close" onclick="closeModal('mfrReport')">✕</button>
+  <div class="modal wu-modal">
+
+    <div class="wu-header">
+      <div class="wu-header-icon"><svg class="icon"><use href="#ico-factory"/></svg></div>
+      <div class="wu-header-text">
+        <div class="wu-title">MPN Associated MFR Report</div>
+        <div class="wu-subtitle">Identify all manufacturers associated with a specific manufacturer part number</div>
+      </div>
+      <button class="modal-close" onclick="closeModal('mfrReport')"><svg class="icon"><use href="#ico-close"/></svg></button>
     </div>
-    <div class="modal-body">
-      <div class="num-row">
-        <span class="num-label">1. MPN <span class="label-sub">(Mandatory)</span><span class="req">*</span></span>
-        <div class="input-icon-wrap">
-          <input class="field-input" type="text" list="mfrReportOptions" placeholder="Search MPN…" id="mfrReportMpn" />
-          <span class="field-icon">🔍</span>
+
+    <div class="wu-body">
+
+      <div class="wu-section">
+        <div class="wu-section-label">
+          <span class="wu-step">1</span>
+          Manufacturer Part Number (MPN) <span class="wu-req">*</span>
+        </div>
+        <div class="wu-search-wrap">
+          <svg class="icon wu-search-icon"><use href="#ico-search"/></svg>
+          <input class="wu-input" type="text" list="mfrReportOptions" placeholder="Search or enter MPN…" id="mfrReportMpn" />
           <datalist id="mfrReportOptions">
             <option value="GRM188R61C105KA93D"></option>
             <option value="GRM155R71C104KA88D"></option>
             <option value="C0805C104K5RACTU"></option>
           </datalist>
         </div>
+        <div class="wu-hint">Enter the manufacturer part number to retrieve associated MFR records</div>
       </div>
-      <div class="num-row">
-        <span class="num-label">2. MPN Lifecycle</span>
-        <select class="field-select" id="mfrReportLifecycle">
-          <option value="" disabled selected>Select lifecycle…</option>
+
+      <div class="wu-section">
+        <div class="wu-section-label">
+          <span class="wu-step">2</span>
+          MPN Lifecycle
+          <span class="wu-optional">optional</span>
+        </div>
+        <select class="wu-select" id="mfrReportLifecycle">
+          <option value="">All lifecycles</option>
           <option>Active</option>
           <option>Active-NRND</option>
           <option>LTB</option>
-          
           <option>Obsolete</option>
         </select>
       </div>
-      <div class="num-row">
-        <span class="num-label">3. Qual Status</span>
-        <select class="field-select" id="mfrReportQual">
-          <option value="" disabled selected>Select status…</option>
+
+      <div class="wu-section">
+        <div class="wu-section-label">
+          <span class="wu-step">3</span>
+          Qualification Status
+          <span class="wu-optional">optional</span>
+        </div>
+        <select class="wu-select" id="mfrReportQual">
+          <option value="">All statuses</option>
           <option>Qualified</option>
           <option>Disqualified</option>
-          <option> No New Buy</option>
-          <option> In Process Qual</option>
-          <option> Cancelled</option>
+          <option>No New Buy</option>
+          <option>In Process Qual</option>
+          <option>Cancelled</option>
         </select>
       </div>
-      <div class="num-row">
-        <span class="num-label">5. Export Format</span>
-        <div class="radio-group">
-          <label class="radio-option"><input type="radio" name="mfrReportFormat" value="Excel (.xlsx)" checked /> Excel (.xlsx)</label>
-          <label class="radio-option"><input type="radio" name="mfrReportFormat" value="CSV" /> CSV</label>
-          <label class="radio-option"><input type="radio" name="mfrReportFormat" value="PDF" /> PDF</label>
+
+      <div class="wu-section">
+        <div class="wu-section-label">
+          <span class="wu-step">4</span>
+          Export Format
+        </div>
+        <div class="wu-format-cards">
+          <label class="wu-format-card" id="mfrFmt-pdf" onclick="selectMfrFormat(this)">
+            <input type="radio" name="mfrReportFormat" value="PDF" hidden />
+            <div class="wu-fmt-icon wu-fmt-pdf">PDF</div>
+            <div class="wu-fmt-name">PDF</div>
+            <div class="wu-fmt-desc">Printable report</div>
+          </label>
+          <label class="wu-format-card wu-format-active" id="mfrFmt-xlsx" onclick="selectMfrFormat(this)">
+            <input type="radio" name="mfrReportFormat" value="Excel (.xlsx)" checked hidden />
+            <div class="wu-fmt-icon wu-fmt-xlsx">XLS</div>
+            <div class="wu-fmt-name">Excel</div>
+            <div class="wu-fmt-desc">.xlsx spreadsheet</div>
+          </label>
+          <label class="wu-format-card" id="mfrFmt-csv" onclick="selectMfrFormat(this)">
+            <input type="radio" name="mfrReportFormat" value="CSV" hidden />
+            <div class="wu-fmt-icon wu-fmt-csv">CSV</div>
+            <div class="wu-fmt-name">CSV</div>
+            <div class="wu-fmt-desc">Raw data export</div>
+          </label>
         </div>
       </div>
+
     </div>
-    <div class="modal-footer">
-      <button class="btn btn-primary" onclick="submitMfrReport()">Generate Report</button>
-      <button class="btn btn-secondary" onclick="closeModal('mfrReport')">Cancel</button>
+
+    <div class="wu-footer">
+      <div class="wu-footer-note">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        MPN is required to generate
+      </div>
+      <div class="wu-footer-actions">
+        <button class="btn btn-secondary" onclick="closeModal('mfrReport')">Cancel</button>
+        <button class="wu-generate-btn" onclick="submitMfrReport()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="13" height="13">
+            <polyline points="22 2 11 13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+          </svg>
+          Generate Report
+        </button>
+      </div>
     </div>
+
   </div>
 </div>
 
@@ -1491,7 +1816,7 @@
   <div class="modal">
     <div class="modal-header">
       <span class="modal-title" id="detailTitle">Change Detail</span>
-      <button class="modal-close" onclick="closeModal('detail')">✕</button>
+      <button class="modal-close" onclick="closeModal('detail')"><svg class="icon"><use href="#ico-close"/></svg></button>
     </div>
     <div class="modal-body" id="detailBody">
     </div>
@@ -1526,7 +1851,7 @@
         <td class="title-cell">${r.title}</td>
         <td class="created-date">${r.created}</td>
         <td>
-          <button class="btn-icon" onclick="event.stopPropagation(); showToast('Approved: ${r.id}')" title="Approve">✓</button>
+          <button class="btn-icon" onclick="event.stopPropagation(); showToast('Approved: ${r.id}')" title="Approve"><svg class="icon"><use href="#ico-check"/></svg></button>
         </td>
       </tr>
     `).join('');
@@ -1574,59 +1899,80 @@
     if (type === 'mfrReport') document.getElementById('mfrReportModal').classList.remove('open');
   }
 
+  // ── MPN ASSOCIATED ITEM NUMBER REPORT MODAL ──
+  function selectMpnFormat(el) {
+    document.querySelectorAll('#mpnReportModal .wu-format-card').forEach(c => c.classList.remove('wu-format-active'));
+    el.classList.add('wu-format-active');
+  }
+
+  function openMpnReportModal() {
+    document.getElementById('mpnReportMpn').value = '';
+    document.getElementById('mpnReportMfr').value = '';
+    document.getElementById('mpnReportLifecycle').selectedIndex = 0;
+    document.querySelectorAll('#mpnReportModal .wu-format-card').forEach(c => c.classList.remove('wu-format-active'));
+    document.getElementById('mpnFmt-xlsx').classList.add('wu-format-active');
+    document.querySelector('input[name="mpnReportFormat"][value="Excel (.xlsx)"]').checked = true;
+    document.getElementById('mpnReportModal').classList.add('open');
+  }
+
+  function submitMpnReport() {
+    const mpn = document.getElementById('mpnReportMpn').value.trim();
+    const format = document.querySelector('input[name="mpnReportFormat"]:checked')?.value || 'Excel (.xlsx)';
+    if (!mpn) { showToast('⚠ MPN is mandatory'); return; }
+    closeModal('mpnReport');
+    showToast('✅ Generating MPN Report for ' + mpn + ' (' + format + ')');
+  }
+
   // ── MPN ASSOCIATED MFR REPORT MODAL ──
+  function selectMfrFormat(el) {
+    document.querySelectorAll('#mfrReportModal .wu-format-card').forEach(c => c.classList.remove('wu-format-active'));
+    el.classList.add('wu-format-active');
+  }
+
   function openMfrReportModal() {
-    // Reset the form fields before showing the dialog.
     document.getElementById('mfrReportMpn').value = '';
     document.getElementById('mfrReportLifecycle').selectedIndex = 0;
     document.getElementById('mfrReportQual').selectedIndex = 0;
-    // Reset the export format radios to the first option (Excel).
+    document.querySelectorAll('#mfrReportModal .wu-format-card').forEach(c => c.classList.remove('wu-format-active'));
+    document.getElementById('mfrFmt-xlsx').classList.add('wu-format-active');
     document.querySelector('input[name="mfrReportFormat"][value="Excel (.xlsx)"]').checked = true;
     document.getElementById('mfrReportModal').classList.add('open');
   }
 
   function submitMfrReport() {
     const mpn = document.getElementById('mfrReportMpn').value.trim();
-    const format = document.querySelector('input[name="mfrReportFormat"]:checked').value;
-    // MPN is mandatory to generate the report.
+    const format = document.querySelector('input[name="mfrReportFormat"]:checked')?.value || 'Excel (.xlsx)';
     if (!mpn) { showToast('⚠ MPN is mandatory'); return; }
     closeModal('mfrReport');
     showToast('✅ Generating MFR Report for ' + mpn + ' (' + format + ')');
   }
 
-  // ── MPN ASSOCIATED REPORT MODAL ──
-  function openMpnReportModal() {
-    // Reset the form fields before showing the dialog.
-    document.getElementById('mpnReportMpn').value = '';
-    document.getElementById('mpnReportMfr').value = '';
-    document.getElementById('mpnReportLifecycle').selectedIndex = 0;
-    document.getElementById('mpnReportFormat').selectedIndex = 0;
-    document.getElementById('mpnReportModal').classList.add('open');
-  }
-
-  function submitMpnReport() {
-    const mpn = document.getElementById('mpnReportMpn').value.trim();
-    const format = document.getElementById('mpnReportFormat').value;
-    // MPN is mandatory to generate the report.
-    if (!mpn) { showToast('⚠ MPN is mandatory'); return; }
-    closeModal('mpnReport');
-    showToast('✅ Generating MPN Report for ' + mpn + ' (' + format + ')');
-  }
-
   // ── WHERE-USED REPORT MODAL ──
+  function selectWuLevel(el) {
+    document.querySelectorAll('.wu-level-card').forEach(c => c.classList.remove('wu-level-active'));
+    el.classList.add('wu-level-active');
+  }
+
+  function selectWuFormat(el) {
+    document.querySelectorAll('.wu-format-card').forEach(c => c.classList.remove('wu-format-active'));
+    el.classList.add('wu-format-active');
+  }
+
   function openWhereUsedModal() {
-    // Reset the form fields before showing the dialog.
     document.getElementById('wuItemNumber').value = '';
-    document.getElementById('wuLevel').selectedIndex = 0;
     document.getElementById('wuLifecycle').selectedIndex = 0;
-    document.getElementById('wuFormat').selectedIndex = 0;
+    document.querySelectorAll('.wu-level-card').forEach(c => c.classList.remove('wu-level-active'));
+    document.getElementById('wuLvl-single').classList.add('wu-level-active');
+    document.querySelector('input[name="wuLevel"][value="Single Level"]').checked = true;
+    document.querySelectorAll('.wu-format-card').forEach(c => c.classList.remove('wu-format-active'));
+    document.getElementById('wuFmt-xlsx').classList.add('wu-format-active');
+    document.querySelector('input[name="wuFormat"][value="Excel (.xlsx)"]').checked = true;
     document.getElementById('whereUsedModal').classList.add('open');
   }
 
   function submitWhereUsed() {
     const itemNumber = document.getElementById('wuItemNumber').value.trim();
-    const format = document.getElementById('wuFormat').value;
-    // Item Number is required to generate the report.
+    const format = document.querySelector('input[name="wuFormat"]:checked')?.value || 'Excel (.xlsx)';
     if (!itemNumber) { showToast('⚠ Please enter an Item Number'); return; }
     closeModal('whereUsed');
     showToast('✅ Generating Where-Used Report for ' + itemNumber + ' (' + format + ')');
@@ -1713,6 +2059,7 @@
     if (!category) { showToast('⚠ Please select a Category'); return; }
     if (!name)     { showToast('⚠ MCO Name is required'); return; }
     if (!title)    { showToast('⚠ Title is required'); return; }
+    if (!desc)     { showToast('⚠ Description of Change is required'); return; }
     closeModal('mco');
     const p = new URLSearchParams({ mcoNum: name, category, title, desc, reason });
     window.location.href = './MCO_Part.html?' + p.toString();
@@ -1810,7 +2157,7 @@
   function updateSubCategory() {
     const category = document.getElementById('itemCategory').value;
     const subCatSelect = document.getElementById('itemSubCategory');
-    subCatSelect.innerHTML = '<option value="">Select sub category…</option>';
+    subCatSelect.innerHTML = '<option value="">--Select Sub Category--</option>';
     if (category && subCategoryMap[category]) {
       subCategoryMap[category].forEach(sub => {
         const opt = document.createElement('option');
@@ -1828,7 +2175,7 @@
   function openItemModal() {
     document.getElementById('itemCategory').selectedIndex = 0;
     const sc = document.getElementById('itemSubCategory');
-    sc.innerHTML = '<option value="">Select sub category…</option>';
+    sc.innerHTML = '<option value="">--Select Sub Category--</option>';
     sc.disabled = true;
     document.getElementById('newDesc').value = '';
     document.getElementById('itemAttachment').value = '';

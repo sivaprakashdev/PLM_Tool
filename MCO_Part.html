@@ -616,7 +616,7 @@ const SECTIONS = [
     { key: 'categoryControl', label: 'Category Control', type: 'readonly' },
     { key: 'createdDate',     label: 'Created Date',     type: 'readonly' },
     { key: 'createdBy',       label: 'Created By',       type: 'readonly' },
-    { key: 'releasedDate',    label: 'Released Date',    type: 'readonly' },
+    { key: 'releasedDate',    label: 'Released Date',    type: 'date' },
   ]},
 ];
 
@@ -765,6 +765,14 @@ function buildInput(f) {
   if (f.type === 'textarea') {
     const style = f.noresize ? ' style="resize:none"' : '';
     return `<textarea class="f-textarea" data-key="${f.key}"${style}>${val}</textarea>`;
+  }
+  if (f.type === 'date') {
+    let dateVal = '';
+    if (data[f.key]) {
+      const d = new Date(data[f.key]);
+      if (!isNaN(d)) dateVal = d.toISOString().slice(0, 10);
+    }
+    return `<input class="f-input" type="date" data-key="${f.key}" value="${dateVal}" />`;
   }
   const ml = f.maxlength ? `maxlength="${f.maxlength}"` : '';
   const counter = f.maxlength ? `<div class="f-char-count" id="cc-${f.key}">${(data[f.key]||'').length}/${f.maxlength}</div>` : '';
