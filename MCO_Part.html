@@ -134,7 +134,7 @@ body { font-family: var(--font); background: var(--bg); color: var(--text-primar
 .wf-Final-Review { background: #e0e7ff; color: #3730a3; }
 .wf-Released     { background: #dcfce7; color: #166534; }
 .wf-Closed       { background: #f3f4f6; color: #374151; }
-.wf-Canceled     { background: #fee2e2; color: #991b1b; }
+.wf-Cancelled    { background: #fee2e2; color: #991b1b; }
 .wf-Hold         { background: #fef3c7; color: #92400e; }
 
 /* ── EDIT INPUTS ── */
@@ -314,10 +314,8 @@ td { padding: 10px 14px; vertical-align: middle; color: var(--text-primary); }
     </div>
 
     <div class="sec-card">
-      <div class="sec-head" onclick="toggleSection('s-mco')">
-        <span class="sec-caret" id="c-s-mco">▼</span>
-        <span class="sec-title">MCO Details</span>
-      </div>
+      
+
       <div class="sec-body" id="s-mco">
         <div class="fields-grid" id="g-mco"></div>
       </div>
@@ -592,32 +590,23 @@ td { padding: 10px 14px; vertical-align: middle; color: var(--text-primary); }
 <div class="toast" id="toast"></div>
 
 <script>
-const WORKFLOW = ['Pending','Submitted','CCB','Final Review','Released','Closed','Canceled','Hold'];
+const WORKFLOW = ['Pending','Submitted','CCB','Final Review','Released','Closed','Cancelled','Hold'];
 
 const SECTIONS = [
   { id: 'info', label: 'Information', fields: [
     { key: 'category',          label: 'Category',              type: 'select',   options: ['Manufacturer Order - MCO','NPI - MCO','Sustaining - MCO'] },
-    { key: 'mcoNum',            label: 'Change Number',         type: 'readonly' },
-    { key: 'title',             label: 'Title',                 type: 'textarea', req: true, half: true, noresize: true },
-    { key: 'description',       label: 'Description',           type: 'textarea', req: true, half: true, noresize: true },
-    { key: 'workflowStatus',    label: 'Change Status',         type: 'readonly' },
+    { key: 'mcoNum',            label: 'Change Order Number',         type: 'readonly' },
+    { key: 'title',             label: 'Change Order Title',                 type: 'textarea', req: true, half: true, noresize: true },
+    { key: 'description',       label: 'Description of Change',           type: 'textarea', req: true, half: true, noresize: true },
+    { key: 'workflowStatus',    label: 'Change Status',         type: 'select',   options: WORKFLOW },
     { key: 'changeSubcategory', label: 'Change Subcategory',    type: 'select',   options: ['','Cut-in','Documentation','Phase-In'] },
     { key: 'reasonForChange',   label: 'Reason for Change',     type: 'textarea' },
     { key: 'reasonCode',        label: 'Reason Code',           type: 'select',   options: ['','Cost Reduction','Improvement','Issue Resolution','Other','Supplier Driven'] },
-    { key: 'apnMpnQualStatus',  label: 'APN MPN Qual Status',   type: 'textarea' },
     { key: 'productLines',      label: 'Product Lines',         type: 'text' },
+    { key: 'functionalTeams',   label: 'Functional Teams',      type: 'text' },
+    { key: 'disposition',       label: 'Disposition',           type: 'select',   options: ['','N/A','Use As Is','Scrap','Rework'] },
     { key: 'originator',        label: 'Originator',            type: 'text' },
     { key: 'changeAnalyst',     label: 'Change Analyst',        type: 'text' },
-  ]},
-  { id: 'mco', label: 'MCO Details', fields: [
-    { key: 'manufacturerName',   label: 'Manufacturer Name',     type: 'text' },
-    { key: 'manufacturerPart',   label: 'Manufacturer Part No.', type: 'text' },
-    { key: 'internalPartNo',     label: 'Internal Part No.',     type: 'text' },
-    { key: 'changeType',         label: 'Change Type',           type: 'select',  options: ['','Obsolescence','New Source','Alternate Source','Spec Change'] },
-    { key: 'dfImpact',           label: 'DF Impact',             type: 'select',  options: ['N/A','Yes','No'] },
-    { key: 'repairImpact',       label: 'Repair Impact',         type: 'select',  options: ['N/A','Yes','No'] },
-    { key: 'serviceDepotImpact', label: 'Service Depot Impact',  type: 'select',  options: ['N/A','Yes','No'] },
-    { key: 'mfgImpact',          label: 'MFG Impact',            type: 'select',  options: ['N/A','Yes','No'] },
   ]},
   { id: 'supplier', label: 'Supplier Access', fields: [
     { key: 'accessibleBy',  label: 'Accessible By',  type: 'textarea' },
@@ -627,9 +616,7 @@ const SECTIONS = [
     { key: 'categoryControl', label: 'Category Control', type: 'readonly' },
     { key: 'createdDate',     label: 'Created Date',     type: 'readonly' },
     { key: 'createdBy',       label: 'Created By',       type: 'readonly' },
-    { key: 'closedDate',      label: 'Closed Date',      type: 'readonly' },
     { key: 'releasedDate',    label: 'Released Date',    type: 'readonly' },
-    { key: 'legacyCreateBy',  label: 'Legacy Create By', type: 'text' },
   ]},
 ];
 
@@ -651,6 +638,8 @@ function makeDefault() {
     reasonCode:         '',
     apnMpnQualStatus:   '',
     productLines:       '',
+    functionalTeams:    '',
+    disposition:        '',
     originator:         'Karkuvel V',
     changeAnalyst:      '',
     manufacturerName:   '',
@@ -666,7 +655,7 @@ function makeDefault() {
     categoryControl:    qp.get('category')       || 'Manufacturer Order - MCO',
     createdBy:          'Karkuvel V',
     createdDate:        qp.get('createdDate')    || now,
-    releasedDate:       '',
+    releasedDate:       '6/20/2026, 2:30 PM',
     closedDate:         '',
     legacyCreateBy:     '',
   };
@@ -753,13 +742,7 @@ function renderAllSections() {
 function renderField(f) {
   if (f.type === 'readonly') {
     const raw = data[f.key] || '';
-    let display;
-    if (f.key === 'workflowStatus') {
-      const sc = 'wf-' + raw.replace(/\s+/g,'-');
-      display = raw ? `<span class="wf-badge ${sc}">${raw}</span>` : '—';
-    } else {
-      display = raw ? raw.replace(/</g,'&lt;') : '<span style="color:var(--text-muted);font-style:italic;">—</span>';
-    }
+    const display = raw ? raw.replace(/</g,'&lt;') : '<span style="color:var(--text-muted);font-style:italic;">—</span>';
     return `<div class="field-cell">
       <div class="f-lbl">${f.label}</div>
       <div class="f-val">${display}</div>
@@ -776,7 +759,8 @@ function buildInput(f) {
   const val = (data[f.key] || '').replace(/"/g,'&quot;').replace(/</g,'&lt;');
   if (f.type === 'select') {
     const opts = f.options.map(o => `<option value="${o}"${o===data[f.key]?' selected':''}>${o||'-- Select --'}</option>`).join('');
-    return `<select class="f-select" data-key="${f.key}">${opts}</select>`;
+    const onChange = f.key === 'workflowStatus' ? ` onchange="setStep(WORKFLOW.indexOf(this.value))"` : '';
+    return `<select class="f-select" data-key="${f.key}"${onChange}>${opts}</select>`;
   }
   if (f.type === 'textarea') {
     const style = f.noresize ? ' style="resize:none"' : '';
@@ -829,6 +813,7 @@ function saveEdit() {
   save();
   document.querySelectorAll('#panel-details [data-key]').forEach(el => { el.style.outline = ''; });
   renderMeta();
+  renderWorkflow();
   renderHistory();
   showToast(changed ? `✅ ${changed} change(s) saved` : '✓ Details saved');
 }
@@ -858,7 +843,8 @@ function switchTab(name, el) {
   el.classList.add('active');
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   document.getElementById('panel-' + name).classList.add('active');
-  if (name === 'approvers') renderApprovers();
+  renderWorkflow();
+  if (name === 'approvers')     renderApprovers();
   if (name === 'relationships') renderRelationships();
 }
 

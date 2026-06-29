@@ -1088,7 +1088,7 @@
         </select>
       </div>
       <div class="field-group">
-        <label class="field-label">MFR Part Number</label>
+        <label class="field-label">MFR Part Number <span style="color:#dc2626">*</span></label>
         <input class="field-input" type="text" placeholder="e.g. TPS7A4700RGWR" id="mpnPartNumber" required />
       </div>
       <div class="field-group">
@@ -1220,6 +1220,10 @@
         <input class="field-input" type="text" placeholder="Enter MCO name or title" id="mcoName" />
       </div>
       <div class="field-group">
+        <label class="field-label">Title <span style="color:#dc2626;">*</span></label>
+        <input class="field-input" type="text" placeholder="Enter change order title" id="mcoTitle" required />
+      </div>
+      <div class="field-group">
         <label class="field-label">Description of Change</label>
         <textarea class="field-textarea" id="mcoDesc" placeholder="Describe what is being altered..." style="resize:none;"></textarea>
       </div>
@@ -1230,7 +1234,7 @@
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="closeModal('mco')">Cancel</button>
-      <a href="./MCO_Part.html"><button class="btn btn-primary" onclick="submitMco()">Create</button></a>
+      <button class="btn btn-primary" onclick="submitMco()">Create</button>
     </div>
   </div>
 </div>
@@ -1255,6 +1259,10 @@
       <div class="field-group">
         <label class="field-label"><span class="label-icon">✏️</span> DEV Number</label>
         <input class="field-input input-readonly" type="text" id="devName" disabled />
+      </div>
+      <div class="field-group">
+        <label class="field-label">Title <span style="color:#dc2626;">*</span></label>
+        <input class="field-input" type="text" placeholder="Enter deviation title" id="devTitle" required />
       </div>
       <div class="field-group">
         <label class="field-label"><span class="label-icon">⚙️</span> Description of Change <span style="color:#dc2626;">*</span></label>
@@ -1294,6 +1302,10 @@
         <input class="field-input input-readonly" type="text" id="dcoName" disabled />
       </div>
       <div class="field-group">
+        <label class="field-label">Title <span style="color:#dc2626;">*</span></label>
+        <input class="field-input" type="text" placeholder="Enter change order title" id="dcoTitle" required />
+      </div>
+      <div class="field-group">
         <label class="field-label"><span class="label-icon">⚙️</span> Description of Change <span style="color:#dc2626;">*</span></label>
         <textarea class="field-textarea" id="dcoDesc" placeholder="Describe the change..." style="resize:none;"></textarea>
       </div>
@@ -1304,7 +1316,7 @@
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="closeModal('dco')">Cancel</button>
-      <a href="./DCO_Part.html"><button class="btn btn-primary" onclick="submitDco()">Create</button></a>
+      <button class="btn btn-primary" onclick="submitDco()">Create</button>
     </div>
   </div>
 </div>
@@ -1630,6 +1642,7 @@
     const nextNum = Math.max(storedMax, ...dcoNums) + 1;
     document.getElementById('dcoName').value = 'DCO-' + String(nextNum).padStart(5, '0');
     document.getElementById('dcoCategory').selectedIndex = 0;
+    document.getElementById('dcoTitle').value = '';
     document.getElementById('dcoDesc').value = '';
     document.getElementById('dcoReason').value = '';
     document.getElementById('dcoModal').classList.add('open');
@@ -1638,12 +1651,16 @@
   function submitDco() {
     const category = document.getElementById('dcoCategory').value;
     const name     = document.getElementById('dcoName').value.trim();
+    const title    = document.getElementById('dcoTitle').value.trim();
     const desc     = document.getElementById('dcoDesc').value.trim();
+    const reason   = document.getElementById('dcoReason').value.trim();
     if (!category) { showToast('⚠ Please select a Category'); return; }
+    if (!title)    { showToast('⚠ Title is required'); return; }
     if (!desc)     { showToast('⚠ Description of Change is required'); return; }
     localStorage.setItem('plm_dco_last', String(parseInt(name.replace('DCO-', ''), 10)));
     closeModal('dco');
-    showToast('✅ DCO created: ' + name);
+    const p = new URLSearchParams({ dcoNum: name, category, title, desc, reason });
+    window.location.href = './DCO_Part.html?' + p.toString();
   }
 
   // ── CREATE DEV MODAL ──
@@ -1656,6 +1673,7 @@
     const nextNum = Math.max(storedMax, ...devNums) + 1;
     document.getElementById('devName').value = 'DEV-' + String(nextNum).padStart(5, '0');
     document.getElementById('devCategory').selectedIndex = 0;
+    document.getElementById('devTitle').value = '';
     document.getElementById('devDesc').value = '';
     document.getElementById('devReason').value = '';
     document.getElementById('devModal').classList.add('open');
@@ -1664,12 +1682,15 @@
   function submitDev() {
     const category = document.getElementById('devCategory').value;
     const name     = document.getElementById('devName').value.trim();
+    const title    = document.getElementById('devTitle').value.trim();
     const desc     = document.getElementById('devDesc').value.trim();
+    const reason   = document.getElementById('devReason').value.trim();
     if (!category) { showToast('⚠ Please select a Category'); return; }
+    if (!title)    { showToast('⚠ Title is required'); return; }
     if (!desc)     { showToast('⚠ Description of Change is required'); return; }
     localStorage.setItem('plm_dev_last', String(parseInt(name.replace('DEV-', ''), 10)));
     closeModal('dev');
-    const p = new URLSearchParams({ devNum: name, category, desc });
+    const p = new URLSearchParams({ devNum: name, category, title, desc, reason });
     window.location.href = './DEV_Part.html?' + p.toString();
   }
 
@@ -1677,6 +1698,7 @@
   function openMcoModal() {
     document.getElementById('mcoCategory').value = '';
     document.getElementById('mcoName').value = '';
+    document.getElementById('mcoTitle').value = '';
     document.getElementById('mcoDesc').value = '';
     document.getElementById('mcoReason').value = '';
     document.getElementById('mcoModal').classList.add('open');
@@ -1684,11 +1706,16 @@
 
   function submitMco() {
     const category = document.getElementById('mcoCategory').value;
-    const name = document.getElementById('mcoName').value.trim();
-    // Category and MCO Name are required.
-    if (!category || !name) { showToast('⚠ Please fill in Category and MCO Name'); return; }
+    const name     = document.getElementById('mcoName').value.trim();
+    const title    = document.getElementById('mcoTitle').value.trim();
+    const desc     = document.getElementById('mcoDesc').value.trim();
+    const reason   = document.getElementById('mcoReason').value.trim();
+    if (!category) { showToast('⚠ Please select a Category'); return; }
+    if (!name)     { showToast('⚠ MCO Name is required'); return; }
+    if (!title)    { showToast('⚠ Title is required'); return; }
     closeModal('mco');
-    showToast('✅ MCO created: ' + name);
+    const p = new URLSearchParams({ mcoNum: name, category, title, desc, reason });
+    window.location.href = './MCO_Part.html?' + p.toString();
   }
 
   // ── CREATE ECO MODAL ──

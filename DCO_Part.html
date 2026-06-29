@@ -637,15 +637,15 @@ td { padding: 10px 14px; vertical-align: middle; color: var(--text-primary); }
 <div class="toast" id="toast"></div>
 
 <script>
-const WORKFLOW = ['Pending','Submitted','CCB','Final Review','Released','Closed','Canceled'];
+const WORKFLOW = ['Pending','Submitted','CCB','Final Review','Released','Closed','Cancelled'];
 
 const SECTIONS = [
   { id: 'info', fields: [
-    { key: 'category',          label: 'Category',           type: 'select',   options: ['Deviation','NPI - DCO','Sustaining - DCO'] },
-    { key: 'devNum',            label: 'Change Number',      type: 'readonly' },
+    { key: 'category',          label: 'Category',           type: 'select',   options: ['Document Change Order - DCO','NPI - DCO','Sustaining - DCO'] },
+    { key: 'dcoNum',            label: 'Change Number',      type: 'readonly' },
     { key: 'title',             label: 'Title',              type: 'textarea', maxlength: 200, noresize: true, req: true, half: true },
     { key: 'description',       label: 'Description',        type: 'textarea', maxlength: 500, noresize: true, req: true, half: true },
-    { key: 'workflowStatus',    label: 'Change Status',      type: 'readonly' },
+    { key: 'workflowStatus',    label: 'Change Status',      type: 'select',  options: WORKFLOW },
     { key: 'changeSubcategory', label: 'Change Subcategory', type: 'select',   options: ['','Cut-in','Documentation','Phase-In'] },
     { key: 'reasonForChange',   label: 'Reason for Change',  type: 'textarea', noresize: true },
     { key: 'reasonCode',        label: 'Reason Code',        type: 'select',   options: ['','Cost Reduction','Improvement','Issue Resolution','Other','Supplier Driven'] },
@@ -653,6 +653,8 @@ const SECTIONS = [
     { key: 'productLines',      label: 'Product Lines',      type: 'text' },
     { key: 'originator',        label: 'Originator',         type: 'text' },
     { key: 'changeAnalyst',     label: 'Change Analyst',     type: 'text' },
+    { key: 'effectiveFrom',     label: 'Effective From',     type: 'date' },
+    { key: 'effectiveTo',       label: 'Effective To',       type: 'date' },
   ]},
   { id: 'dev', fields: [
     { key: 'deviationType',      label: 'Deviation Type',       type: 'select', options: ['','Temporary','Permanent','Concession'] },
@@ -672,16 +674,16 @@ const SECTIONS = [
     { key: 'categoryControl', label: 'Category Control', type: 'readonly' },
     { key: 'createdDate',     label: 'Created Date',     type: 'readonly' },
     { key: 'createdBy',       label: 'Created By',       type: 'readonly' },
-    { key: 'releasedDate',    label: 'Released Date',    type: 'readonly' },
-    { key: 'closedDate',      label: 'Closed Date',      type: 'readonly' },
+    { key: 'releasedDate',    label: 'Released Date',    type: 'date' },
+    { key: 'closedDate',      label: 'Closed Date',      type: 'date' },
     { key: 'legacyCreateBy',  label: 'Legacy Create By', type: 'text' },
   ]},
 ];
 
 const qp      = new URLSearchParams(location.search);
-const DCO_NUM = qp.get('devNum') || 'DCO-11471';
-const STORE_K = 'dev_' + DCO_NUM;
-const HIST_K  = 'devh_' + DCO_NUM;
+const DCO_NUM = qp.get('dcoNum') || 'DCO-10001';
+const STORE_K = 'dco_' + DCO_NUM;
+const HIST_K  = 'dcoh_' + DCO_NUM;
 
 function nowStr() {
   return new Date().toLocaleString('en-US',{month:'numeric',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit',hour12:true});
@@ -689,8 +691,8 @@ function nowStr() {
 
 function makeDefault() {
   return {
-    devNum:             DCO_NUM,
-    category:           qp.get('category')      || 'Deviation',
+    dcoNum:             DCO_NUM,
+    category:           qp.get('category')      || 'Document Change Order - DCO',
     title:              qp.get('title')          || '',
     description:        qp.get('desc')           || '',
     workflowStatus:     qp.get('workflowStatus') || 'Pending',
@@ -701,6 +703,8 @@ function makeDefault() {
     productLines:       '',
     originator:         'Karkuvel V',
     changeAnalyst:      '',
+    effectiveFrom:      '',
+    effectiveTo:        '',
     deviationType:      '',
     expiryDate:         '',
     quantity:           '',
@@ -711,7 +715,7 @@ function makeDefault() {
     qualityImpact:      'N/A',
     accessibleBy:       '',
     internalNotes:      '',
-    categoryControl:    qp.get('category') || 'Deviation',
+    categoryControl:    qp.get('category') || 'Document Change Order - DCO',
     createdBy:          'Karkuvel V',
     createdDate:        qp.get('createdDate') || nowStr(),
     releasedDate:       '',
@@ -734,8 +738,8 @@ function save() {
 }
 
 function init() {
-  document.getElementById('hdrNum').textContent = data.devNum;
-  document.getElementById('bcNum').textContent  = data.devNum;
+  document.getElementById('hdrNum').textContent = data.dcoNum;
+  document.getElementById('bcNum').textContent  = data.dcoNum;
   renderMeta();
   renderWorkflow();
   renderAllSections();
@@ -852,7 +856,8 @@ function buildInput(f) {
     const opts = f.options.map(o =>
       `<option value="${o}"${o === data[f.key] ? ' selected' : ''}>${o || '-- Select --'}</option>`
     ).join('');
-    return `<select class="f-select" data-key="${f.key}">${opts}</select>`;
+    const onChange = f.key === 'workflowStatus' ? ` onchange="setStep(WORKFLOW.indexOf(this.value))"` : '';
+    return `<select class="f-select" data-key="${f.key}"${onChange}>${opts}</select>`;
   }
   if (f.type === 'textarea') {
     const ml    = f.maxlength ? `maxlength="${f.maxlength}"` : '';
@@ -860,6 +865,9 @@ function buildInput(f) {
     const onInp = f.maxlength ? `oninput="updateCounter('${f.key}',this)"` : '';
     const ctr   = f.maxlength ? `<div class="f-char-count" id="cc-${f.key}">${(data[f.key]||'').length}/${f.maxlength}</div>` : '';
     return `<textarea class="f-textarea" data-key="${f.key}" ${ml}${onInp}${style}>${val}</textarea>${ctr}`;
+  }
+  if (f.type === 'date') {
+    return `<input class="f-input" type="date" data-key="${f.key}" value="${data[f.key] || ''}" />`;
   }
   const ml    = f.maxlength ? `maxlength="${f.maxlength}"` : '';
   const ctr   = f.maxlength ? `<div class="f-char-count" id="cc-${f.key}">${(data[f.key]||'').length}/${f.maxlength}</div>` : '';
@@ -908,6 +916,7 @@ function saveEdit() {
   save();
   document.querySelectorAll('#panel-details [data-key]').forEach(el => { el.style.outline = ''; });
   renderMeta();
+  renderWorkflow();
   renderHistory();
   showToast(changed ? '✅ ' + changed + ' change(s) saved' : '✓ Details saved');
 }
@@ -937,7 +946,8 @@ function switchTab(name, el) {
   el.classList.add('active');
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   document.getElementById('panel-' + name).classList.add('active');
-  if (name === 'approvers')    renderApprovers();
+  renderWorkflow();
+  if (name === 'approvers')     renderApprovers();
   if (name === 'relationships') renderRelationships();
 }
 
@@ -950,7 +960,7 @@ function toggleSection(id) {
 }
 
 function copyInfo() {
-  const txt = `${data.devNum} | ${data.category} | ${data.workflowStatus} | ${data.title || 'No title'}`;
+  const txt = `${data.dcoNum} | ${data.category} | ${data.workflowStatus} | ${data.title || 'No title'}`;
   navigator.clipboard.writeText(txt)
     .then(() => showToast('Copied to clipboard'))
     .catch(() => showToast('Copy failed'));
@@ -985,7 +995,7 @@ function showToast(msg) {
 }
 
 // ── AFFECTED ITEMS ──
-const AI_KEY = 'dev_ai_' + DCO_NUM;
+const AI_KEY = 'dco_ai_' + DCO_NUM;
 let affectedItems = JSON.parse(localStorage.getItem(AI_KEY) || '[]');
 
 function saveAI() { localStorage.setItem(AI_KEY, JSON.stringify(affectedItems)); }

@@ -677,7 +677,7 @@ const WORKFLOW_SIDE = ['Cancelled','Hold'];
 // ── FIELD SCHEMA ──
 const SECTIONS = [
   { id: 'info', label: 'Information', fields: [
-    { key: 'category',          label: 'Category',              type: 'select',   options: ['NPI - ECO','Sustaining - ECO','Production - ECO'] },
+    { key: 'category',          label: 'Category',              type: 'select',   options: ['NPI','Production'] },
     { key: 'ecoNum',            label: 'Change Order Number',         type: 'readonly' },
     { key: 'title',             label: 'Change Order Title',    type: 'textarea', maxlength: 50,  noresize: true, req: true, half: true },
     { key: 'description',       label: 'Description of Change', type: 'textarea', maxlength: 500, noresize: true, req: true, half: true },
@@ -1107,7 +1107,8 @@ function switchTab(name, el) {
   el.classList.add('active');
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   document.getElementById('panel-' + name).classList.add('active');
-  if (name === 'approvers') renderApprovers();
+  renderWorkflow();
+  if (name === 'approvers')     renderApprovers();
   if (name === 'relationships') renderRelationships();
 }
 

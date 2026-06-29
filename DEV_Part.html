@@ -357,16 +357,7 @@ td { padding: 10px 14px; vertical-align: middle; color: var(--text-primary); }
       </div>
     </div>
 
-    <!-- DEVIATION DETAILS -->
-    <div class="sec-card">
-      <div class="sec-head" onclick="toggleSection('s-dev')">
-        <span class="sec-caret" id="c-s-dev">&#9660;</span>
-        <span class="sec-title">Deviation Details</span>
-      </div>
-      <div class="sec-body" id="s-dev">
-        <div class="fields-grid" id="g-dev"></div>
-      </div>
-    </div>
+   
 
     <!-- SUPPLIER ACCESS -->
     <div class="sec-card">
@@ -635,22 +626,23 @@ td { padding: 10px 14px; vertical-align: middle; color: var(--text-primary); }
 <div class="toast" id="toast"></div>
 
 <script>
-const WORKFLOW = ['Pending','Submitted','CCB','Final Review','Released','Closed','Canceled'];
+const WORKFLOW = ['Pending','Submitted','CCB','Final Review','Released','Closed','Cancelled'];
 
 const SECTIONS = [
   { id: 'info', fields: [
     { key: 'category',          label: 'Category',           type: 'select',   options: ['Deviation','NPI - DEV','Sustaining - DEV'] },
     { key: 'devNum',            label: 'Change Number',      type: 'readonly' },
     { key: 'title',             label: 'Title',              type: 'textarea', maxlength: 200, noresize: true, req: true, half: true },
-    { key: 'description',       label: 'Description',        type: 'textarea', maxlength: 500, noresize: true, req: true, half: true },
-    { key: 'workflowStatus',    label: 'Change Status',      type: 'readonly' },
-    { key: 'changeSubcategory', label: 'Change Subcategory', type: 'select',   options: ['','Cut-in','Documentation','Phase-In'] },
+    { key: 'description',       label: 'Description of Change',        type: 'textarea', maxlength: 500, noresize: true, req: true, half: true },
+    { key: 'workflowStatus',    label: 'Change Status',      type: 'select',  options: WORKFLOW },
     { key: 'reasonForChange',   label: 'Reason for Change',  type: 'textarea', noresize: true },
     { key: 'reasonCode',        label: 'Reason Code',        type: 'select',   options: ['','Cost Reduction','Improvement','Issue Resolution','Other','Supplier Driven'] },
     { key: 'disposition',       label: 'Disposition',        type: 'select',   options: ['N/A','Use As Is','Scrap','Rework'] },
     { key: 'productLines',      label: 'Product Lines',      type: 'text' },
     { key: 'originator',        label: 'Originator',         type: 'text' },
     { key: 'changeAnalyst',     label: 'Change Analyst',     type: 'text' },
+    { key: 'effectiveFrom',     label: 'Effective From',     type: 'date' },
+    { key: 'effectiveTo',       label: 'Effective To',       type: 'date' },
   ]},
   { id: 'dev', fields: [
     { key: 'deviationType',      label: 'Deviation Type',       type: 'select', options: ['','Temporary','Permanent','Concession'] },
@@ -670,9 +662,8 @@ const SECTIONS = [
     { key: 'categoryControl', label: 'Category Control', type: 'readonly' },
     { key: 'createdDate',     label: 'Created Date',     type: 'readonly' },
     { key: 'createdBy',       label: 'Created By',       type: 'readonly' },
-    { key: 'releasedDate',    label: 'Released Date',    type: 'readonly' },
-    { key: 'closedDate',      label: 'Closed Date',      type: 'readonly' },
-    { key: 'legacyCreateBy',  label: 'Legacy Create By', type: 'text' },
+    { key: 'releasedDate',    label: 'Released Date',    type: 'date' },
+    { key: 'closedDate',      label: 'Closed Date',      type: 'date' },
   ]},
 ];
 
@@ -699,6 +690,8 @@ function makeDefault() {
     productLines:       '',
     originator:         'Karkuvel V',
     changeAnalyst:      '',
+    effectiveFrom:      '',
+    effectiveTo:        '',
     deviationType:      '',
     expiryDate:         '',
     quantity:           '',
@@ -826,13 +819,7 @@ function renderField(f) {
   const isFull = f.type === 'textarea' && !f.half;
   if (f.type === 'readonly') {
     const raw = data[f.key] || '';
-    let display;
-    if (f.key === 'workflowStatus') {
-      const sc = 'wf-' + (raw || 'Pending').replace(/\s+/g,'-');
-      display = `<span class="wf-badge ${sc}">${raw || 'Pending'}</span>`;
-    } else {
-      display = raw ? raw.replace(/</g,'&lt;').replace(/\n/g,'<br>') : '<span style="color:var(--text-muted);font-style:italic;">—</span>';
-    }
+    const display = raw ? raw.replace(/</g,'&lt;').replace(/\n/g,'<br>') : '<span style="color:var(--text-muted);font-style:italic;">—</span>';
     return `<div class="field-cell${isFull ? ' full-width' : ''}">
       <div class="f-lbl">${f.label}${f.req ? '<span class="req">*</span>' : ''}</div>
       <div class="f-val">${display}</div>
@@ -850,7 +837,8 @@ function buildInput(f) {
     const opts = f.options.map(o =>
       `<option value="${o}"${o === data[f.key] ? ' selected' : ''}>${o || '-- Select --'}</option>`
     ).join('');
-    return `<select class="f-select" data-key="${f.key}">${opts}</select>`;
+    const onChange = f.key === 'workflowStatus' ? ` onchange="setStep(WORKFLOW.indexOf(this.value))"` : '';
+    return `<select class="f-select" data-key="${f.key}"${onChange}>${opts}</select>`;
   }
   if (f.type === 'textarea') {
     const ml    = f.maxlength ? `maxlength="${f.maxlength}"` : '';
@@ -858,6 +846,9 @@ function buildInput(f) {
     const onInp = f.maxlength ? `oninput="updateCounter('${f.key}',this)"` : '';
     const ctr   = f.maxlength ? `<div class="f-char-count" id="cc-${f.key}">${(data[f.key]||'').length}/${f.maxlength}</div>` : '';
     return `<textarea class="f-textarea" data-key="${f.key}" ${ml}${onInp}${style}>${val}</textarea>${ctr}`;
+  }
+  if (f.type === 'date') {
+    return `<input class="f-input" type="date" data-key="${f.key}" value="${data[f.key] || ''}" />`;
   }
   const ml    = f.maxlength ? `maxlength="${f.maxlength}"` : '';
   const ctr   = f.maxlength ? `<div class="f-char-count" id="cc-${f.key}">${(data[f.key]||'').length}/${f.maxlength}</div>` : '';
@@ -906,6 +897,7 @@ function saveEdit() {
   save();
   document.querySelectorAll('#panel-details [data-key]').forEach(el => { el.style.outline = ''; });
   renderMeta();
+  renderWorkflow();
   renderHistory();
   showToast(changed ? '✅ ' + changed + ' change(s) saved' : '✓ Details saved');
 }
@@ -935,6 +927,7 @@ function switchTab(name, el) {
   el.classList.add('active');
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   document.getElementById('panel-' + name).classList.add('active');
+  renderWorkflow();
   if (name === 'approvers')     renderApprovers();
   if (name === 'relationships') renderRelationships();
 }
