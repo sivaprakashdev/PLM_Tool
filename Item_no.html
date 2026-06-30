@@ -849,7 +849,7 @@
             </div>
             <div class="field-pair">
               <div class="detail-label">Created By</div>
-              <div class="detail-value"><input type="text" id="detail-created-by" value="Karkuvel V" style="color:var(--accent);" /></div>
+              <div class="detail-value"><input type="text" id="detail-created-by" value="Karkuvel V" style="color:var(--accent);" placeholder="Karkuvel V" /></div>
             </div>
           </div>
           <!-- Row 5: Created Date | Has Item Attachments -->
@@ -994,16 +994,14 @@
   });
   document.getElementById('history-item-num').textContent    = itemNum;
 
-  const descVal = desc.trim().slice(0, 150);
-  document.getElementById('item-desc-display').textContent   = descVal;
+  const descVal    = desc.trim().slice(0, 150);
+  const descDisplay = document.getElementById('item-desc-display');
+  descDisplay.textContent = desc.trim();
+  descDisplay.title       = desc.trim();
   document.getElementById('changes-item-desc').textContent   = descVal || '—';
 
   // Details tab fields — dynamic values from index.html URL params
   document.getElementById('detail-created-date').value = nowStr;
-  // Category Control mirrors the subcategory chosen in index.html
-  if (subCategory && subCategory !== '—') {
-    document.getElementById('detail-category-control').value = subCategory;
-  }
 
   // ── SUBCATEGORY LIST & CATEGORY CHANGE (must be defined before first call) ──
   const _allSubCategories = [
@@ -1016,18 +1014,17 @@
     'Switch','Top Assembly','Transceiver','Transformer','Transistor'
   ];
 
-  function onCategoryChange(preselect) {
-    const cat = document.getElementById('detail-category').value;
+  function onCategoryChange(cat, preselect) {
     const subEl = document.getElementById('detail-subcategory');
     subEl.innerHTML = '<option value="">— Select sub category —</option>';
-    if (cat) {
+    if (cat && cat !== '—') {
       _allSubCategories.forEach(function(s) {
         const o = document.createElement('option');
         o.value = s; o.textContent = s;
         subEl.appendChild(o);
       });
-      subEl.disabled = true;
       if (preselect && preselect !== '—') subEl.value = preselect;
+      subEl.disabled = true;
     } else {
       subEl.innerHTML = '<option value="">— Select category first —</option>';
       subEl.disabled = true;
@@ -1036,18 +1033,8 @@
     subEl.onchange = function() { renderPartDetails(this.value); };
   }
 
-  const descEl = document.getElementById('detail-desc');
-  if (descVal) {
-    descEl.value = descVal;
-    document.getElementById('desc-counter').textContent = descVal.length + '/150';
-  }
-
   const extDescVal = desc.trim().slice(0, 250);
   const extDescEl = document.getElementById('detail-ext-desc');
-  if (extDescEl && extDescVal) {
-    extDescEl.value = extDescVal;
-    document.getElementById('ext-desc-counter').textContent = extDescVal.length + '/250';
-  }
 
   // Save to localStorage
   const stored  = JSON.parse(localStorage.getItem('plm_items') || '[]');
@@ -1138,10 +1125,22 @@
     body.innerHTML = html;
   }
 
-  // Pre-populate category/subcategory from URL params (must be after partFieldsMap)
+  // Pre-populate category/subcategory/description from URL params (must be after partFieldsMap)
   const catEl = document.getElementById('detail-category');
-  if (category !== '—') { catEl.value = category; }
-  onCategoryChange(subCategory);
+  if (category !== '—') {
+    catEl.disabled = false;
+    catEl.value    = category;
+    catEl.disabled = true;
+  }
+  onCategoryChange(category, subCategory);
+
+  // Populate description fields last so nothing can overwrite them
+  document.getElementById('detail-desc').value = descVal;
+  document.getElementById('desc-counter').textContent = descVal.length + '/150';
+  if (extDescEl) {
+    extDescEl.value = desc.trim().slice(0, 250);
+    document.getElementById('ext-desc-counter').textContent = extDescEl.value.length + '/250';
+  }
 
   function editDetails() {
     document.querySelectorAll('#panel-details input:not([readonly]):not([disabled]), #panel-details select:not([disabled]), #panel-details textarea')

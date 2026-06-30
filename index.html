@@ -1127,7 +1127,7 @@
 </div>
 
 <!-- ══ CREATE NEW ITEM NUMBER MODAL ══ -->
-<div class="modal-overlay" id="itemModal" onclick="handleOverlayClick(event, 'item')">
+<div class="modal-overlay" id="modal" onclick="handleOverlayClick(event, 'item')">
   <div class="modal">
     <div class="modal-header">
       <span class="modal-title">Create New Item Number</span>
@@ -1136,7 +1136,7 @@
     <div class="modal-body">
 
       <div class="field-group">
-        <label class="field-label">Category</label>
+        <label class="field-label">Category <span style="color:#dc2626;">*</span></label>
         <select class="field-select" id="itemCategory" onchange="updateSubCategory()">
           <option value="">--Select Category--</option>
           <option value="Electrical">Electrical</option>
@@ -1148,7 +1148,7 @@
       </div>
 
     <div class="field-group">
-      <label class="field-label">Sub Category</label>
+      <label class="field-label">Sub Category <span style="color:#dc2626;">*</span></label>
       <select class="field-select" id="itemSubCategory">
         <option value="">---Select Sub Category---</option>
         <option value="Label Image">Label Image</option>
@@ -1200,7 +1200,7 @@
       
       <div class="field-group">
         <label class="field-label">Description <span style="color:#dc2626">*</span></label>
-        <textarea class="field-textarea" placeholder="Describe the item" id="newDesc"></textarea>
+        <textarea class="field-textarea" placeholder="Describe the item" id="newDesc" style="resize:none;"></textarea>
       </div>
       <div class="field-group">
         <label class="field-label">Attachment</label>
@@ -1223,9 +1223,9 @@
     </div>
     <div class="modal-body">
       <div class="field-group">
-        <label class="field-label">Manufacturer</label>
+        <label class="field-label">Manufacturer <span style="color:#dc2626;">*</span></label>
         <select class="field-select" id="mpnManufacturer">
-          <option value="">Select manufacturer…</option>
+          <option value="">--Select Manufacturer--</option>
           <option>Texas Instruments</option>
           <option>Analog Devices</option>
           <option>STMicroelectronics</option>
@@ -1245,7 +1245,7 @@
       </div>
       <div class="field-group">
         <label class="field-label">Lifecycle of MPN</label>
-        <input class="field-input" type="text" placeholder="Active" id="mpnLifecycle" />
+        <input class="field-input input-readonly" type="text" id="mpnLifecycle" value="Active" readonly style="background:#f8fafc;cursor:default;" />
 
       </div>
     </div>
@@ -2120,7 +2120,7 @@
     document.getElementById('mpnPartNumber').value = '';
     document.getElementById('mpnDesc').value = '';
     document.getElementById('mpnDesc-counter').textContent = '0/150';
-    document.getElementById('mpnLifecycle').value = '';
+    document.getElementById('mpnLifecycle').value = 'Active';
     document.getElementById('mpnModal').classList.add('open');
   }
 
