@@ -677,7 +677,7 @@ const WORKFLOW_SIDE = ['Cancelled','Hold'];
 // ── FIELD SCHEMA ──
 const SECTIONS = [
   { id: 'info', label: 'Information', fields: [
-    { key: 'category',          label: 'Category',              type: 'select',   options: ['NPI','Production'] },
+    { key: 'category',          label: 'Category',              type: 'select',   options: ['Sustaining - ECO','NPI - ECO'] },
     { key: 'ecoNum',            label: 'Change Order Number',         type: 'readonly' },
     { key: 'title',             label: 'Change Order Title',    type: 'textarea', maxlength: 50,  noresize: true, req: true, half: true },
     { key: 'description',       label: 'Description of Change', type: 'textarea', maxlength: 500, noresize: true, req: true, half: true },

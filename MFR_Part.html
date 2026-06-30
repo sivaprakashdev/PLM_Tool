@@ -398,12 +398,12 @@
 
           <div class="field-cell">
             <span class="field-label">Created By</span>
-            <div class="field-value"><input type="text" id="info-created-by" placeholder="Enter name…" /></div>
+            <div class="field-value"><input type="text" id="info-created-by" value="Karkuvel V" readonly style="width:100%;font-size:13px;font-family:inherit;border:1px solid var(--border);border-radius:4px;padding:4px 8px;color:var(--accent);background:#f3f2f2;cursor:default;outline:none;" /></div>
           </div>
 
           <div class="field-cell">
             <span class="field-label">Created Date</span>
-            <div class="field-value"><input type="date" id="info-created-date" style="font-size:13px;font-family:inherit;border:1px solid var(--border);border-radius:4px;padding:4px 8px;color:var(--text-primary);outline:none;width:100%;" /></div>
+            <div class="field-value"><input type="text" id="info-created-date" readonly style="width:100%;font-size:13px;font-family:inherit;border:1px solid var(--border);border-radius:4px;padding:4px 8px;color:var(--text-primary);background:#f3f2f2;cursor:default;outline:none;" /></div>
           </div>
 
           <div class="field-cell">
@@ -634,7 +634,7 @@
     const lcEl = document.getElementById('info-lifecycle');
     if (lc && lc !== '—') lcEl.value = lc;
 
-    const today = new Date().toISOString().slice(0, 10);
+    const today = new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' });
     document.getElementById('info-created-date').value = today;
   })();
 
@@ -650,7 +650,7 @@
 
     tbody.innerHTML = items.map(function(item) {
       return '<tr>' +
-        '<td><a class="cell-link" href="Item_no.html?itemno=' + encodeURIComponent(item.itemno) + '&desc=' + encodeURIComponent(item.desc) + '">' + item.itemno + '</a></td>' +
+        '<td><a class="cell-link" href="Item_no.html?itemno=' + encodeURIComponent(item.itemno) + '&desc=' + encodeURIComponent(item.desc || '') + '&category=' + encodeURIComponent(item.category || '') + '&subCategory=' + encodeURIComponent(item.subCategory || '') + '">' + item.itemno + '</a></td>' +
         '<td class="td-desc-cell">' + item.desc + '</td>' +
         '<td>' + (item.lifecycle || 'Prototype') + '</td>' +
         '<td>' + (item.revision  || '01') + '</td>' +
@@ -701,14 +701,15 @@
       el.style.outline = 'none';
     });
 
+    // 7 columns: Date/Time | User | Created By | Action | Field | Old Value | New Value
     const now = new Date();
-    const dateStr = now.toLocaleDateString('en-US', { month:'2-digit', day:'2-digit', year:'numeric' }) +
+    const dateStr   = now.toLocaleDateString('en-US', { month:'2-digit', day:'2-digit', year:'numeric' }) +
       ', ' + now.toLocaleTimeString('en-US', { hour:'2-digit', minute:'2-digit' });
-    const mpn = document.getElementById('info-mpn').value || '—';
+    const createdBy = document.getElementById('info-created-by') ? document.getElementById('info-created-by').value || 'Karkuvel V' : 'Karkuvel V';
 
     const tbody = document.getElementById('mfr-history-tbody');
     const row = document.createElement('tr');
-    row.innerHTML = `<td>${dateStr}</td><td>You</td><td>Updated</td><td>Details</td><td>—</td><td>${mpn}</td>`;
+    row.innerHTML = `<td>${dateStr}</td><td>${createdBy}</td><td>${createdBy}</td><td>Updated</td><td>Details</td><td>—</td><td>—</td>`;
     tbody.insertBefore(row, tbody.firstChild);
 
     showToast('✓ Details saved');
