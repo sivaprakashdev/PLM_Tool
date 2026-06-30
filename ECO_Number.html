@@ -705,9 +705,9 @@ const SECTIONS = [
     { key: 'categoryControl', label: 'Category Control', type: 'readonly' },
     { key: 'createdDate',     label: 'Created Date',     type: 'readonly' },
     { key: 'createdBy',       label: 'Created By',       type: 'readonly' },
-    { key: 'closedDate',      label: 'Closed Date',      type: 'readonly' },
+    { key: 'closedDate',      label: 'Closed Date',      type: 'date' },
     { key: 'releasedDate',    label: 'Released Date',    type: 'readonly' },
-    { key: 'legacyCreateBy',  label: 'Legacy Create By', type: 'text' },
+
   ]},
 ];
 
@@ -1025,6 +1025,9 @@ function buildInput(f) {
     const counter = f.maxlength
       ? `<div class="f-char-count" id="cc-${f.key}">${(data[f.key]||'').length}/${f.maxlength}</div>` : '';
     return `<textarea class="f-textarea" data-key="${f.key}" ${ml} ${onInput}${style}>${val}</textarea>${counter}`;
+  }
+  if (f.type === 'date') {
+    return `<input class="f-input" type="date" data-key="${f.key}" value="${val}" style="width:100%;" />`;
   }
   const ml = f.maxlength ? `maxlength="${f.maxlength}"` : '';
   const counter = f.maxlength
