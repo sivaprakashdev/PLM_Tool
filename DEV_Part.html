@@ -712,7 +712,10 @@ let data     = stored ? Object.assign({}, _defaults, JSON.parse(stored)) : _defa
 let history  = JSON.parse(localStorage.getItem(HIST_K) || '[]');
 let snap     = null;
 
-if (!stored) save();
+if (!stored) {
+  history.push({ ts: data.createdDate, user: 'Karkuvel V', action: 'created', field: 'Created By', oldVal: '—', newVal: 'Karkuvel V' });
+  save();
+}
 
 function save() {
   localStorage.setItem(STORE_K, JSON.stringify(data));

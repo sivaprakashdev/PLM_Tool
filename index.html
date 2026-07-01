@@ -1211,14 +1211,16 @@
           <option value="" disabled selected>Select Category</option>
           <option>Sustaining - ECO</option>
           <option>NPI - ECO</option>
-          <option>MCO</option>
-          <option>DEV</option>
-          <option>DCO</option>
+
         </select>
       </div>
       <div class="field-group">
         <label class="field-label">ECO Number</label>
         <input class="field-input input-readonly" type="text" id="ecoName" disabled />
+      </div>
+      <div class="field-group">
+        <label class="field-label">Title <span style="color:#dc2626">*</span></label>
+        <input class="field-input" type="text" id="ecoTitle" maxlength="50" placeholder="Enter a short title for this change order…" />
       </div>
       <div class="field-group">
         <label class="field-label">Description of Change <span style="color:#dc2626">*</span></label>
@@ -1246,15 +1248,8 @@
     </div>
     <div class="modal-body">
       <div class="field-group">
-        <label class="field-label">Category <span style="color:#dc2626;">*</span></label>
-        <select class="field-select" id="mcoCategory">
-          <option value="">-- Select Category --</option>
-          <option>Sustaining - ECO</option>
-          <option>NPI - ECO</option>
-          <option>MCO</option>
-          <option>DEV</option>
-          <option>DCO</option>
-        </select>
+        <label class="field-label">Category</label>
+        <input class="field-input input-readonly" type="text" id="mcoCategory" value="MCO" readonly />
       </div>
       <div class="field-group">
         <label class="field-label">MCO Number</label>
@@ -1289,15 +1284,8 @@
     </div>
     <div class="modal-body">
       <div class="field-group">
-        <label class="field-label">Category <span style="color:#dc2626;">*</span></label>
-        <select class="field-select" id="devCategory">
-          <option value="" disabled selected>-- Select Category --</option>
-          <option>Sustaining - ECO</option>
-          <option>NPI - ECO</option>
-          <option>MCO</option>
-          <option>DEV</option>
-          <option>DCO</option>
-        </select>
+        <label class="field-label">Category</label>
+        <input class="field-input input-readonly" type="text" id="devCategory" value="DEV" readonly />
       </div>
       <div class="field-group">
         <label class="field-label">DEV Number</label>
@@ -1333,14 +1321,7 @@
     <div class="modal-body">
       <div class="field-group">
         <label class="field-label">Category <span style="color:#dc2626;">*</span></label>
-        <select class="field-select" id="dcoCategory">
-          <option value="" disabled selected>-- Select Category --</option>
-          <option>Sustaining - ECO</option>
-          <option>NPI - ECO</option>
-          <option>MCO</option>
-          <option>DEV</option>
-          <option>DCO</option>
-        </select>
+        <input class="field-input input-readonly" type="text" id="dcoCategory" value="DCO" readonly />
       </div>
       <div class="field-group">
         <label class="field-label">DCO Number</label>
@@ -1652,7 +1633,7 @@
     const storedMax = parseInt(localStorage.getItem('plm_dco_last') || '10000', 10);
     const nextNum = Math.max(storedMax, ...dcoNums) + 1;
     document.getElementById('dcoName').value = 'DCO-' + String(nextNum).padStart(5, '0');
-    document.getElementById('dcoCategory').selectedIndex = 0;
+    document.getElementById('dcoCategory').value = 'DCO';
     document.getElementById('dcoTitle').value = '';
     document.getElementById('dcoDesc').value = '';
     document.getElementById('dcoReason').value = '';
@@ -1683,7 +1664,7 @@
     const storedMax = parseInt(localStorage.getItem('plm_dev_last') || '11470', 10);
     const nextNum = Math.max(storedMax, ...devNums) + 1;
     document.getElementById('devName').value = 'DEV-' + String(nextNum).padStart(5, '0');
-    document.getElementById('devCategory').selectedIndex = 0;
+    document.getElementById('devCategory').value = 'DEV';
     document.getElementById('devTitle').value = '';
     document.getElementById('devDesc').value = '';
     document.getElementById('devReason').value = '';
@@ -1714,7 +1695,7 @@
     const storedMax = parseInt(localStorage.getItem('plm_mco_last') || '10000', 10);
     const nextNum = Math.max(storedMax, ...mcoNums) + 1;
     document.getElementById('mcoName').value = 'MCO-' + String(nextNum).padStart(5, '0');
-    document.getElementById('mcoCategory').value = '';
+    document.getElementById('mcoCategory').value = 'MCO';
     document.getElementById('mcoTitle').value = '';
     document.getElementById('mcoDesc').value = '';
     document.getElementById('mcoReason').value = '';
@@ -1743,8 +1724,14 @@
       .filter(r => r.id.startsWith('ECO-'))
       .map(r => parseInt(r.id.replace('ECO-', ''), 10))
       .filter(n => !isNaN(n));
-    const nextNum = ecoNums.length ? Math.max(...ecoNums) + 1 : 26220;
+    const lsNums = Object.keys(localStorage)
+      .filter(k => k.startsWith('eco_ECO-'))
+      .map(k => parseInt(k.replace('eco_ECO-', ''), 10))
+      .filter(n => !isNaN(n));
+    const storedMax = parseInt(localStorage.getItem('plm_eco_last') || '26219', 10);
+    const nextNum = Math.max(storedMax, ...[...ecoNums, ...lsNums]) + 1;
     document.getElementById('ecoName').value = 'ECO-' + String(nextNum).padStart(5, '0');
+    document.getElementById('ecoTitle').value = '';
     document.getElementById('ecoChangeDesc').value = '';
     document.getElementById('ecoChangeDesc-counter').textContent = '0/150';
     document.getElementById('ecoReason').value = '';
@@ -1754,12 +1741,15 @@
   function submitEco() {
     const category = document.getElementById('ecoCategory').value;
     const name     = document.getElementById('ecoName').value.trim();
+    const title    = document.getElementById('ecoTitle').value.trim();
     const desc     = document.getElementById('ecoChangeDesc').value.trim();
     const reason   = document.getElementById('ecoReason').value.trim();
     if (!category) { showToast('⚠ Please select a Category'); return; }
+    if (!title)    { showToast('⚠ Change Order Title is required'); return; }
     if (!desc)     { showToast('⚠ Description of Change is required'); return; }
+    localStorage.setItem('plm_eco_last', String(parseInt(name.replace('ECO-', ''), 10)));
     closeModal('eco');
-    const p = new URLSearchParams({ ecoNum: name, category, desc, reason });
+    const p = new URLSearchParams({ ecoNum: name, category, title, desc, reason });
     window.location.href = './ECO_Number.html?' + p.toString();
   }
 

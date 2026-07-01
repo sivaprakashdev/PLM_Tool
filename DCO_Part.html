@@ -625,6 +625,7 @@ td { padding: 10px 14px; vertical-align: middle; color: var(--text-primary); }
 <div class="toast" id="toast"></div>
 
 <script>
+const CURRENT_USER = 'Karkuvel V';
 const WORKFLOW = ['Pending','Submitted','CCB','Final Review','Released','Closed','Cancelled'];
 
 const SECTIONS = [
@@ -698,7 +699,7 @@ function makeDefault() {
     accessibleBy:       '',
     internalNotes:      '',
     categoryControl:    qp.get('category') || 'Sustaining - DCO',
-    createdBy:          'Karkuvel V',
+    createdBy:          CURRENT_USER,
     createdDate:        qp.get('createdDate') || _dfmt(_d0),
     releasedDate:       _dfmt(_d1),
     closedDate:         _dfmt(_d2),
@@ -712,7 +713,10 @@ let data     = stored ? Object.assign({}, _defaults, JSON.parse(stored)) : _defa
 let history  = JSON.parse(localStorage.getItem(HIST_K) || '[]');
 let snap     = null;
 
-if (!stored) save();
+if (!stored) {
+  history.push({ ts: data.createdDate, user: CURRENT_USER, action: 'created', field: 'Created By', oldVal: '—', newVal: CURRENT_USER });
+  save();
+}
 
 function save() {
   localStorage.setItem(STORE_K, JSON.stringify(data));
@@ -773,7 +777,7 @@ function setStep(idx) {
   const ts = nowStr();
   if (data.workflowStatus === 'Released' && !data.releasedDate) data.releasedDate = ts;
   if (data.workflowStatus === 'Closed'   && !data.closedDate)   data.closedDate   = ts;
-  history.unshift({ ts, user: 'Karkuvel V', action: 'workflow', field: 'Change Status', oldVal: old, newVal: data.workflowStatus });
+  history.unshift({ ts, user: CURRENT_USER, action: 'workflow', field: 'Change Status', oldVal: old, newVal: data.workflowStatus });
   save();
   renderMeta();
   renderWorkflow();
@@ -873,7 +877,7 @@ function saveEdit() {
         const ov = (snap[f.key]  || '').toString().trim();
         const nv = (data[f.key] || '').toString().trim();
         if (ov !== nv) {
-          history.unshift({ ts, user: 'Karkuvel V', action: 'edit', field: f.label, oldVal: ov || '—', newVal: nv || '—' });
+          history.unshift({ ts, user: CURRENT_USER, action: 'edit', field: f.label, oldVal: ov || '—', newVal: nv || '—' });
           changed++;
         }
       });

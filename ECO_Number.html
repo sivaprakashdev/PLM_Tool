@@ -45,6 +45,7 @@ body { font-family: var(--font); background: var(--bg); color: var(--text-primar
 .eco-icon { width: 40px; height: 40px; background: #fff7ed; border: 2px solid #fb923c; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
 .eco-label-sm { font-size: 10.5px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
 .eco-number { font-size: 22px; font-weight: 800; color: var(--text-primary); line-height: 1.1; }
+.eco-title  { font-size: 13px; color: var(--text-secondary); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 480px; }
 .eco-actions { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 .hdr-btn { padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; border: 1px solid var(--border); background: var(--white); color: var(--text-primary); display: inline-flex; align-items: center; gap: 4px; transition: background 0.15s, border-color 0.15s; white-space: nowrap; }
 .hdr-btn:hover { background: var(--bg); border-color: #c1c9d2; }
@@ -77,9 +78,6 @@ body { font-family: var(--font); background: var(--bg); color: var(--text-primar
 .wf-step.active { background: #1e3a5f; color: #fff; }
 .wf-step.active + .wf-step:not(.done) { background: #d4d8de; }
 .wf-step:hover:not(.done):not(.active) { background: #d1d5db; color: #374151; }
-.wf-side-pill { height: 34px; padding: 0 16px; border-radius: 6px; font-size: 11.5px; font-weight: 700; margin-left: 20px; display: inline-flex; align-items: center; flex-shrink: 0; }
-.wf-side-cancelled { background: #fee2e2; color: #991b1b; }
-.wf-side-hold      { background: #fef9c3; color: #854d0e; }
 
 /* ── TAB BAR ── */
 .tab-bar { background: var(--white); border-bottom: 1px solid var(--border); display: flex; padding: 0 24px; }
@@ -336,6 +334,7 @@ td { padding: 10px 14px; vertical-align: middle; color: var(--text-primary); }
       <div>
         <div class="eco-label-sm">Change</div>
         <div class="eco-number" id="hdrNum">—</div>
+        <div class="eco-title" id="hdrTitle"></div>
       </div>
     </div>
    
@@ -762,8 +761,10 @@ function save() {
 
 // ── INIT ──
 function init() {
-  document.getElementById('hdrNum').textContent = data.ecoNum;
-  document.getElementById('bcNum').textContent  = data.ecoNum;
+  document.getElementById('hdrNum').textContent   = data.ecoNum;
+  document.getElementById('hdrTitle').textContent = data.title || '';
+  document.getElementById('bcNum').textContent    = data.ecoNum;
+  document.title = data.ecoNum + (data.title ? ' – ' + data.title : '') + ' — NEXTGEN PLM';
   renderMeta();
   renderWorkflow();
   renderAllSections();
@@ -797,26 +798,15 @@ function renderMeta() {
 
 // ── WORKFLOW ──
 function renderWorkflow() {
+  const allSteps = [...WORKFLOW, ...WORKFLOW_SIDE];
   const cur    = WORKFLOW.indexOf(data.workflowStatus);
   const isSide = WORKFLOW_SIDE.includes(data.workflowStatus);
-  const bar    = document.getElementById('workflowBar');
-
-  // All steps: main steps + side states rendered as chevron steps in the bar
-  const allSteps = [...WORKFLOW, ...WORKFLOW_SIDE];
-  const steps = allSteps.map((s, i) => {
+  document.getElementById('workflowBar').innerHTML = allSteps.map((s, i) => {
     let cls = '';
-    if (isSide) {
-      cls = (s === data.workflowStatus) ? 'active' : (i === 0 ? 'done' : '');
-    } else {
-      cls = i < cur ? 'done' : i === cur ? 'active' : '';
-    }
-    // Side state steps get a muted color when inactive
-    const sideInactive = WORKFLOW_SIDE.includes(s) && cls === ''
-      ? 'style="background:#f3e8ff;color:#7c3aed;"' : '';
-    return `<div class="wf-step ${cls}" onclick="setWorkflowStep('${s}')" title="Set to ${s}" ${sideInactive}>${s}</div>`;
+    if (isSide) { cls = s === data.workflowStatus ? 'active' : i < WORKFLOW.length ? 'done' : ''; }
+    else { cls = i < cur ? 'done' : i === cur ? 'active' : ''; }
+    return `<div class="wf-step ${cls}" onclick="setWorkflowStep('${s}')" title="Set to ${s}">${s}</div>`;
   }).join('');
-
-  bar.innerHTML = steps;
 }
 
 function setWorkflowStep(status) {
@@ -1067,6 +1057,8 @@ function saveEdit() {
   }
   snap = null;
   save();
+  document.getElementById('hdrTitle').textContent = data.title || '';
+  document.title = data.ecoNum + (data.title ? ' – ' + data.title : '') + ' — NEXTGEN PLM';
   document.querySelectorAll('#panel-details [data-key]').forEach(el => { el.style.outline = ''; });
   renderMeta();
   renderWorkflow();
