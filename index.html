@@ -1257,8 +1257,8 @@
         </select>
       </div>
       <div class="field-group">
-        <label class="field-label">MCO Name <span style="color:#dc2626;">*</span></label>
-        <input class="field-input" type="text" placeholder="Enter MCO name or title" id="mcoName" />
+        <label class="field-label">MCO Number</label>
+        <input class="field-input input-readonly" type="text" id="mcoName" readonly />
       </div>
       <div class="field-group">
         <label class="field-label">Title <span style="color:#dc2626;">*</span></label>
@@ -1707,8 +1707,14 @@
 
   // ── CREATE MCO MODAL ──
   function openMcoModal() {
+    const mcoNums = rows
+      .filter(r => r.id.startsWith('MCO-'))
+      .map(r => parseInt(r.id.replace('MCO-', ''), 10))
+      .filter(n => !isNaN(n));
+    const storedMax = parseInt(localStorage.getItem('plm_mco_last') || '10000', 10);
+    const nextNum = Math.max(storedMax, ...mcoNums) + 1;
+    document.getElementById('mcoName').value = 'MCO-' + String(nextNum).padStart(5, '0');
     document.getElementById('mcoCategory').value = '';
-    document.getElementById('mcoName').value = '';
     document.getElementById('mcoTitle').value = '';
     document.getElementById('mcoDesc').value = '';
     document.getElementById('mcoReason').value = '';
@@ -1722,9 +1728,9 @@
     const desc     = document.getElementById('mcoDesc').value.trim();
     const reason   = document.getElementById('mcoReason').value.trim();
     if (!category) { showToast('⚠ Please select a Category'); return; }
-    if (!name)     { showToast('⚠ MCO Name is required'); return; }
     if (!title)    { showToast('⚠ Title is required'); return; }
     if (!desc)     { showToast('⚠ Description of Change is required'); return; }
+    localStorage.setItem('plm_mco_last', String(parseInt(name.replace('MCO-', ''), 10)));
     closeModal('mco');
     const p = new URLSearchParams({ mcoNum: name, category, title, desc, reason });
     window.location.href = './MCO_Part.html?' + p.toString();

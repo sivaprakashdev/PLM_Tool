@@ -338,14 +338,7 @@ td { padding: 10px 14px; vertical-align: middle; color: var(--text-primary); }
         <div class="eco-number" id="hdrNum">—</div>
       </div>
     </div>
-    <div class="eco-actions">
-      <button class="hdr-btn" onclick="showToast('Now following this ECO')">+ Follow</button>
-      <button class="hdr-btn" onclick="copyInfo()">Copy to Clipboard</button>
-      <!-- <button class="hdr-btn" onclick="showToast('Cloning ECO…')">Clone</button> -->
-      <button class="hdr-btn" onclick="showToast('Share link copied')">Share Record</button>
-
-      <!-- <button class="hdr-btn approve-btn" id="approveBtn" onclick="advanceWorkflow()">Submit →</button> -->
-    </div>
+   
   </div>
   <div class="eco-meta" id="ecoMeta"></div>
 </div>
@@ -428,11 +421,7 @@ td { padding: 10px 14px; vertical-align: middle; color: var(--text-primary); }
       <div class="ai-toolbar">
         <button class="ai-btn" onclick="showToast('Edit Affected Items')">✎ Edit</button>
         <button class="ai-btn primary" onclick="openAiModal()">+ Add</button>
-        <button class="ai-btn" onclick="showToast('Add Unpublished Children')">Add Unpublished Children</button>
         <button class="ai-btn" onclick="aiRemoveSelected()">Remove</button>
-        <button class="ai-btn" onclick="aiCopy()">Copy to Clipboard</button>
-        <button class="ai-btn" onclick="renderAI()">↻ Refresh</button>
-        <button class="ai-btn" onclick="showToast('View Sharing')">View Sharing</button>
       </div>
 
       <!-- Controls row -->
@@ -457,7 +446,6 @@ td { padding: 10px 14px; vertical-align: middle; color: var(--text-primary); }
               <th class="ai-td-clip">📎</th>
               <th class="sortable" onclick="aiSort('description')">Description ▾</th>
               <th class="sortable" onclick="aiSort('revision')">Revision ▾</th>
-              <th style="text-align:center;">Has Item Attachments</th>
             </tr>
           </thead>
           <tbody id="ai-tbody"></tbody>
@@ -686,7 +674,7 @@ const SECTIONS = [
     { key: 'reasonForChange',   label: 'Reason for Change',     type: 'textarea', maxlength: 150, noresize: true },
     { key: 'reasonCode',        label: 'Reason Code',           type: 'select',   options: ['','Cost Reduction','Improvement','Issue Resolution','Other','Supplier Driven'] },
     { key: 'productLines',      label: 'Product Lines',         type: 'text' },
-    { key: 'originator',        label: 'Originator',            type: 'text' },
+    { key: 'originator',        label: 'Originator',            type: 'readonly' },
     { key: 'changeAnalyst',     label: 'Change Analyst',        type: 'text' },
     { key: 'functionalTeams',   label: 'Functional Teams',      type: 'text' },
   ]},
@@ -705,7 +693,7 @@ const SECTIONS = [
     { key: 'categoryControl', label: 'Category Control', type: 'readonly' },
     { key: 'createdDate',     label: 'Created Date',     type: 'readonly' },
     { key: 'createdBy',       label: 'Created By',       type: 'readonly' },
-    { key: 'closedDate',      label: 'Closed Date',      type: 'date' },
+    { key: 'closedDate',      label: 'Closed Date',      type: 'readonly' },
     { key: 'releasedDate',    label: 'Released Date',    type: 'readonly' },
 
   ]},
@@ -719,6 +707,10 @@ const HIST_K   = 'ecoh_' + ECO_NUM;
 
 function makeDefault() {
   const now = new Date().toLocaleString('en-US',{month:'numeric',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit',hour12:true});
+  const _d0 = new Date();
+  const _d1 = new Date(_d0); _d1.setDate(_d0.getDate() + 1);
+  const _d2 = new Date(_d0); _d2.setDate(_d0.getDate() + 2);
+  const _dfmt = function(d) { return d.toLocaleDateString('en-US',{month:'2-digit',day:'2-digit',year:'numeric'}); };
   return {
     ecoNum:             ECO_NUM,
     category:           qp.get('category')  || 'NPI - ECO',
@@ -731,7 +723,7 @@ function makeDefault() {
     disposition:        'N/A',
     productLines:       '',
     originator:         'Karkuvel V',
-    changeAnalyst:      '',
+    changeAnalyst:      'Karkuvel V',
     functionalTeams:    '',
     ecoClassification:  '',
     dfImpact:           'N/A',
@@ -742,15 +734,16 @@ function makeDefault() {
     internalNotes:      '',
     categoryControl:    qp.get('category')  || 'NPI - ECO',
     createdBy:          'Karkuvel V',
-    createdDate:        qp.get('createdDate') || now,
-    releasedDate:       '',
-    closedDate:         '',
+    createdDate:        qp.get('createdDate') || _dfmt(_d0),
+    releasedDate:       _dfmt(_d1),
+    closedDate:         _dfmt(_d2),
     legacyCreateBy:     '',
   };
 }
 
 const stored = localStorage.getItem(STORE_K);
-let data      = stored ? JSON.parse(stored) : makeDefault();
+const _defaults = makeDefault();
+let data      = stored ? Object.assign({}, _defaults, JSON.parse(stored)) : _defaults;
 let history   = JSON.parse(localStorage.getItem(HIST_K) || '[]');
 let snap      = null;
 
@@ -786,9 +779,7 @@ function renderMeta() {
   document.getElementById('ecoMeta').innerHTML = `
     <div class="meta-cell"><div class="meta-lbl">Title</div><div class="meta-val">${data.title || '—'}</div></div>
     <div class="meta-cell"><div class="meta-lbl">Category</div><div class="meta-val blue">${data.category}</div></div>
-    <div class="meta-cell"><div class="meta-lbl">In Approval Process</div><div class="meta-val" style="color:#16a34a;font-size:18px;line-height:1;">✓</div></div>
-    <div class="meta-cell"><div class="meta-lbl">Approved Date Time</div><div class="meta-val">${data.workflowStatus === 'Released' ? (data.releasedDate||'—') : '—'}</div></div>
-    <div class="meta-cell"><div class="meta-lbl">Has Attachments</div><div class="meta-val"><input type="checkbox" id="metaHasAttach" ${data.hasAttachments ? 'checked' : ''} onchange="data.hasAttachments=this.checked;save()" style="width:16px;height:16px;cursor:pointer;accent-color:var(--accent);"></div></div>
+
     <div class="meta-cell"><div class="meta-lbl">Status</div><div class="meta-val"><span class="wf-badge ${sc}">${data.workflowStatus}</span></div></div>
   `;
   // update header action buttons

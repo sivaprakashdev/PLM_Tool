@@ -309,13 +309,7 @@ td { padding: 10px 14px; vertical-align: middle; color: var(--text-primary); }
         <div class="dev-number" id="hdrNum">—</div>
       </div>
     </div>
-    <div class="dev-actions">
-      <button class="hdr-btn" onclick="showToast('Now following this DEV')">+ Follow</button>
-      <button class="hdr-btn" onclick="showToast('Change Owner dialog')">Change Owner</button>
-      <button class="hdr-btn" onclick="copyInfo()">Copy Clipboard</button>
-      <button class="hdr-btn" onclick="showToast('Share link copied')">Share Record</button>
-      <!-- <button class="hdr-btn approve-btn" id="approveBtn" onclick="advanceWorkflow()">Submit &#8594;</button> -->
-    </div>
+    
   </div>
   <div class="dev-meta" id="devMeta"></div>
 </div>
@@ -390,8 +384,6 @@ td { padding: 10px 14px; vertical-align: middle; color: var(--text-primary); }
       <div class="ai-toolbar">
         <button class="ai-btn primary" onclick="openAiModal()">+ Add</button>
         <button class="ai-btn" onclick="aiRemoveSelected()">Remove</button>
-        <button class="ai-btn" onclick="aiCopy()">Copy to Clipboard</button>
-        <button class="ai-btn" onclick="renderAI()">&#8635; Refresh</button>
       </div>
       <div class="ai-controls">
         <span class="ai-count" id="ai-count">0 of 0 records</span>
@@ -412,7 +404,6 @@ td { padding: 10px 14px; vertical-align: middle; color: var(--text-primary); }
               <th class="ai-td-clip">&#128206;</th>
               <th class="sortable" onclick="aiSort('description')">Description &#9662;</th>
               <th class="sortable" onclick="aiSort('revision')">Revision &#9662;</th>
-              <th style="text-align:center;">Has Item Attachments</th>
             </tr>
           </thead>
           <tbody id="ai-tbody"></tbody>
@@ -639,7 +630,7 @@ const SECTIONS = [
     { key: 'reasonCode',        label: 'Reason Code',        type: 'select',   options: ['','Cost Reduction','Improvement','Issue Resolution','Other','Supplier Driven'] },
     { key: 'disposition',       label: 'Disposition',        type: 'select',   options: ['N/A','Use As Is','Scrap','Rework'] },
     { key: 'productLines',      label: 'Product Lines',      type: 'text' },
-    { key: 'originator',        label: 'Originator',         type: 'text' },
+    { key: 'originator',        label: 'Originator',         type: 'readonly' },
     { key: 'changeAnalyst',     label: 'Change Analyst',     type: 'text' },
     { key: 'effectiveFrom',     label: 'Effective From',     type: 'date' },
     { key: 'effectiveTo',       label: 'Effective To',       type: 'date' },
@@ -662,8 +653,8 @@ const SECTIONS = [
     { key: 'categoryControl', label: 'Category Control', type: 'readonly' },
     { key: 'createdDate',     label: 'Created Date',     type: 'readonly' },
     { key: 'createdBy',       label: 'Created By',       type: 'readonly' },
-    { key: 'releasedDate',    label: 'Released Date',    type: 'date' },
-    { key: 'closedDate',      label: 'Closed Date',      type: 'date' },
+    { key: 'releasedDate',    label: 'Released Date',    type: 'readonly' },
+    { key: 'closedDate',      label: 'Closed Date',      type: 'readonly' },
   ]},
 ];
 
@@ -677,6 +668,10 @@ function nowStr() {
 }
 
 function makeDefault() {
+  const _d0 = new Date();
+  const _d1 = new Date(_d0); _d1.setDate(_d0.getDate() + 1);
+  const _d2 = new Date(_d0); _d2.setDate(_d0.getDate() + 2);
+  const _dfmt = function(d) { return d.toLocaleDateString('en-US',{month:'2-digit',day:'2-digit',year:'numeric'}); };
   return {
     devNum:             DEV_NUM,
     category:           qp.get('category')      || 'Deviation',
@@ -689,7 +684,7 @@ function makeDefault() {
     disposition:        'N/A',
     productLines:       '',
     originator:         'Karkuvel V',
-    changeAnalyst:      '',
+    changeAnalyst:      'Karkuvel V',
     effectiveFrom:      '',
     effectiveTo:        '',
     deviationType:      '',
@@ -704,16 +699,16 @@ function makeDefault() {
     internalNotes:      '',
     categoryControl:    qp.get('category') || 'Deviation',
     createdBy:          'Karkuvel V',
-    createdDate:        qp.get('createdDate') || nowStr(),
-    releasedDate:       '',
-    closedDate:         '',
+    createdDate:        qp.get('createdDate') || _dfmt(_d0),
+    releasedDate:       _dfmt(_d1),
+    closedDate:         _dfmt(_d2),
     legacyCreateBy:     '',
-    hasAttachments:     false,
   };
 }
 
 const stored = localStorage.getItem(STORE_K);
-let data     = stored ? JSON.parse(stored) : makeDefault();
+const _defaults = makeDefault();
+let data     = stored ? Object.assign({}, _defaults, JSON.parse(stored)) : _defaults;
 let history  = JSON.parse(localStorage.getItem(HIST_K) || '[]');
 let snap     = null;
 
@@ -744,22 +739,6 @@ function renderMeta() {
     <div class="meta-cell">
       <div class="meta-lbl">Category</div>
       <div class="meta-val link">${data.category}</div>
-    </div>
-    <div class="meta-cell">
-      <div class="meta-lbl">In Approval Process</div>
-      <div class="meta-val" style="font-size:18px;line-height:1;color:#16a34a;">&#10003;</div>
-    </div>
-    <div class="meta-cell">
-      <div class="meta-lbl">Approved Date Time</div>
-      <div class="meta-val">${data.workflowStatus === 'Released' ? (data.releasedDate || '—') : '—'}</div>
-    </div>
-    <div class="meta-cell">
-      <div class="meta-lbl">Has Attachments</div>
-      <div class="meta-val">
-        <input type="checkbox" id="metaHasAttach" ${data.hasAttachments ? 'checked' : ''}
-          onchange="data.hasAttachments=this.checked;save()"
-          style="width:16px;height:16px;cursor:pointer;accent-color:var(--accent);">
-      </div>
     </div>
     <div class="meta-cell">
       <div class="meta-lbl">Status</div>

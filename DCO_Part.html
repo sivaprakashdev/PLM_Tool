@@ -264,13 +264,7 @@ td { padding: 10px 14px; vertical-align: middle; color: var(--text-primary); }
         <div class="dev-number" id="hdrNum">—</div>
       </div>
     </div>
-    <div class="dev-actions">
-      <button class="hdr-btn" onclick="showToast('Now following this DCO')">+ Follow</button>
-      <button class="hdr-btn" onclick="showToast('Change Owner dialog')">Change Owner</button>
-      <button class="hdr-btn" onclick="copyInfo()">Copy Clipboard</button>
-      <button class="hdr-btn" onclick="showToast('Share link copied')">Share Record</button>
-      <!-- <button class="hdr-btn approve-btn" id="approveBtn" onclick="advanceWorkflow()">Submit &#8594;</button> -->
-    </div>
+    
   </div>
   <div class="dev-meta" id="devMeta"></div>
 </div>
@@ -312,14 +306,14 @@ td { padding: 10px 14px; vertical-align: middle; color: var(--text-primary); }
       </div>
     </div>
 
-    <!-- DEVIATION DETAILS -->
+    <!-- DCO DETAILS -->
     <div class="sec-card">
-      <div class="sec-head" onclick="toggleSection('s-dev')">
-        <span class="sec-caret" id="c-s-dev">&#9660;</span>
-        <span class="sec-title">Deviation Details</span>
+      <div class="sec-head" onclick="toggleSection('s-dco')">
+        <span class="sec-caret" id="c-s-dco">&#9660;</span>
+        <span class="sec-title">DCO Details</span>
       </div>
-      <div class="sec-body" id="s-dev">
-        <div class="fields-grid" id="g-dev"></div>
+      <div class="sec-body" id="s-dco">
+        <div class="fields-grid" id="g-dco"></div>
       </div>
     </div>
 
@@ -357,11 +351,7 @@ td { padding: 10px 14px; vertical-align: middle; color: var(--text-primary); }
       <div class="ai-toolbar">
         <button class="ai-btn" onclick="showToast('Edit Affected Items')">✎ Edit</button>
         <button class="ai-btn primary" onclick="openAiModal()">+ Add</button>
-        <button class="ai-btn" onclick="showToast('Add Unpublished Children')">Add Unpublished Children</button>
         <button class="ai-btn" onclick="aiRemoveSelected()">Remove</button>
-        <button class="ai-btn" onclick="aiCopy()">Copy to Clipboard</button>
-        <button class="ai-btn" onclick="renderAI()">↻ Refresh</button>
-        <button class="ai-btn" onclick="showToast('View Sharing')">View Sharing</button>
       </div>
 
       <!-- Controls row -->
@@ -386,7 +376,6 @@ td { padding: 10px 14px; vertical-align: middle; color: var(--text-primary); }
               <th class="ai-td-clip">📎</th>
               <th class="sortable" onclick="aiSort('description')">Description ▾</th>
               <th class="sortable" onclick="aiSort('revision')">Revision ▾</th>
-              <th style="text-align:center;">Has Item Attachments</th>
             </tr>
           </thead>
           <tbody id="ai-tbody"></tbody>
@@ -425,7 +414,6 @@ td { padding: 10px 14px; vertical-align: middle; color: var(--text-primary); }
               <th class="ai-td-clip">&#128206;</th>
               <th class="sortable" onclick="aiSort('description')">Description &#9662;</th>
               <th class="sortable" onclick="aiSort('revision')">Revision &#9662;</th>
-              <th style="text-align:center;">Has Item Attachments</th>
             </tr>
           </thead>
           <tbody id="ai-tbody"></tbody>
@@ -640,42 +628,37 @@ td { padding: 10px 14px; vertical-align: middle; color: var(--text-primary); }
 const WORKFLOW = ['Pending','Submitted','CCB','Final Review','Released','Closed','Cancelled'];
 
 const SECTIONS = [
-  { id: 'info', fields: [
-    { key: 'category',          label: 'Category',           type: 'select',   options: ['Document Change Order - DCO','NPI - DCO','Sustaining - DCO'] },
-    { key: 'dcoNum',            label: 'Change Number',      type: 'readonly' },
-    { key: 'title',             label: 'Title',              type: 'textarea', maxlength: 200, noresize: true, req: true, half: true },
-    { key: 'description',       label: 'Description',        type: 'textarea', maxlength: 500, noresize: true, req: true, half: true },
-    { key: 'workflowStatus',    label: 'Change Status',      type: 'select',  options: WORKFLOW },
-    { key: 'changeSubcategory', label: 'Change Subcategory', type: 'select',   options: ['','Cut-in','Documentation','Phase-In'] },
-    { key: 'reasonForChange',   label: 'Reason for Change',  type: 'textarea', noresize: true },
-    { key: 'reasonCode',        label: 'Reason Code',        type: 'select',   options: ['','Cost Reduction','Improvement','Issue Resolution','Other','Supplier Driven'] },
-    { key: 'disposition',       label: 'Disposition',        type: 'select',   options: ['N/A','Use As Is','Scrap','Rework'] },
-    { key: 'productLines',      label: 'Product Lines',      type: 'text' },
-    { key: 'originator',        label: 'Originator',         type: 'text' },
-    { key: 'changeAnalyst',     label: 'Change Analyst',     type: 'text' },
-    { key: 'effectiveFrom',     label: 'Effective From',     type: 'date' },
-    { key: 'effectiveTo',       label: 'Effective To',       type: 'date' },
+  { id: 'info', label: 'Information', fields: [
+    { key: 'category',          label: 'Category',              type: 'select',   options: ['Sustaining - DCO','NPI - DCO','DCO'] },
+    { key: 'dcoNum',            label: 'Change Order Number',   type: 'readonly' },
+    { key: 'title',             label: 'Change Order Title',    type: 'textarea', maxlength: 50,  noresize: true, req: true, half: true },
+    { key: 'description',       label: 'Description of Change', type: 'textarea', maxlength: 500, noresize: true, req: true, half: true },
+    { key: 'changeSubcategory', label: 'Change Subcategory',    type: 'select',   options: ['','Cut-in','Documentation','Phase-In'] },
+    { key: 'workflowStatus',    label: 'Change Status',         type: 'select',   options: WORKFLOW },
+    { key: 'reasonForChange',   label: 'Reason for Change',     type: 'textarea', maxlength: 150, noresize: true },
+    { key: 'reasonCode',        label: 'Reason Code',           type: 'select',   options: ['','Cost Reduction','Improvement','Issue Resolution','Other','Supplier Driven'] },
+    { key: 'productLines',      label: 'Product Lines',         type: 'text' },
+    { key: 'originator',        label: 'Originator',            type: 'readonly' },
+    { key: 'changeAnalyst',     label: 'Change Analyst',        type: 'text' },
+    { key: 'functionalTeams',   label: 'Functional Teams',      type: 'text' },
   ]},
-  { id: 'dev', fields: [
-    { key: 'deviationType',      label: 'Deviation Type',       type: 'select', options: ['','Temporary','Permanent','Concession'] },
-    { key: 'expiryDate',         label: 'Expiry Date',          type: 'text' },
-    { key: 'quantity',           label: 'Quantity',             type: 'text' },
-    { key: 'dfImpact',           label: 'DF Impact',            type: 'select', options: ['N/A','Yes','No'] },
-    { key: 'repairImpact',       label: 'Repair Impact',        type: 'select', options: ['N/A','Yes','No'] },
-    { key: 'serviceDepotImpact', label: 'Service Depot Impact', type: 'select', options: ['N/A','Yes','No'] },
-    { key: 'mfgImpact',          label: 'MFG Impact',           type: 'select', options: ['N/A','Yes','No'] },
-    { key: 'qualityImpact',      label: 'Quality Impact',       type: 'select', options: ['N/A','Yes','No'] },
+  { id: 'dco', label: 'DCO Details', fields: [
+    { key: 'dcoClassification', label: 'DCO Classification',   type: 'select',   options: ['','A','B','C','D','E'] },
+    { key: 'dfImpact',          label: 'DF Impact',             type: 'select',   options: ['N/A','Yes','No'] },
+    { key: 'repairImpact',      label: 'Repair Impact',         type: 'select',   options: ['N/A','Yes','No'] },
+    { key: 'serviceDepotImpact',label: 'Service Depot Impact',  type: 'select',   options: ['N/A','Yes','No'] },
+    { key: 'mfgImpact',         label: 'MFG Impact',            type: 'select',   options: ['N/A','Yes','No'] },
   ]},
-  { id: 'supplier', fields: [
+  { id: 'supplier', label: 'Supplier Access', fields: [
     { key: 'accessibleBy',  label: 'Accessible By',  type: 'textarea' },
     { key: 'internalNotes', label: 'Internal Notes', type: 'textarea' },
   ]},
-  { id: 'system', fields: [
+  { id: 'system', label: 'System Fields', fields: [
     { key: 'categoryControl', label: 'Category Control', type: 'readonly' },
     { key: 'createdDate',     label: 'Created Date',     type: 'readonly' },
     { key: 'createdBy',       label: 'Created By',       type: 'readonly' },
-    { key: 'releasedDate',    label: 'Released Date',    type: 'date' },
-    { key: 'closedDate',      label: 'Closed Date',      type: 'date' },
+    { key: 'releasedDate',    label: 'Released Date',    type: 'readonly' },
+    { key: 'closedDate',      label: 'Closed Date',      type: 'readonly' },
   ]},
 ];
 
@@ -689,9 +672,13 @@ function nowStr() {
 }
 
 function makeDefault() {
+  const _d0 = new Date();
+  const _d1 = new Date(_d0); _d1.setDate(_d0.getDate() + 1);
+  const _d2 = new Date(_d0); _d2.setDate(_d0.getDate() + 2);
+  const _dfmt = function(d) { return d.toLocaleDateString('en-US',{month:'2-digit',day:'2-digit',year:'numeric'}); };
   return {
     dcoNum:             DCO_NUM,
-    category:           qp.get('category')      || 'Document Change Order - DCO',
+    category:           qp.get('category')      || 'Sustaining - DCO',
     title:              qp.get('title')          || '',
     description:        qp.get('desc')           || '',
     workflowStatus:     qp.get('workflowStatus') || 'Pending',
@@ -701,31 +688,27 @@ function makeDefault() {
     disposition:        'N/A',
     productLines:       '',
     originator:         'Karkuvel V',
-    changeAnalyst:      '',
-    effectiveFrom:      '',
-    effectiveTo:        '',
-    deviationType:      '',
-    expiryDate:         '',
-    quantity:           '',
+    changeAnalyst:      'Karkuvel V',
+    functionalTeams:    '',
+    dcoClassification:  '',
     dfImpact:           'N/A',
     repairImpact:       'N/A',
     serviceDepotImpact: 'N/A',
     mfgImpact:          'N/A',
-    qualityImpact:      'N/A',
     accessibleBy:       '',
     internalNotes:      '',
-    categoryControl:    qp.get('category') || 'Document Change Order - DCO',
+    categoryControl:    qp.get('category') || 'Sustaining - DCO',
     createdBy:          'Karkuvel V',
-    createdDate:        qp.get('createdDate') || nowStr(),
-    releasedDate:       '',
-    closedDate:         '',
+    createdDate:        qp.get('createdDate') || _dfmt(_d0),
+    releasedDate:       _dfmt(_d1),
+    closedDate:         _dfmt(_d2),
     legacyCreateBy:     '',
-    hasAttachments:     false,
   };
 }
 
 const stored = localStorage.getItem(STORE_K);
-let data     = stored ? JSON.parse(stored) : makeDefault();
+const _defaults = makeDefault();
+let data     = stored ? Object.assign({}, _defaults, JSON.parse(stored)) : _defaults;
 let history  = JSON.parse(localStorage.getItem(HIST_K) || '[]');
 let snap     = null;
 
@@ -757,22 +740,7 @@ function renderMeta() {
       <div class="meta-lbl">Category</div>
       <div class="meta-val link">${data.category}</div>
     </div>
-    <div class="meta-cell">
-      <div class="meta-lbl">In Approval Process</div>
-      <div class="meta-val" style="font-size:18px;line-height:1;color:#16a34a;">&#10003;</div>
-    </div>
-    <div class="meta-cell">
-      <div class="meta-lbl">Approved Date Time</div>
-      <div class="meta-val">${data.workflowStatus === 'Released' ? (data.releasedDate || '—') : '—'}</div>
-    </div>
-    <div class="meta-cell">
-      <div class="meta-lbl">Has Attachments</div>
-      <div class="meta-val">
-        <input type="checkbox" id="metaHasAttach" ${data.hasAttachments ? 'checked' : ''}
-          onchange="data.hasAttachments=this.checked;save()"
-          style="width:16px;height:16px;cursor:pointer;accent-color:var(--accent);">
-      </div>
-    </div>
+    
     <div class="meta-cell">
       <div class="meta-lbl">Status</div>
       <div class="meta-val"><span class="wf-badge ${sc}">${data.workflowStatus}</span></div>
