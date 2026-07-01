@@ -610,6 +610,7 @@ td { padding: 10px 14px; vertical-align: middle; color: var(--text-primary); }
           <tr>
             <th>Date / Time</th>
             <th>User</th>
+            <th>Created By</th>
             <th>Action</th>
             <th>Field</th>
             <th>Previous Value</th>
@@ -630,7 +631,7 @@ const WORKFLOW = ['Pending','Submitted','CCB','Final Review','Released','Closed'
 
 const SECTIONS = [
   { id: 'info', label: 'Information', fields: [
-    { key: 'category',          label: 'Category',              type: 'select',   options: ['Sustaining - DCO','NPI - DCO','DCO'] },
+    { key: 'category',          label: 'Category',              type: 'select',   options: ['DCO'] },
     { key: 'dcoNum',            label: 'Change Order Number',   type: 'readonly' },
     { key: 'title',             label: 'Change Order Title',    type: 'textarea', maxlength: 50,  noresize: true, req: true, half: true },
     { key: 'description',       label: 'Description of Change', type: 'textarea', maxlength: 500, noresize: true, req: true, half: true },
@@ -895,7 +896,7 @@ function saveEdit() {
 function renderHistory() {
   const tb = document.getElementById('histBody');
   if (!history.length) {
-    tb.innerHTML = `<tr><td colspan="6" class="hist-empty">No history yet.</td></tr>`;
+    tb.innerHTML = `<tr><td colspan="7" class="hist-empty">No history yet.</td></tr>`;
     return;
   }
   tb.innerHTML = history.map(h => {
@@ -903,6 +904,7 @@ function renderHistory() {
     const aL = h.action === 'created' ? 'Created'  : h.action === 'workflow' ? 'Workflow' : 'Edit';
     return `<tr>
       <td style="color:var(--text-muted);font-size:12px;white-space:nowrap;">${h.ts}</td>
+      <td style="color:var(--accent);font-weight:500;">${h.user}</td>
       <td style="color:var(--accent);font-weight:500;">${h.user}</td>
       <td><span class="action-badge ${aC}">${aL}</span></td>
       <td style="font-weight:500;">${h.field}</td>

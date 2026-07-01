@@ -64,22 +64,28 @@ body { font-family: var(--font); background: var(--bg); color: var(--text-primar
 .meta-val.link { color: var(--accent); font-weight: 500; text-decoration: underline; cursor: pointer; }
 
 /* ── WORKFLOW STEPPER ── */
-.workflow-wrap { background: var(--white); border-bottom: 1px solid var(--border); padding: 10px 24px; display: flex; align-items: center; overflow-x: auto; gap: 0; }
-.wf-step {
-  display: flex; align-items: center; justify-content: center;
-  height: 36px; padding: 0 22px 0 30px; margin-right: 2px;
-  font-size: 11.5px; font-weight: 600; cursor: pointer; white-space: nowrap;
-  background: #eaecef; color: #9ca3af;
-  clip-path: polygon(12px 0%, calc(100% - 12px) 0%, 100% 50%, calc(100% - 12px) 100%, 12px 100%, 0% 50%);
-  transition: background 0.15s, color 0.15s;
-  user-select: none;
-}
-.wf-step:first-child { padding-left: 18px; clip-path: polygon(0% 0%, calc(100% - 12px) 0%, 100% 50%, calc(100% - 12px) 100%, 0% 100%); }
-.wf-step:last-child  { margin-right: 0; clip-path: polygon(12px 0%, 100% 0%, 100% 100%, 12px 100%, 0% 50%); }
-.wf-step.done   { background: #22c55e; color: #fff; }
-.wf-step.active { background: #1e3a5f; color: #fff; }
-.wf-step.active + .wf-step:not(.done) { background: #d4d8de; }
-.wf-step:hover:not(.done):not(.active) { background: #d1d5db; color: #374151; }
+.workflow-wrap { background: var(--white); border-bottom: 1px solid var(--border); padding: 14px 24px 12px; overflow-x: auto; }
+.wf-outer { display: flex; flex-direction: column; gap: 0; width: 100%; }
+.wf-main-row { display: flex; align-items: center; width: 100%; }
+.wf-card { flex: 1; height: 52px; display: flex; align-items: center; justify-content: center; border: 2px solid #e5e7eb; border-radius: 10px; background: #f9fafb; cursor: pointer; user-select: none; text-align: center; transition: border-color 0.15s, background 0.15s, box-shadow 0.15s; }
+.wf-card:hover:not(.active):not(.done) { border-color: #9ca3af; background: #f3f4f6; }
+.wf-card.done   { border-color: #16a34a; background: #f0fdf4; }
+.wf-card.active { border-color: #1e3a5f; background: #eff6ff; box-shadow: 0 2px 10px rgba(30,58,95,0.18); }
+.wf-card-lbl  { font-size: 10px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; padding: 0 6px; }
+.wf-card.done   .wf-card-lbl { color: #16a34a; }
+.wf-card.active .wf-card-lbl { color: #1e3a5f; }
+.wf-arrow { width: 28px; text-align: center; color: #cbd5e1; font-size: 18px; flex-shrink: 0; }
+.wf-side-wrap { display: flex; flex-direction: column; align-items: flex-start; }
+.wf-side-vert { width: 2px; height: 12px; background: #e5e7eb; margin-left: 43px; }
+.wf-side-cards { display: flex; gap: 8px; position: relative; padding-top: 8px; }
+.wf-side-cards::before { content: ''; position: absolute; top: 0; left: 43px; right: 43px; height: 8px; border-left: 2px solid #e5e7eb; border-right: 2px solid #e5e7eb; border-top: 2px solid #e5e7eb; border-radius: 4px 4px 0 0; }
+.wf-side-card { width: 100px; height: 44px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; border: 2px solid #e5e7eb; border-radius: 8px; background: #f9fafb; cursor: pointer; user-select: none; text-align: center; transition: border-color 0.15s, background 0.15s; }
+.wf-side-card:hover { border-color: #9ca3af; background: #f3f4f6; }
+.wf-side-card.wf-cancelled-active { border-color: #dc2626; background: #fef2f2; }
+.wf-side-card.wf-hold-active      { border-color: #d97706; background: #fffbeb; }
+.wf-side-card-lbl  { font-size: 10px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.4px; padding: 0 6px; }
+.wf-side-card.wf-cancelled-active .wf-side-card-lbl { color: #dc2626; }
+.wf-side-card.wf-hold-active      .wf-side-card-lbl { color: #d97706; }
 
 /* ── TAB BAR (boxed — matches screenshot) ── */
 .tab-section { padding: 10px 24px 0; background: var(--bg); }
@@ -567,7 +573,7 @@ td { padding: 10px 14px; vertical-align: middle; color: var(--text-primary); }
       <table>
         <thead>
           <tr>
-            <th>Date / Time</th><th>User</th><th>Action</th>
+            <th>Date / Time</th><th>User</th><th>Created By</th><th>Action</th>
             <th>Field</th><th>Previous Value</th><th>New Value</th>
           </tr>
         </thead>
@@ -580,7 +586,8 @@ td { padding: 10px 14px; vertical-align: middle; color: var(--text-primary); }
 <div class="toast" id="toast"></div>
 
 <script>
-const WORKFLOW = ['Pending','Submitted','CCB','Final Review','Released','Closed','Cancelled','Hold'];
+const WORKFLOW      = ['Pending','Submitted','CCB','Final Review','Released','Closed'];
+const WORKFLOW_SIDE = ['Cancelled','Hold'];
 
 const SECTIONS = [
   { id: 'info', label: 'Information', fields: [
@@ -690,37 +697,61 @@ function renderMeta() {
     <div class="meta-cell"><div class="meta-lbl">Category</div><div class="meta-val link">${data.category}</div></div>
     <div class="meta-cell"><div class="meta-lbl">Status</div><div class="meta-val"><span class="wf-badge ${sc}">${data.workflowStatus}</span></div></div>
   `;
-  const idx = WORKFLOW.indexOf(data.workflowStatus);
+  const idx    = WORKFLOW.indexOf(data.workflowStatus);
+  const isSide = WORKFLOW_SIDE.includes(data.workflowStatus);
   const btn = document.getElementById('approveBtn');
   if (btn) {
-    if (idx >= WORKFLOW.length - 1) { btn.textContent = '✓ Final'; btn.disabled = true; }
-    else { btn.textContent = 'Approve →'; btn.disabled = false; }
+    if (isSide) { btn.textContent = '↩ Reopen'; btn.disabled = false; btn.onclick = () => setWorkflowStep('Pending'); }
+    else if (idx >= WORKFLOW.length - 1) { btn.textContent = '✓ Closed'; btn.disabled = true; btn.onclick = null; }
+    else { btn.textContent = idx === 0 ? 'Submit →' : 'Approve →'; btn.disabled = false; btn.onclick = advanceWorkflow; }
   }
 }
 
 function renderWorkflow() {
-  const cur = WORKFLOW.indexOf(data.workflowStatus);
-  document.getElementById('workflowBar').innerHTML = WORKFLOW.map((s, i) => {
-    const cls = i < cur ? 'done' : i === cur ? 'active' : '';
-    return `<div class="wf-step ${cls}" onclick="setStep(${i})" title="Set to ${s}">${s}</div>`;
+  const cur    = WORKFLOW.indexOf(data.workflowStatus);
+  const isSide = WORKFLOW_SIDE.includes(data.workflowStatus);
+  const mainHtml = WORKFLOW.map((s, i) => {
+    const cls   = isSide ? (i === 0 ? 'done' : '') : (i < cur ? 'done' : i === cur ? 'active' : '');
+    const arrow = i < WORKFLOW.length - 1 ? `<div class="wf-arrow">→</div>` : '';
+    return `<div class="wf-card ${cls}" onclick="setWorkflowStep('${s}')" title="${s}">
+      <div class="wf-card-lbl">${s}</div>
+    </div>${arrow}`;
   }).join('');
+
+  const sideHtml = WORKFLOW_SIDE.map(s => {
+    const isActive = isSide && s === data.workflowStatus;
+    const cls = isActive ? (s === 'Cancelled' ? 'wf-cancelled-active' : 'wf-hold-active') : '';
+    return `<div class="wf-side-card ${cls}" onclick="setWorkflowStep('${s}')" title="${s}">
+      <div class="wf-side-card-lbl">${s}</div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('workflowBar').innerHTML = `<div class="wf-outer">
+    <div class="wf-main-row">${mainHtml}</div>
+    <div class="wf-side-wrap">
+      <div class="wf-side-vert"></div>
+      <div class="wf-side-cards">${sideHtml}</div>
+    </div>
+  </div>`;
 }
 
-function setStep(idx) {
+function setWorkflowStep(status) {
   const now = new Date().toLocaleString('en-US',{month:'numeric',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit',hour12:true});
   const old = data.workflowStatus;
-  data.workflowStatus = WORKFLOW[idx];
-  if (data.workflowStatus === 'Released' && !data.releasedDate) data.releasedDate = now;
-  if (data.workflowStatus === 'Closed'   && !data.closedDate)   data.closedDate   = now;
-  history.unshift({ ts: now, user: 'Karkuvel V', action: 'workflow', field: 'Change Status', oldVal: old, newVal: data.workflowStatus });
+  data.workflowStatus = status;
+  if (status === 'Released' && !data.releasedDate) data.releasedDate = now;
+  if (status === 'Closed'   && !data.closedDate)   data.closedDate   = now;
+  history.unshift({ ts: now, user: 'Karkuvel V', action: 'workflow', field: 'Change Status', oldVal: old, newVal: status });
   save();
   renderMeta(); renderWorkflow(); renderAllSections(); renderHistory();
-  showToast('Status → ' + data.workflowStatus);
+  showToast('Status → ' + status);
 }
+
+function setStep(idx) { setWorkflowStep(WORKFLOW[idx]); }
 
 function advanceWorkflow() {
   const idx = WORKFLOW.indexOf(data.workflowStatus);
-  if (idx < WORKFLOW.length - 1) setStep(idx + 1);
+  if (idx >= 0 && idx < WORKFLOW.length - 1) setWorkflowStep(WORKFLOW[idx + 1]);
 }
 
 function renderAllSections() {
@@ -751,7 +782,7 @@ function buildInput(f) {
   const val = (data[f.key] || '').replace(/"/g,'&quot;').replace(/</g,'&lt;');
   if (f.type === 'select') {
     const opts = f.options.map(o => `<option value="${o}"${o===data[f.key]?' selected':''}>${o||'-- Select --'}</option>`).join('');
-    const onChange = f.key === 'workflowStatus' ? ` onchange="setStep(WORKFLOW.indexOf(this.value))"` : '';
+    const onChange = f.key === 'workflowStatus' ? ` onchange="setWorkflowStep(this.value)"` : '';
     return `<select class="f-select" data-key="${f.key}"${onChange}>${opts}</select>`;
   }
   if (f.type === 'textarea') {
@@ -821,7 +852,7 @@ function saveEdit() {
 function renderHistory() {
   const tb = document.getElementById('histBody');
   if (!history.length) {
-    tb.innerHTML = `<tr><td colspan="6" class="hist-empty">No history yet.</td></tr>`;
+    tb.innerHTML = `<tr><td colspan="7" class="hist-empty">No history yet.</td></tr>`;
     return;
   }
   tb.innerHTML = history.map(h => {
@@ -829,6 +860,7 @@ function renderHistory() {
     const aL = h.action === 'created' ? 'Created' : h.action === 'workflow' ? 'Workflow' : 'Edit';
     return `<tr>
       <td style="color:var(--text-muted);font-size:12px;white-space:nowrap;">${h.ts}</td>
+      <td style="color:var(--accent);font-weight:500;">${h.user}</td>
       <td style="color:var(--accent);font-weight:500;">${h.user}</td>
       <td><span class="action-badge ${aC}">${aL}</span></td>
       <td style="font-weight:500;">${h.field}</td>

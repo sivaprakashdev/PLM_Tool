@@ -641,6 +641,7 @@ td { padding: 10px 14px; vertical-align: middle; color: var(--text-primary); }
           <tr>
             <th>Date / Time</th>
             <th>User</th>
+            <th>Created By</th>
             <th>Action</th>
             <th>Field</th>
             <th>Previous Value</th>
@@ -664,7 +665,7 @@ const WORKFLOW_SIDE = ['Cancelled','Hold'];
 // ── FIELD SCHEMA ──
 const SECTIONS = [
   { id: 'info', label: 'Information', fields: [
-    { key: 'category',          label: 'Category',              type: 'select',   options: ['Sustaining - ECO','NPI - ECO'] },
+    { key: 'category',          label: 'Category',              type: 'readonly' },
     { key: 'ecoNum',            label: 'Change Order Number',         type: 'readonly' },
     { key: 'title',             label: 'Change Order Title',    type: 'textarea', maxlength: 50,  noresize: true, req: true, half: true },
     { key: 'description',       label: 'Description of Change', type: 'textarea', maxlength: 500, noresize: true, req: true, half: true },
@@ -751,6 +752,11 @@ if (!stored) {
   if (qp.has('desc')) {
     history.unshift({ ts: data.createdDate, user: 'Karkuvel V', action: 'created', field: 'ECO', oldVal: '', newVal: ECO_NUM });
   }
+  save();
+}
+// Ensure every ECO has a Created By history entry
+if (!history.some(h => h.field === 'Created By')) {
+  history.push({ ts: data.createdDate, user: data.createdBy || 'Karkuvel V', action: 'created', field: 'Created By', oldVal: '—', newVal: data.createdBy || 'Karkuvel V' });
   save();
 }
 
@@ -1070,7 +1076,7 @@ function saveEdit() {
 function renderHistory() {
   const tb = document.getElementById('histBody');
   if (!history.length) {
-    tb.innerHTML = `<tr><td colspan="6" class="hist-empty">No history yet. Edit and save to record changes.</td></tr>`;
+    tb.innerHTML = `<tr><td colspan="7" class="hist-empty">No history yet. Edit and save to record changes.</td></tr>`;
     return;
   }
   tb.innerHTML = history.map(h => {
@@ -1078,6 +1084,7 @@ function renderHistory() {
     const aL = h.action === 'created' ? 'Created' : h.action === 'workflow' ? 'Workflow' : 'Edit';
     return `<tr>
       <td style="color:var(--text-muted);font-size:12px;white-space:nowrap;">${h.ts}</td>
+      <td style="color:var(--accent);font-weight:500;">${h.user}</td>
       <td style="color:var(--accent);font-weight:500;">${h.user}</td>
       <td><span class="action-badge ${aC}">${aL}</span></td>
       <td style="font-weight:500;">${h.field}</td>
